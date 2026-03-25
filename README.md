@@ -1,59 +1,55 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Digiturno SENA APE - Sistema de Gestión de Turnos Digital
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Logo SENA](public/images/Logo.png)
 
-## About Laravel
+## 🚀 Descripción del Proyecto
+Digiturno SENA APE es una solución moderna y eficiente para la gestión de turnos en la Agencia Pública de Empleo del SENA. Este sistema transforma la experiencia del usuario a través de un kiosco digital intuitivo, permitiendo una solicitud de turnos 100% ecológica y sin papel.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Características Principales
+- **Kiosco Premium**: Interfaz minimalista con estética Apple-style, optimizada para pantallas táctiles y con micro-animaciones fluidas.
+- **Flujo en 6 Pasos**:
+    1. Bienvenida con logo animado.
+    2. Aceptación de términos con tarjetas informativas.
+    3. Selección de perfil de atención (General, Prioritario, Especial).
+    4. Validación de Identidad con teclado numérico "Tactile Pro".
+    5. Registro de Contacto móvil.
+    6. Selección de Canal de Recepción (SMS, WhatsApp, Email, QR).
+- **Escalabilidad Técnica**: Base de datos optimizada con `BIGINT` para soportar cualquier longitud de documento de identidad.
+- **Eco-Friendly**: Proceso totalmente digital que elimina la necesidad de impresión física.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Tecnologías Utilizadas
+- **Backend**: Laravel 11.x / PHP 8.2
+- **Frontend**: Tailwind CSS, Font Awesome 6.4
+- **Base de Datos**: MySQL / MariaDB (Ape Sena)
+- **Tipografía**: 'Outfit' (Google Fonts)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 📦 Instalación
 
-## Learning Laravel
+1. Clonar el repositorio:
+   ```bash
+   git clone https://github.com/chaustrexp/Proyecto-digiturno.git
+   ```
+2. Instalar dependencias:
+   ```bash
+   composer install
+   npm install
+   ```
+3. Configurar el entorno:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+4. Configurar la base de datos en `.env` (Nombre: `ape sena`) y ejecutar migraciones:
+   ```bash
+   php artisan migrate
+   ```
+5. Servir la aplicación:
+   ```bash
+   php artisan serve
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 📸 Demo Visual
+El kiosco cuenta con un diseño neo-glass translúcido sobre el fondo institucional `fondo.jpg`, logrando un equilibrio perfecto entre marca corporativa y modernidad digital.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+© 2026 Agencia Pública de Empleo - SENA
