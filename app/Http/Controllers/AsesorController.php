@@ -7,6 +7,7 @@ use App\Models\Asesor;
 use App\Models\Atencion;
 use App\Models\Turno;
 use App\Repositories\TurnoRepository;
+use App\Models\PausaAsesor;
 use Illuminate\Support\Facades\DB;
 
 class AsesorController extends Controller
@@ -102,8 +103,10 @@ class AsesorController extends Controller
         // Atención en curso para este asesor
         $atencion = $this->turnoRepo->getActiveAttentionForAsesor($ase_id);
 
-        // Cola de espera filtrada por el perfil del asesor (FIFO Estricto)
-        $tipoAsesor = $asesor->ase_tipo_asesor ?? 'General';
+        // Cola de espera filtrada por el rol del asesor según CU-02
+        // OT = Orientador Técnico → General + Prioritario
+        // OV = Orientador de Víctimas → Victima + Empresario
+        $tipoAsesor = $asesor->ase_tipo_asesor ?? 'OT';
         $turnosEnEspera = $this->turnoRepo->getWaitingForAsesor($tipoAsesor);
 
         return view('asesor.panel', compact('asesor', 'atencion', 'turnosEnEspera'));
@@ -475,5 +478,63 @@ class AsesorController extends Controller
         $persona->update($request->only(['pers_nombres', 'pers_apellidos', 'pers_telefono', 'pers_tipodoc']));
 
         return back()->with('success', 'Datos del ciudadano actualizados correctamente.');
+    }
+
+    /**
+     * CU-03 — Iniciar receso del asesor.
+     * Bloquea si hay una atención activa. Cambia estado del módulo a 'Pausa'.
+     */
+    public function registrarReceso()
+    {
+        if (!$this->checkAuth())
+            return redirect()->route('asesor.login');
+
+        $ase_id = session('ase_id');
+        $asesor = Asesor::find($ase_id);
+
+        if (!$asesor) {
+            return back()->with('error', 'Sesión no válida.');
+        }
+
+        $resultado = $this->turnoRepo->iniciarReceso($asesor);
+
+        if (is_string($resultado)) {
+            // Error de negocio devuelto como string
+            return back()->with('error', $resultado);
+        }
+
+        // Guardar estado de pausa en sesión para bloquear asignación de turnos
+        session(['ase_estado' => 'Pausa']);
+
+        return back()->with('warning', 'Receso iniciado. El módulo está en pausa y no recibirá nuevos turnos.');
+    }
+
+    /**
+     * CU-03 — Finalizar receso del asesor.
+     * Calcula duración y reactiva el módulo.
+     */
+    public function finalizarReceso()
+    {
+        if (!$this->checkAuth())
+            return redirect()->route('asesor.login');
+
+        $ase_id = session('ase_id');
+        $asesor = Asesor::find($ase_id);
+
+        if (!$asesor) {
+            return back()->with('error', 'Sesión no válida.');
+        }
+
+        $resultado = $this->turnoRepo->finalizarReceso($asesor);
+
+        if (is_string($resultado)) {
+            return back()->with('error', $resultado);
+        }
+
+        // Reactivar estado del módulo
+        session(['ase_estado' => 'Activo']);
+
+        $duracion = $resultado->duracion ?? 0;
+        return back()->with('success', "Receso finalizado. Duración: {$duracion} minutos.");
     }
 }

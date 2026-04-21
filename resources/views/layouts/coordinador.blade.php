@@ -128,6 +128,13 @@
                     <span class="text-sm">Gestión Módulos</span>
                 </a>
 
+                <a href="{{ route('coordinador.supervision') }}" class="flex items-center space-x-3 p-3 rounded-xl {{ Request::routeIs('coordinador.supervision') ? 'bg-sena-orange/10 text-sena-orange font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }} group transition">
+                    <div class="w-8 h-8 rounded-lg {{ Request::routeIs('coordinador.supervision') ? 'bg-white shadow-sm text-sena-orange' : 'bg-orange-50 text-orange-400 group-hover:bg-white group-hover:shadow-sm group-hover:text-sena-orange' }} flex items-center justify-center transition">
+                        <i class="fa-solid fa-eye text-sm"></i>
+                    </div>
+                    <span class="text-sm">Supervisión Piso</span>
+                </a>
+
                 <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-8 mb-4 px-3">Configuración</p>
 
                 <a href="{{ route('coordinador.configuracion') }}" class="flex items-center space-x-3 p-3 rounded-xl {{ Request::routeIs('coordinador.configuracion') ? 'bg-sena-50 text-sena-blue font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }} group transition">

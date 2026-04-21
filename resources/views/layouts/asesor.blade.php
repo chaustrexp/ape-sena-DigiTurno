@@ -1,6 +1,5 @@
 @php
-    $status = request()->get('status', isset($atencion) ? 'active' : 'idle');
-    $isPause = $status == 'pause';
+    $isPause = session('ase_estado') === 'Pausa';
 @endphp
 
 <!DOCTYPE html>
@@ -80,15 +79,21 @@
 
         <div class="p-8 border-t border-gray-50 mt-auto">
             @if($isPause)
-                <a href="{{ url('/asesor') }}" class="w-full flex items-center justify-center bg-sena-orange text-white font-black py-4 rounded-full shadow-lg shadow-sena-orange/30 hover:bg-sena-orange/90 transition-all hover:scale-105 active:scale-95 space-x-3 text-xs uppercase tracking-widest mb-6">
-                    <i class="fa-solid fa-play"></i>
-                    <span>Reanudar Atención</span>
-                </a>
+                <form action="{{ route('asesor.receso.finalizar') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center justify-center bg-sena-orange text-white font-black py-4 rounded-full shadow-lg shadow-sena-orange/30 hover:bg-sena-orange/90 transition-all hover:scale-105 active:scale-95 space-x-3 text-xs uppercase tracking-widest mb-6 px-2">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Finalizar Receso</span>
+                    </button>
+                </form>
             @else
-                <a href="{{ url('/asesor?status=pause') }}" class="w-full flex items-center justify-center border-2 border-sena-orange text-sena-orange font-black py-4 rounded-full hover:bg-sena-orange/5 transition-all hover:scale-105 active:scale-95 space-x-3 text-xs uppercase tracking-widest mb-6 px-2">
-                    <i class="fa-solid fa-pause"></i>
-                    <span>Pausa / Receso</span>
-                </a>
+                <form action="{{ route('asesor.receso.iniciar') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center justify-center border-2 border-sena-orange text-sena-orange font-black py-4 rounded-full hover:bg-sena-orange/5 transition-all hover:scale-105 active:scale-95 space-x-3 text-xs uppercase tracking-widest mb-6 px-2">
+                        <i class="fa-solid fa-pause"></i>
+                        <span>Iniciar Receso</span>
+                    </button>
+                </form>
             @endif
 
             <a href="{{ route('asesor.configuracion') }}" class="flex items-center space-x-4 px-5 py-3 rounded-xl text-gray-400 hover:text-gray-900 transition-colors mb-4">

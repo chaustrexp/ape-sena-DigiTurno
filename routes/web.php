@@ -57,3 +57,11 @@ Route::post('/asesor/llamar', [AsesorController::class, 'llamar'])->name('asesor
 Route::post('/asesor/finalizar/{atnc_id}', [AsesorController::class, 'finalizar'])->name('asesor.finalizar');
 Route::post('/asesor/ausente/{atnc_id}', [AsesorController::class, 'ausente'])->name('asesor.ausente');
 Route::post('/asesor/persona/update/{pers_doc}', [AsesorController::class, 'updatePersona'])->name('asesor.persona.update');
+
+// CU-03: Receso del Asesor
+Route::post('/asesor/receso/iniciar', [AsesorController::class, 'registrarReceso'])->name('asesor.receso.iniciar');
+Route::post('/asesor/receso/finalizar', [AsesorController::class, 'finalizarReceso'])->name('asesor.receso.finalizar');
+
+// CU-04: Supervisión del Coordinador (módulos 15 y 19)
+Route::get('/coordinador/supervision', [CoordinadorController::class, 'supervision'])->name('coordinador.supervision');
+

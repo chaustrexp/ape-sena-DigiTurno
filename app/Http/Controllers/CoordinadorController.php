@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Atencion;
 use App\Models\Asesor;
 use App\Models\Turno;
+use App\Models\PausaAsesor;
+use App\Repositories\TurnoRepository;
+use Carbon\Carbon;
 
 class CoordinadorController extends Controller
 {
@@ -429,5 +432,120 @@ class CoordinadorController extends Controller
                 'Total'       => array_sum($stats)
             ]
         ]);
+    }
+
+    /**
+     * CU-04 — Vista de supervisión de módulos 15 y 19.
+     * Monitorea: estado de módulos, meta semanal de emprendedores,
+     * alertas de espera >20 min, y rotación bimestral del personal.
+     */
+    public function supervision()
+    {
+        if (!$this->checkAuth()) return redirect()->route('coordinador.login');
+
+        $hoy        = now()->toDateString();
+        $inicioSemana = now()->startOfWeek()->toDateString();
+        $finSemana    = now()->endOfWeek()->toDateString();
+
+        // ── Datos de los módulos 15 y 19 ────────────────────────────────────
+        $modulosVigilancia = [15, 19];
+        $estadoModulos = [];
+
+        foreach ($modulosVigilancia as $moduloId) {
+            $asesor = Asesor::with('persona')->find($moduloId);
+
+            if (!$asesor) {
+                $estadoModulos[$moduloId] = [
+                    'nombre'       => 'Módulo ' . $moduloId,
+                    'estado'       => 'Sin asignar',
+                    'atencionActiva' => null,
+                    'pausaActiva'  => null,
+                    'atencionesDia' => 0,
+                    'foto'         => 'images/foto de perfil.jpg',
+                ];
+                continue;
+            }
+
+            $atencionActiva = Atencion::where('ASESOR_ase_id', $moduloId)
+                ->whereNull('atnc_hora_fin')
+                ->with('turno.solicitante.persona')
+                ->first();
+
+            $pausaActiva = PausaAsesor::where('ASESOR_ase_id', $moduloId)
+                ->whereNull('hora_fin')
+                ->first();
+
+            $atencionesDia = Atencion::where('ASESOR_ase_id', $moduloId)
+                ->whereDate('atnc_hora_inicio', $hoy)
+                ->count();
+
+            $estado = 'Libre';
+            if ($pausaActiva)   $estado = 'Pausa';
+            if ($atencionActiva) $estado = 'Atendiendo';
+
+            $estadoModulos[$moduloId] = [
+                'nombre'         => $asesor->persona->pers_nombres . ' ' . $asesor->persona->pers_apellidos,
+                'estado'         => $estado,
+                'atencionActiva' => $atencionActiva,
+                'pausaActiva'    => $pausaActiva,
+                'atencionesDia'  => $atencionesDia,
+                'foto'           => $asesor->ase_foto ?? 'images/foto de perfil.jpg',
+            ];
+        }
+
+        // ── Meta semanal de emprendedores — SOLO módulos 15 y 19 (CU-04) ────────
+        // El spec indica explícitamente que la meta de ~6 emprendedores/semana
+        // corresponde a los módulos 15 y 19 (ruta de víctimas/emprendimiento).
+        $metaEmprendedores = 6;
+        $turnoRepo = app(TurnoRepository::class);
+        $emprendedoresSemana = $turnoRepo->getEmprendedoresModulosVigilancia($inicioSemana, $finSemana);
+        $porcentajeMeta = min(100, round(($emprendedoresSemana / $metaEmprendedores) * 100));
+
+        // ── Tiempos medios del ciclo de vida (CU-01 / CU-04) ─────────────────
+        $tiemposMedios = $turnoRepo->getTiemposMedios($hoy);
+
+        // ── Turnos en espera con tiempo > 20 minutos (alerta visual) ─────────
+        $turnosEspera20 = Turno::whereDate('tur_hora_fecha', $hoy)
+            ->whereDoesntHave('atencion')
+            ->where('tur_hora_fecha', '<', now()->subMinutes(20))
+            ->with('solicitante.persona')
+            ->orderBy('tur_hora_fecha', 'asc')
+            ->get()
+            ->map(function ($t) {
+                $t->minutos_espera = (int) Carbon::parse($t->tur_hora_fecha)->diffInMinutes(now());
+                return $t;
+            });
+
+        // ── Indicador de rotación bimestral del personal (> 60 días) ─────────
+        // Compara la fecha de vigencia (fin de contrato) con los 60 días desde hoy hacia atrás
+        $asesoresRotacion = Asesor::with('persona')
+            ->whereNotNull('ase_vigencia')
+            ->get()
+            ->map(function ($asesor) {
+                // ase_vigencia es la fecha fin de contrato; asumimos inicio = hace 'X' días
+                // Si la vigencia es menor a 60 días desde hoy, el contrato está próximo a vencer
+                $vigencia    = Carbon::parse($asesor->ase_vigencia);
+                $diasRestantes = (int) now()->diffInDays($vigencia, false);
+                $requiereRotacion = $diasRestantes <= 60 && $diasRestantes >= 0;
+                return [
+                    'nombre'          => $asesor->persona ? $asesor->persona->pers_nombres . ' ' . $asesor->persona->pers_apellidos : 'N/A',
+                    'ase_id'          => $asesor->ase_id,
+                    'vigencia'        => $vigencia->format('d/m/Y'),
+                    'dias_restantes'  => $diasRestantes,
+                    'requiere_rotacion' => $requiereRotacion,
+                ];
+            })
+            ->sortBy('dias_restantes');
+
+        return view('coordinador.supervision', compact(
+            'estadoModulos',
+            'metaEmprendedores',
+            'emprendedoresSemana',
+            'porcentajeMeta',
+            'turnosEspera20',
+            'asesoresRotacion',
+            'modulosVigilancia',
+            'tiemposMedios'
+        ));
     }
 }

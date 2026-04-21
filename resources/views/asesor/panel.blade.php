@@ -4,8 +4,7 @@
 
 @section('content')
 @php
-    $status = request()->get('status', isset($atencion) ? 'active' : 'idle');
-    $isPause = $status == 'pause';
+    $isPause = session('ase_estado') === 'Pausa';
 @endphp
 
 @if(!$isPause)
@@ -215,11 +214,14 @@
                 <h2 class="text-4xl lg:text-5xl font-black text-gray-900 tracking-tight mb-4">Atención en Pausa</h2>
                 <p class="text-sm lg:text-base font-medium text-gray-500 leading-relaxed mb-10 max-w-sm mx-auto md:mx-0">Actualmente te encuentras en tiempo de descanso programado. La asignación de turnos está temporalmente detenida.</p>
                 
-                <a href="{{ url('/asesor') }}" id="btn-resume-work" class="bg-gradient-to-r from-sena-blue to-sena-orange hover:from-sena-blue/90 hover:to-sena-orange/90 text-white font-black py-5 px-10 rounded-2xl transition-all shadow-xl shadow-sena-blue/30 transform hover:-translate-y-1 active:scale-95 inline-flex items-center justify-center space-x-4 w-full md:w-max mx-auto md:mx-0 relative overflow-hidden group">
-                    <span class="absolute inset-0 w-full h-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                    <i class="fa-solid fa-play text-lg relative z-10"></i>
-                    <span class="text-xs uppercase tracking-[0.2em] relative z-10">Reanudar Atención</span>
-                </a>
+                <form action="{{ route('asesor.receso.finalizar') }}" method="POST" class="w-full md:w-max mx-auto md:mx-0">
+                    @csrf
+                    <button type="submit" id="btn-resume-work" class="bg-gradient-to-r from-sena-blue to-sena-orange hover:from-sena-blue/90 hover:to-sena-orange/90 text-white font-black py-5 px-10 rounded-2xl transition-all shadow-xl shadow-sena-blue/30 transform hover:-translate-y-1 active:scale-95 inline-flex items-center justify-center space-x-4 w-full relative overflow-hidden group">
+                        <span class="absolute inset-0 w-full h-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                        <i class="fa-solid fa-play text-lg relative z-10"></i>
+                        <span class="text-xs uppercase tracking-[0.2em] relative z-10">Finalizar Receso y Reanudar</span>
+                    </button>
+                </form>
             </div>
 
             <!-- Right Side: Timer & Stats -->
