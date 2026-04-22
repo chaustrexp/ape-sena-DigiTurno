@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ApiController;
 
 // Kiosco
 Route::get('/', [TurnoController::class, 'index'])->name('kiosco.index');
+Route::get('/kiosco', [TurnoController::class, 'index']);
 Route::get('/solicitar', [TurnoController::class, 'index']);
 Route::post('/turno/solicitar', [TurnoController::class, 'store'])
     ->name('turnos.store')

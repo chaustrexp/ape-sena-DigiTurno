@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Asesor - SENA APE</title>
+    <title>SENA Portal | Acceso Asesor</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
@@ -17,185 +17,169 @@
                     },
                     colors: { 
                         sena: { 
-                            yellow: '#FFB500',
-                            blue: '#10069F',
-                            orange: '#FF671F',
-                            50: '#f0f0ff', 
-                            100: '#e1e1ff', 
-                            500: '#10069F', 
-                            600: '#0c047a' 
+                            50: '#F0F9FF', 
+                            navy: '#000080',
+                            green: '#39A900',
+                            dark: '#003366'
                         } 
-                    },
-                    boxShadow: {
-                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.3)',
-                        'soft': '0 10px 25px -5px rgba(16, 6, 159, 0.1), 0 8px 10px -6px rgba(16, 6, 159, 0.1)',
                     }
                 }
             }
         }
     </script>
     <style>
-        .split-bg {
-            background-image: url("{{ asset('images/fondo.jpg') }}");
-            background-size: cover;
-            background-position: center;
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            overflow: hidden;
         }
-        .fade-in { animation: fadeIn 0.6s ease-out forwards; opacity: 0; }
-        .slide-up { animation: slideUp 0.6s ease-out forwards; opacity: 0; transform: translateY(20px); }
-        .delay-100 { animation-delay: 100ms; }
-        .delay-200 { animation-delay: 200ms; }
-        @keyframes fadeIn { to { opacity: 1; } }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-        
-        /* Glassmorphism utility */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+
+        .video-container iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 100vh;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
         }
+
+        @media (min-aspect-ratio: 16/9) {
+            .video-container iframe { height: 56.25vw; }
+        }
+        @media (max-aspect-ratio: 16/9) {
+            .video-container iframe { width: 177.78vh; }
+        }
+
+        .fade-up { animation: fadeUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards; opacity: 0; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans overflow-hidden antialiased">
+<body class="bg-[#F8FAFC] font-sans antialiased overflow-hidden min-h-screen">
+
+    <!-- YouTube Video Background -->
+    <div class="video-container">
+        <iframe 
+            src="https://www.youtube.com/embed/_MZRAUSIZtQ?autoplay=1&mute=1&loop=1&playlist=_MZRAUSIZtQ&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1" 
+            frameborder="0" 
+            allow="autoplay; encrypted-media" 
+            allowfullscreen>
+        </iframe>
+        <!-- Overlay for readability -->
+        <div class="absolute inset-0 bg-sena-navy/40 backdrop-blur-[1px]"></div>
+    </div>
 
     <div class="flex min-h-screen">
         
-        <!-- Left Side: Immersive Brand Side -->
-        <div class="hidden lg:flex lg:w-[55%] split-bg relative items-center justify-center p-12">
-            <!-- Elegant Neutral/White Overlay -->
-            <div class="absolute inset-0 bg-white/30 backdrop-blur-sm"></div>
-            <div class="absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-black/20"></div>
+        <!-- Left Section: Content matching the screenshot -->
+        <div class="hidden lg:flex lg:w-[60%] relative flex-col justify-between p-16 overflow-hidden">
             
-            <div class="relative z-10 w-full max-w-lg text-center slide-up">
-                <!-- Premium White Glassmorphism Card -->
-                <div class="glass-panel bg-white/40 border-white/40 p-10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.1)] transition-transform duration-500 hover:scale-[1.02] backdrop-blur-xl">
-                    <div class="bg-white p-4 rounded-2xl w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-xl">
-                        <img src="{{ asset('images/logo.jpeg') }}" class="w-full h-auto" alt="SENA Logo">
-                    </div>
-                    
-                    <h2 class="text-3xl lg:text-4xl font-poppins font-bold text-gray-900 leading-tight mb-4 tracking-tight drop-shadow-sm">
-                        Agencia Pública de Empleo
-                    </h2>
-                    
-                    <p class="text-gray-800 text-base lg:text-lg font-medium leading-relaxed opacity-90 mx-auto max-w-md">
-                        Plataforma institucional para la gestión y coordinación eficiente de la atención ciudadana.
-                    </p>
+            <!-- Top Logo -->
+            <div class="relative z-10 flex items-center space-x-3 fade-up">
+                <div class="bg-sena-green p-2 rounded-lg">
+                    <i class="fa-solid fa-graduation-cap text-white text-2xl"></i>
                 </div>
-                
-                <div class="mt-8 flex items-center justify-center space-x-4 fade-in delay-200">
-                    <div class="px-4 py-1.5 bg-white/60 backdrop-blur-md rounded-full text-gray-800 text-[10px] font-bold tracking-widest uppercase shadow-sm">
-                        v4.5.0 Stable
-                    </div>
-                    <div class="px-4 py-1.5 bg-white/60 backdrop-blur-md rounded-full text-gray-800 text-[10px] font-bold tracking-widest uppercase flex items-center shadow-sm">
-                        <span class="w-1.5 h-1.5 bg-sena-blue rounded-full mr-2 shadow-[0_0_8px_#10069F] animate-pulse"></span>
-                        Servidor Activo
-                    </div>
-                </div>
+                <span class="text-white text-2xl font-poppins font-bold">SENA Portal</span>
             </div>
+
+            <!-- Main Title & Subtitle -->
+            <div class="relative z-10 max-w-2xl fade-up" style="animation-delay: 0.2s">
+                <h1 class="text-white text-6xl font-poppins font-extrabold leading-[1.1] mb-8">
+                    Transformando el futuro profesional de Colombia.
+                </h1>
+                <p class="text-white/80 text-xl font-medium leading-relaxed max-w-lg">
+                    Accede a la red de formación más grande del país y gestiona tu carrera con herramientas de vanguardia.
+                </p>
+            </div>
+
+            <!-- Bottom Quality Sello -->
+            <div class="relative z-10 fade-up" style="animation-delay: 0.4s">
+                <p class="text-sena-green font-black text-sm tracking-widest uppercase mb-1">Calidad Certificada</p>
+                <p class="text-white/70 text-base">Excelencia en formación integral</p>
+            </div>
+            
         </div>
 
-        <!-- Right Side: Clean Focus Login -->
-        <div class="w-full lg:w-[45%] flex flex-col bg-white border-l border-gray-100 shadow-2xl z-20">
-            <div class="flex-1 flex flex-col items-center justify-center px-8 sm:px-16 py-12">
+        <!-- Right Section: Pure Login Focus (Solid White) -->
+        <div class="w-full lg:w-[40%] bg-white flex flex-col justify-center px-10 sm:px-20 py-12 relative shadow-[-20px_0_50px_rgba(0,0,0,0.1)]">
+            
+            <div class="w-full max-w-[400px] mx-auto fade-up">
                 
-                <div class="w-full max-w-[380px] slide-up delay-100">
-                    
-                    <!-- Mobile Logo -->
-                    <div class="lg:hidden text-center mb-8">
-                        <div class="w-16 h-16 bg-white border border-gray-100 shadow-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
-                            <img src="{{ asset('images/logoSena.png') }}" class="h-8 w-auto" alt="SENA Logo">
-                        </div>
-                    </div>
+                <h2 class="text-4xl font-poppins font-black text-sena-navy mb-2">Bienvenido</h2>
+                <p class="text-slate-500 font-medium mb-10">Ingresa tus credenciales para acceder al portal.</p>
 
-                    <!-- Header -->
-                    <div class="mb-10 text-center lg:text-left">
-                        <h1 class="text-3xl font-poppins font-bold text-[#111827] tracking-tight mb-2">Iniciar Sesión</h1>
-                        <p class="text-gray-500 text-sm font-medium">Ingrese sus credenciales de funcionario.</p>
-                    </div>
-
-                    @if(session('error'))
-                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg flex items-start space-x-3 text-red-700 mb-8 fade-in">
-                        <i class="fa-solid fa-circle-exclamation mt-0.5"></i>
-                        <p class="text-sm font-medium">{{ session('error') }}</p>
-                    </div>
-                    @endif
-
-                    <!-- Form -->
-                    <form action="{{ url('/asesor/login') }}" method="POST" class="space-y-5">
-                        @csrf
-                        
-                        <!-- Input Documento -->
-                        <div class="space-y-1">
-                            <label class="text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1">
-                                Documento de Identidad
-                            </label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-                                    <i class="fa-solid fa-id-card text-lg"></i>
-                                </div>
-                                <input type="text" name="pers_doc" value="{{ old('pers_doc') }}" required
-                                    class="w-full pl-12 pr-4 py-3.5 bg-[#EEF2F6] border-none rounded-xl text-gray-900 focus:ring-2 focus:ring-sena-500/50 outline-none transition-all duration-300 placeholder:text-gray-400 font-semibold"
-                                    placeholder="12345678">
-                            </div>
-                        </div>
-
-                        <!-- Input Contraseña -->
-                        <div class="space-y-1">
-                            <div class="flex justify-between items-center mb-1">
-                                <label class="text-[11px] font-bold text-gray-500 uppercase tracking-widest ml-1">
-                                    Contraseña
-                                </label>
-                                <a href="{{ url('/asesor/recuperar-clave') }}" class="text-[11px] font-bold text-sena-blue hover:text-sena-blue/80 transition-colors">
-                                    ¿Olvidó su clave?
-                                </a>
-                            </div>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
-                                    <i class="fa-solid fa-lock text-lg"></i>
-                                </div>
-                                <input type="password" name="password" required
-                                    class="w-full pl-12 pr-4 py-3.5 bg-[#EEF2F6] border-none rounded-xl text-gray-900 focus:ring-2 focus:ring-sena-500/50 outline-none transition-all duration-300 placeholder:text-gray-500 font-bold"
-                                    placeholder="••••••">
-                            </div>
-                        </div>
-
-                        <div class="pt-4">
-                            <button type="submit" 
-                                class="w-full bg-sena-blue hover:bg-sena-blue/90 text-white font-bold py-3.5 rounded-xl shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 flex items-center justify-center space-x-2">
-                                <span>Ingresar al Sistema</span>
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </form>
-
-                    <!-- Enlaces Adicionales de Navegación -->
-                    <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">
-                        <a href="{{ url('/') }}" class="flex items-center space-x-2 text-xs font-bold text-gray-400 hover:text-sena-blue transition-colors">
-                            <i class="fa-solid fa-arrow-left"></i>
-                            <span>Volver al Kiosco</span>
-                        </a>
-                        <a href="{{ route('coordinador.login') }}" class="text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors">
-                            Login Coordinador →
-                        </a>
-                    </div>
+                @if(session('error'))
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-8 text-red-600 text-sm font-bold flex items-center">
+                    <i class="fa-solid fa-circle-exclamation mr-3"></i>
+                    {{ session('error') }}
                 </div>
+                @endif
 
-            </div>
+                <!-- Login Form -->
+                <form action="{{ url('/asesor/login') }}" method="POST" class="space-y-6">
+                    @csrf
+                    
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-slate-700 ml-1">Correo o Documento</label>
+                        <div class="relative group">
+                            <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sena-navy transition-colors"></i>
+                            <input type="email" name="email" value="{{ old('email') }}" required autofocus
+                                class="w-full pl-12 pr-4 py-4 bg-slate-100 border-transparent border-2 rounded-xl text-slate-900 font-medium focus:bg-white focus:border-sena-navy outline-none transition-all placeholder:text-slate-400"
+                                placeholder="Ej: 1020304050">
+                        </div>
+                    </div>
 
-            <!-- Footer -->
-            <div class="p-8 text-center bg-gray-50/50 mt-auto border-t border-gray-100">
-                <p class="text-[11px] font-medium text-gray-400 uppercase tracking-widest leading-relaxed">
-                    SENA &copy; 2026<br>
-                    <span class="text-gray-300">Agencia Pública de Empleo</span>
-                </p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center px-1">
+                            <label class="text-sm font-bold text-slate-700">Contraseña</label>
+                            <a href="#" class="text-xs font-bold text-sena-navy hover:underline">¿Olvidaste tu contraseña?</a>
+                        </div>
+                        <div class="relative group">
+                            <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sena-navy transition-colors"></i>
+                            <input type="password" name="password" required
+                                class="w-full pl-12 pr-4 py-4 bg-slate-100 border-transparent border-2 rounded-xl text-slate-900 font-medium focus:bg-white focus:border-sena-navy outline-none transition-all"
+                                placeholder="••••••••">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-sena-navy active:bg-sena-dark text-white font-bold py-4 rounded-xl shadow-lg shadow-sena-navy/20 transition-all hover:translate-y-[-2px] flex items-center justify-center gap-3">
+                        <span>Ingresar</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+
+                    <div class="relative py-4">
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200"></div></div>
+                        <div class="relative flex justify-center text-xs">
+                            <span class="bg-white px-4 text-slate-400 font-black tracking-widest uppercase">Otras Opciones</span>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('coordinador.login') }}" class="w-full border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-900 font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-3 mb-4">
+                        <i class="fa-solid fa-lock-open text-sm"></i>
+                        <span>Acceso Coordinador</span>
+                    </a>
+
+                    <div class="text-center">
+                        <a href="{{ url('/') }}" class="inline-flex items-center gap-2 text-slate-500 font-bold hover:text-sena-navy transition-all text-sm">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Volver al Inicio</span>
+                        </a>
+                    </div>
+                </form>
+
+                <!-- Footer Text -->
+                <div class="mt-20 text-center">
+                    <p class="text-[10px] text-slate-400 leading-relaxed font-medium">
+                        © 2024 Servicio Nacional de Aprendizaje SENA.<br>
+                        Institución Pública de Educación Técnica y Tecnológica.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-
-    <style>
-        @keyframes shimmer {
-            100% { transform: translateX(100%); }
-        }
-    </style>
 </body>
 </html>

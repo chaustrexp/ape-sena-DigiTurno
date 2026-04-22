@@ -30,14 +30,14 @@ class AsesorController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'pers_doc' => 'required',
+            'email' => 'required|email',
             'password' => 'required'
         ]);
 
-        $doc = trim($request->pers_doc);
+        $email = trim($request->email);
         $pass = trim($request->password);
 
-        $asesor = Asesor::where('PERSONA_pers_doc', $doc)->first();
+        $asesor = Asesor::where('ase_correo', $email)->first();
 
         $isValid = false;
         if ($asesor) {
@@ -58,12 +58,13 @@ class AsesorController extends Controller
                 'ase_id' => $asesor->ase_id,
                 'ase_tipo_asesor' => $asesor->ase_tipo_asesor,
                 'ase_nombre' => $asesor->persona->pers_nombres,
-                'ase_foto' => $asesor->ase_foto ?? 'images/foto de perfil.jpg'
+                'ase_foto' => $asesor->ase_foto ?? 'images/foto de perfil.jpg',
+                'ase_email' => $asesor->ase_correo
             ]);
             return redirect()->route('asesor.index')->with('success', 'Bienvenido, ' . $asesor->persona->pers_nombres);
         }
 
-        return back()->with('error', 'Credenciales incorrectas. Verifique su documento y contraseña.')->withInput();
+        return back()->with('error', 'Credenciales incorrectas. Verifique su correo y contraseña.')->withInput();
     }
 
     public function logout()
