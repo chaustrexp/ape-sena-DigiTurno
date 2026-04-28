@@ -11,6 +11,7 @@ class Turno extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'tur_estado',
         'tur_hora_fecha',
         'tur_hora_llamado',
         'tur_numero',

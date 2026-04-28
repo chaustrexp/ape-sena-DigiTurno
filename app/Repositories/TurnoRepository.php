@@ -7,6 +7,7 @@ use App\Models\Atencion;
 use App\Models\Asesor;
 use App\Models\PausaAsesor;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 
 class TurnoRepository
@@ -18,7 +19,7 @@ class TurnoRepository
     public function getWaitingForPublicScreen()
     {
         return Turno::whereDate('tur_hora_fecha', now()->toDateString())
-            ->whereDoesntHave('atencion')
+            ->where('tur_estado', 'Espera')
             ->orderByRaw("CASE
                 WHEN tur_perfil = 'Victima'     THEN 1
                 WHEN tur_perfil = 'Empresario'  THEN 2
@@ -34,7 +35,7 @@ class TurnoRepository
     public function getWaitingStats()
     {
         return Turno::whereDate('tur_hora_fecha', now()->toDateString())
-            ->whereDoesntHave('atencion')
+            ->where('tur_estado', 'Espera')
             ->selectRaw('tur_tipo, count(*) as count')
             ->groupBy('tur_tipo')
             ->pluck('count', 'tur_tipo')
@@ -49,19 +50,20 @@ class TurnoRepository
     public function getWaitingForAsesor($tipoAsesor)
     {
         $query = Turno::whereDate('tur_hora_fecha', now()->toDateString())
-                      ->whereDoesntHave('atencion');
+                      ->where('tur_estado', 'Espera');
 
         if ($tipoAsesor === 'OV') {
-            // Orientador de Víctimas: Víctima primero, luego Empresario
+            // Orientador de Víctimas: Empresario primero, luego Víctima
             return $query->whereIn('tur_perfil', ['Victima', 'Empresario'])
-                         ->orderByRaw("CASE WHEN tur_perfil = 'Victima' THEN 1 ELSE 2 END ASC")
-                         ->orderBy('tur_id', 'asc')
+                         ->orderByRaw("CASE WHEN tur_perfil = 'Empresario' THEN 1 ELSE 2 END ASC")
+                         ->orderBy('tur_hora_fecha', 'asc')
                          ->get();
         } else {
-            // Orientador Técnico (OT) o General: Prioritario primero, luego General
+            // Orientador Técnico (OT): Prioritario vs General (3:1)
+            // Para la vista de espera, simplemente los mostramos priorizando Prioritario
             return $query->whereIn('tur_perfil', ['Prioritario', 'General'])
                          ->orderByRaw("CASE WHEN tur_perfil = 'Prioritario' THEN 1 ELSE 2 END ASC")
-                         ->orderBy('tur_id', 'asc')
+                         ->orderBy('tur_hora_fecha', 'asc')
                          ->get();
         }
     }
@@ -87,28 +89,67 @@ class TurnoRepository
             }
 
             $query = Turno::whereDate('tur_hora_fecha', now()->toDateString())
-                          ->whereDoesntHave('atencion');
+                          ->where('tur_estado', 'Espera');
 
             if ($tipoAsesor === 'OV') {
-                // Orientador de Víctimas: Victima → Empresario
+                // Orientador de Víctimas (Role 1): Empresario → Victima
                 $turno = $query->whereIn('tur_perfil', ['Victima', 'Empresario'])
-                               ->orderByRaw("CASE WHEN tur_perfil = 'Victima' THEN 1 ELSE 2 END ASC")
-                               ->orderBy('tur_id', 'asc')
+                               ->orderByRaw("CASE WHEN tur_perfil = 'Empresario' THEN 1 ELSE 2 END ASC")
+                               ->orderBy('tur_hora_fecha', 'asc')
                                ->lockForUpdate()
                                ->first();
             } else {
-                // Orientador Técnico (OT): Prioritario → General
-                $turno = $query->whereIn('tur_perfil', ['Prioritario', 'General'])
-                               ->orderByRaw("CASE WHEN tur_perfil = 'Prioritario' THEN 1 ELSE 2 END ASC")
-                               ->orderBy('tur_id', 'asc')
-                               ->lockForUpdate()
-                               ->first();
+                // Orientador Técnico (Role 2): Prioritario → General (Relación 3:1)
+                $count = Cache::get('prioritario_counter', 0);
+                
+                if ($count < 3) {
+                    // Intentar obtener un Prioritario
+                    $turno = $query->clone()
+                                   ->where('tur_perfil', 'Prioritario')
+                                   ->orderBy('tur_hora_fecha', 'asc')
+                                   ->lockForUpdate()
+                                   ->first();
+                    
+                    if ($turno) {
+                        Cache::put('prioritario_counter', $count + 1, now()->addDay());
+                    } else {
+                        // Si no hay Prioritario, tomar un General y reiniciar contador
+                        $turno = $query->clone()
+                                       ->where('tur_perfil', 'General')
+                                       ->orderBy('tur_hora_fecha', 'asc')
+                                       ->lockForUpdate()
+                                       ->first();
+                        Cache::put('prioritario_counter', 0, now()->addDay());
+                    }
+                } else {
+                    // Se alcanzó el límite de 3 prioritarios, intentar obtener un General
+                    $turno = $query->clone()
+                                   ->where('tur_perfil', 'General')
+                                   ->orderBy('tur_hora_fecha', 'asc')
+                                   ->lockForUpdate()
+                                   ->first();
+                    
+                    if ($turno) {
+                        Cache::put('prioritario_counter', 0, now()->addDay());
+                    } else {
+                        // Si no hay General, tomar un Prioritario de todos modos si existe
+                        $turno = $query->clone()
+                                       ->where('tur_perfil', 'Prioritario')
+                                       ->orderBy('tur_hora_fecha', 'asc')
+                                       ->lockForUpdate()
+                                       ->first();
+                        Cache::put('prioritario_counter', 0, now()->addDay()); 
+                    }
+                }
             }
 
             if (!$turno) return null;
 
-            // Registrar hora de llamado para calcular tiempo de espera real (CU-01/CU-04)
-            $turno->update(['tur_hora_llamado' => now()]);
+            // Actualizar estado a 'Atendiendo' y registrar hora de llamado
+            $turno->update([
+                'tur_estado' => 'Atendiendo',
+                'tur_hora_llamado' => now()
+            ]);
 
             // Mapear perfil al enum de atencion
             $tipoAtencion = match ($turno->tur_perfil) {
@@ -194,7 +235,7 @@ class TurnoRepository
     public function getCurrentAttention()
     {
         return Atencion::whereNull('atnc_hora_fin')
-                       ->with(['turno', 'asesor'])
+                       ->with(['turno.solicitante.persona', 'asesor'])
                        ->latest('atnc_hora_inicio')
                        ->first();
     }

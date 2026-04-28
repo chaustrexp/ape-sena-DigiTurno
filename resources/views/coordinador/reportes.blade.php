@@ -60,12 +60,18 @@
     <!-- Fila 2: Gráficos de Distribución y Flujo -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div class="xl:col-span-1 bg-white p-8 rounded-[3rem] shadow-sm border border-gray-100 text-center">
-            <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-8">Distribución Sede</h4>
+            <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-8">Distribución por Perfil</h4>
             <div class="h-64 flex items-center justify-center">
                 <canvas id="typeDistributionChart"></canvas>
             </div>
         </div>
-        <div class="xl:col-span-2 bg-white p-8 rounded-[3rem] shadow-sm border border-gray-100">
+        <div class="xl:col-span-1 bg-white p-8 rounded-[3rem] shadow-sm border border-gray-100 text-center">
+            <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-8">Distribución por Estado</h4>
+            <div class="h-64 flex items-center justify-center">
+                <canvas id="statusDistributionChart"></canvas>
+            </div>
+        </div>
+        <div class="xl:col-span-1 bg-white p-8 rounded-[3rem] shadow-sm border border-gray-100">
             <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-8">Flujo Semanal de Sede</h4>
             <div class="h-64">
                 <canvas id="performanceChart"></canvas>
@@ -284,10 +290,20 @@
                             </div>
                         </td>
                         <td class="py-5 text-center">
-                            @if($t->atencion)
+                            @if($t->tur_estado == 'Finalizado')
                                 <div class="inline-flex items-center space-x-2 text-emerald-500 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-full">
                                     <i class="fa-solid fa-circle-check text-[10px]"></i>
-                                    <span class="text-[9px] font-black uppercase tracking-widest">ATENDIDO</span>
+                                    <span class="text-[9px] font-black uppercase tracking-widest">FINALIZADO</span>
+                                </div>
+                            @elseif($t->tur_estado == 'Atendiendo')
+                                <div class="inline-flex items-center space-x-2 text-blue-500 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full">
+                                    <i class="fa-solid fa-user-clock text-[10px]"></i>
+                                    <span class="text-[9px] font-black uppercase tracking-widest">ATENDIENDO</span>
+                                </div>
+                            @elseif($t->tur_estado == 'Ausente')
+                                <div class="inline-flex items-center space-x-2 text-rose-500 bg-rose-50 border border-rose-100 px-3 py-1.5 rounded-full">
+                                    <i class="fa-solid fa-user-slash text-[10px]"></i>
+                                    <span class="text-[9px] font-black uppercase tracking-widest">AUSENTE</span>
                                 </div>
                             @else
                                 <div class="inline-flex items-center space-x-2 text-amber-500 bg-amber-50 border border-amber-100 px-3 py-1.5 rounded-full">
@@ -363,10 +379,30 @@
     new Chart(ctxType, {
         type: 'doughnut',
         data: {
-            labels: ['General', 'Prioritario', 'Víctimas'],
+            labels: ['General', 'Prioritario', 'Víctimas', 'Empresarios'],
             datasets: [{
-                data: [{{ $distribucionTipos['General'] }}, {{ $distribucionTipos['Prioritario'] }}, {{ $distribucionTipos['Víctimas'] }}],
-                backgroundColor: ['#10069F', '#FF671F', '#FFB500', '#3182CE'],
+                data: [{{ $distribucionTipos['General'] }}, {{ $distribucionTipos['Prioritario'] }}, {{ $distribucionTipos['Víctimas'] }}, {{ $distribucionTipos['Empresarios'] }}],
+                backgroundColor: ['#10069F', '#FF671F', '#FFB500', '#39A900'],
+                borderWidth: 0,
+                cutout: '70%'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9, weight: 'bold' } } } }
+        }
+    });
+
+    // Gráfico de Distribución por Estado
+    const ctxStatus = document.getElementById('statusDistributionChart').getContext('2d');
+    new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+            labels: ['Espera', 'Atendiendo', 'Finalizado', 'Ausente'],
+            datasets: [{
+                data: [{{ $distribucionEstados['Espera'] }}, {{ $distribucionEstados['Atendiendo'] }}, {{ $distribucionEstados['Finalizado'] }}, {{ $distribucionEstados['Ausente'] }}],
+                backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#ef4444'],
                 borderWidth: 0,
                 cutout: '70%'
             }]

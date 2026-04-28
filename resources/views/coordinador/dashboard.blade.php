@@ -5,51 +5,51 @@
 @section('content')
 <!-- KPIs Row -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <!-- KPI 1 -->
-    <div class="bg-white p-5 rounded-2xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center justify-between">
+    <!-- KPI 1: Tiempo Medio -->
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
         <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-lg shrink-0">
             <i class="fa-solid fa-clock"></i>
         </div>
         <div class="text-right">
             <p class="text-[11px] font-semibold text-gray-400 mb-0.5">Tiempo Medio Espera</p>
             <h3 class="text-2xl font-black text-gray-800 leading-none">{{ $tiempoMedio }}m</h3>
-            <p class="text-[10px] font-bold text-red-500 mt-1">-1.2% <span class="text-gray-400 font-medium">promedio</span></p>
+            <p class="text-[10px] font-bold text-emerald-500 mt-1">Eficiente <span class="text-gray-400 font-medium">promedio</span></p>
         </div>
     </div>
 
-    <!-- KPI 2 -->
-    <div class="bg-white p-5 rounded-2xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center justify-between">
+    <!-- KPI 2: Atendiendo -->
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
         <div class="w-12 h-12 bg-sena-blue/10 text-sena-blue rounded-full flex items-center justify-center text-lg shrink-0">
-            <i class="fa-solid fa-grip"></i>
+            <i class="fa-solid fa-user-headset"></i>
         </div>
         <div class="text-right">
-            <p class="text-[11px] font-semibold text-gray-400 mb-0.5">Módulos Activos</p>
-            <h3 class="text-2xl font-black text-gray-800 leading-none">{{ sprintf('%02d', $enAtencion) }}/10</h3>
-            <p class="text-[10px] font-bold text-sena-blue mt-1">+2 <span class="text-gray-400 font-medium">nuevos hoy</span></p>
+            <p class="text-[11px] font-semibold text-gray-400 mb-0.5">En Atención</p>
+            <h3 class="text-2xl font-black text-gray-800 leading-none">{{ sprintf('%02d', $enAtencion) }}</h3>
+            <p class="text-[10px] font-bold text-sena-blue mt-1">Activos <span class="text-gray-400 font-medium">ahora</span></p>
         </div>
     </div>
 
-    <!-- KPI 3 -->
-    <div class="bg-white p-5 rounded-2xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center justify-between">
-        <div class="w-12 h-12 bg-sena-orange/10 text-sena-orange rounded-full flex items-center justify-center text-lg shrink-0">
-            <i class="fa-solid fa-ticket"></i>
+    <!-- KPI 3: Finalizados -->
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid fa-check-double"></i>
         </div>
         <div class="text-right">
-            <p class="text-[11px] font-semibold text-gray-400 mb-0.5">Turnos Generados</p>
-            <h3 class="text-2xl font-black text-gray-800 leading-none">{{ number_format($usuariosHoy) }}</h3>
-            <p class="text-[10px] font-bold text-sena-orange mt-1">+15% <span class="text-gray-400 font-medium">vs ayer</span></p>
+            <p class="text-[11px] font-semibold text-gray-400 mb-0.5">Finalizados</p>
+            <h3 class="text-2xl font-black text-gray-800 leading-none">{{ $finalizados }}</h3>
+            <p class="text-[10px] font-bold text-emerald-500 mt-1">Hoy <span class="text-gray-400 font-medium">completados</span></p>
         </div>
     </div>
 
-    <!-- KPI 4 -->
-    <div class="bg-white p-5 rounded-2xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center justify-between">
-        <div class="w-12 h-12 bg-sena-blue/5 text-sena-blue rounded-full flex items-center justify-center text-lg shrink-0">
-            <i class="fa-solid fa-face-smile"></i>
+    <!-- KPI 4: Ausentes -->
+    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+        <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid fa-user-slash"></i>
         </div>
         <div class="text-right">
-            <p class="text-[11px] font-semibold text-gray-400 mb-0.5">Nivel Satisfacción</p>
-            <h3 class="text-2xl font-black text-gray-800 leading-none">{{ $satisfaccion }}</h3>
-            <p class="text-[10px] font-bold text-sena-blue mt-1">+0.3% <span class="text-gray-400 font-medium">mejora</span></p>
+            <p class="text-[11px] font-semibold text-gray-400 mb-0.5">Ausentes</p>
+            <h3 class="text-2xl font-black text-gray-800 leading-none">{{ $ausentes }}</h3>
+            <p class="text-[10px] font-bold text-rose-500 mt-1">Hoy <span class="text-gray-400 font-medium">llamados</span></p>
         </div>
     </div>
 </div>
@@ -65,7 +65,7 @@
             </div>
         </div>
         <div class="flex items-end justify-between">
-            <h3 id="count-general" class="text-4xl font-black text-slate-800 leading-none">0</h3>
+            <h3 id="count-general" class="text-4xl font-black text-slate-800 leading-none">{{ $enEspera }}</h3>
             <span class="text-[10px] font-bold text-slate-300 uppercase">Ciudadanos</span>
         </div>
     </div>

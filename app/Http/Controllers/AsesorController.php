@@ -428,10 +428,14 @@ class AsesorController extends Controller
     {
         if (!$this->checkAuth())
             return redirect()->route('asesor.login');
-        $atencion = Atencion::findOrFail($atnc_id);
+        $atencion = Atencion::with('turno')->findOrFail($atnc_id);
         $atencion->update([
             'atnc_hora_fin' => now()
         ]);
+        
+        if ($atencion->turno) {
+            $atencion->turno->update(['tur_estado' => 'Finalizado']);
+        }
 
         return redirect()->route('asesor.index')->with('success', 'Atención finalizada con éxito.');
     }
@@ -440,11 +444,14 @@ class AsesorController extends Controller
     {
         if (!$this->checkAuth())
             return redirect()->route('asesor.login');
-        $atencion = Atencion::findOrFail($atnc_id);
+        $atencion = Atencion::with('turno')->findOrFail($atnc_id);
         $atencion->update([
             'atnc_hora_fin' => now()
-            // No cambiamos el tipo aquí ya que el enum es restrictivo (General/Prioritaria/Victimas)
         ]);
+
+        if ($atencion->turno) {
+            $atencion->turno->update(['tur_estado' => 'Ausente']);
+        }
 
         return redirect()->route('asesor.index')->with('warning', 'Ciudadano marcado como ausente.');
     }

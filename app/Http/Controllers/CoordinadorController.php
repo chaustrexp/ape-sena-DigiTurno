@@ -81,9 +81,12 @@ class CoordinadorController extends Controller
         if (!$this->checkAuth()) return redirect()->route('coordinador.login');
         $hoy = now()->today();
 
-        // KPIs
+        // KPIs con tur_estado
         $usuariosHoy = Turno::whereDate('tur_hora_fecha', $hoy)->count();
-        $enAtencion = Atencion::whereNull('atnc_hora_fin')->count();
+        $enEspera = Turno::whereDate('tur_hora_fecha', $hoy)->where('tur_estado', 'Espera')->count();
+        $enAtencion = Turno::whereDate('tur_hora_fecha', $hoy)->where('tur_estado', 'Atendiendo')->count();
+        $finalizados = Turno::whereDate('tur_hora_fecha', $hoy)->where('tur_estado', 'Finalizado')->count();
+        $ausentes = Turno::whereDate('tur_hora_fecha', $hoy)->where('tur_estado', 'Ausente')->count();
         $satisfaccion = "4.8/5";
         
         // Tiempo Medio de Espera (Minutos)
@@ -141,9 +144,9 @@ class CoordinadorController extends Controller
 
         $alertas = [];
 
-        // 1. Turnos en espera > 15 min
+        // 1. Turnos en espera > 15 min usando tur_estado
         $turnosRetrasados = Turno::whereDate('tur_hora_fecha', $hoy)
-            ->doesntHave('atencion')
+            ->where('tur_estado', 'Espera')
             ->where('tur_hora_fecha', '<', now()->subMinutes(15))
             ->count();
             
@@ -155,8 +158,8 @@ class CoordinadorController extends Controller
             ];
         }
 
-        // 2. Módulos Inactivos con cola
-        $turnosEnEspera = Turno::whereDate('tur_hora_fecha', $hoy)->doesntHave('atencion')->count();
+        // 2. Módulos Inactivos con cola usando tur_estado
+        $turnosEnEspera = Turno::whereDate('tur_hora_fecha', $hoy)->where('tur_estado', 'Espera')->count();
         if ($turnosEnEspera > 0 && $enAtencion == 0) {
             $alertas[] = [
                 'msg' => 'Hay cola pero 0 Asesores Atendiendo',
@@ -191,7 +194,7 @@ class CoordinadorController extends Controller
         ];
 
         return view('coordinador.dashboard', compact(
-            'usuariosHoy', 'enAtencion', 'satisfaccion', 'tiempoMedio', 
+            'usuariosHoy', 'enAtencion', 'enEspera', 'finalizados', 'ausentes', 'satisfaccion', 'tiempoMedio', 
             'flowLabels', 'flowValues', 'docData', 'asesoresStatus', 'alertas'
         ));
     }
@@ -226,8 +229,14 @@ class CoordinadorController extends Controller
             $doc = $t->solicitante && $t->solicitante->persona ? $t->solicitante->persona->pers_doc : '-';
             $asesor = $t->atencion && $t->atencion->asesor && $t->atencion->asesor->persona ? explode(' ', $t->atencion->asesor->persona->pers_nombres)[0] : 'En Cola';
             
-            $estado = $t->atencion ? 'ATENDIDO' : 'EN ESPERA';
-            $estadoColor = $t->atencion ? '#10b981' : '#f59e0b';
+            $estado = $t->tur_estado;
+            $estadoColor = match($estado) {
+                'Espera' => '#f59e0b',
+                'Atendiendo' => '#3b82f6',
+                'Finalizado' => '#10b981',
+                'Ausente' => '#ef4444',
+                default => '#64748b'
+            };
             
             $tipoColor = $t->tur_tipo == 'General' ? '#10b981' : (in_array($t->tur_tipo, ['Prioritario', 'Prioritaria']) ? '#f59e0b' : '#3b82f6');
             
@@ -269,7 +278,15 @@ class CoordinadorController extends Controller
         $distribucionTipos = [
             'General' => Turno::whereDate('tur_hora_fecha', $hoy)->where('tur_tipo', 'General')->count(),
             'Prioritario' => Turno::whereDate('tur_hora_fecha', $hoy)->whereIn('tur_tipo', ['Prioritario', 'Prioritaria'])->count(),
-            'Víctimas' => Turno::whereDate('tur_hora_fecha', $hoy)->where('tur_tipo', 'Victimas')->count()
+            'Víctimas' => Turno::whereDate('tur_hora_fecha', $hoy)->where('tur_tipo', 'Victimas')->count(),
+            'Empresarios' => Turno::whereDate('tur_hora_fecha', $hoy)->where('tur_perfil', 'Empresario')->count()
+        ];
+
+        $distribucionEstados = [
+            'Espera' => Turno::whereDate('tur_hora_fecha', $hoy)->where('tur_estado', 'Espera')->count(),
+            'Atendiendo' => Turno::whereDate('tur_hora_fecha', $hoy)->where('tur_estado', 'Atendiendo')->count(),
+            'Finalizado' => Turno::whereDate('tur_hora_fecha', $hoy)->where('tur_estado', 'Finalizado')->count(),
+            'Ausente' => Turno::whereDate('tur_hora_fecha', $hoy)->where('tur_estado', 'Ausente')->count()
         ];
         
         $tiempoTotal = 0;
@@ -303,7 +320,7 @@ class CoordinadorController extends Controller
 
         $turnos = Turno::with(['solicitante.persona', 'atencion.asesor.persona'])->orderBy('tur_hora_fecha', 'desc')->paginate(15);
 
-        return view('coordinador.reportes', compact('distribucionTipos', 'metas', 'topTramites', 'feedback', 'turnos'));
+        return view('coordinador.reportes', compact('distribucionTipos', 'distribucionEstados', 'metas', 'topTramites', 'feedback', 'turnos'));
     }
 
     public function modulos()
@@ -415,7 +432,7 @@ class CoordinadorController extends Controller
         
         // Contar turnos en espera (donde no existe registro en la tabla atencion)
         $stats = Turno::whereDate('tur_hora_fecha', $hoy)
-            ->whereDoesntHave('atencion')
+            ->where('tur_estado', 'Espera')
             ->selectRaw('tur_tipo, count(*) as count')
             ->groupBy('tur_tipo')
             ->pluck('count', 'tur_tipo')

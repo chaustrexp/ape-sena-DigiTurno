@@ -231,9 +231,9 @@
             </div>
 
             <div class="flex items-center space-x-4 lg:space-x-6 text-sena-yellow/80 animate-pulse shrink-0">
-                <div class="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-sena-yellow"></div>
-                <span class="text-xs lg:text-xl 2xl:text-2xl font-black uppercase tracking-[0.5em]">Atención Inmediata</span>
-                <div class="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-sena-yellow"></div>
+                <div class="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-sena-yellow shadow-[0_0_15px_rgba(255,181,0,0.8)]"></div>
+                <span class="text-xs lg:text-xl 2xl:text-2xl font-black uppercase tracking-[0.5em] text-white">Atención Inmediata</span>
+                <div class="w-2 h-2 lg:w-3 lg:h-3 rounded-full bg-sena-yellow shadow-[0_0_15px_rgba(255,181,0,0.8)]"></div>
             </div>
         </div>
     </div>
@@ -287,11 +287,20 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
         .animate-fade-in {
-            animation: fadeIn 0.5s ease-out forwards;
+            animation: fadeIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes callAttention {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 6, 159, 0.4); }
+            70% { transform: scale(1.02); box-shadow: 0 0 0 20px rgba(16, 6, 159, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 6, 159, 0); }
+        }
+        .animate-call {
+            animation: callAttention 2s infinite;
         }
     </style>
 
@@ -501,7 +510,7 @@
             if (proximoDisplay) proximoDisplay.textContent = turno.tur_numero;
             const moduloFormatted = String(turno.modulo).padStart(2, '0');
             container.innerHTML = `
-                <div class="bg-emerald-50 rounded-[2.5rem] p-4 lg:p-6 flex items-center justify-between border-2 border-emerald-200 shadow-lg shadow-emerald-100 animate-pulse relative overflow-hidden">
+                <div class="bg-emerald-50 rounded-[2.5rem] p-4 lg:p-6 flex items-center justify-between border-2 border-emerald-200 shadow-lg shadow-emerald-100 animate-call relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-3">
                         <span class="bg-emerald-500 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Atendiendo</span>
                     </div>
