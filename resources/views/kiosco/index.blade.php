@@ -597,7 +597,13 @@ function updateDocDisplay() {
     d.style.color = docNumber ? "#1e293b" : "#cbd5e1";
     document.getElementById('hidden_pers_doc').value = docNumber;
 }
-function validateDoc() { if (docNumber.length > 5) nextStep(5); else alert("Documento muy corto"); }
+function validateDoc() { 
+    if (docNumber.length >= 5) {
+        nextStep(5); 
+    } else {
+        showKioscoModal('DOCUMENTO CORTO', 'VERIFICACIÓN', 'El número de documento ingresado es demasiado corto. Por favor verifíquelo.', 'fa-id-card');
+    }
+}
 function pressPhone(n) { if (phoneNumber.length < 10) phoneNumber += n; updatePhoneDisplay(); }
 function backspacePhone() { phoneNumber = phoneNumber.slice(0,-1); updatePhoneDisplay(); }
 function updatePhoneDisplay() {
@@ -610,7 +616,7 @@ function validatePhone() {
     if (phoneNumber.length === 10) {
         nextStep(6);
     } else {
-        alert("Por favor, ingrese un número de teléfono válido de 10 dígitos.");
+        showKioscoModal('NÚMERO INCOMPLETO', 'DATO REQUERIDO', 'Por favor, ingrese su número de teléfono de 10 dígitos para poder continuar con la solicitud de su turno.', 'fa-phone-slash');
     }
 }
 function selectChannel(method, btn) {
@@ -682,10 +688,17 @@ function validateForm() {
     const method = document.getElementById('hidden_receive_method').value;
     if (method === 'Email') {
         const emailVal = document.getElementById('email-input').value.trim();
-        if (!emailVal || !emailVal.includes('@')) { alert("Por favor ingrese un correo electrónico válido."); return false; }
+        if (!emailVal || !emailVal.includes('@')) { 
+            showKioscoModal('CORREO INVÁLIDO', 'ERROR DE FORMATO', 'Por favor ingrese un correo electrónico válido para recibir su turno.', 'fa-envelope-circle-check');
+            return false; 
+        }
         document.getElementById('hidden_pers_email').value = emailVal;
     }
-    if (!docNumber || docNumber.length < 5) { alert("Por favor ingrese un número de documento válido."); nextStep(4); return false; }
+    if (!docNumber || docNumber.length < 5) { 
+        showKioscoModal('IDENTIDAD REQUERIDA', 'ATENCIÓN', 'Debe ingresar un número de documento válido para generar su turno.', 'fa-fingerprint');
+        nextStep(4); 
+        return false; 
+    }
     return true;
 }
 window.onload = () => { updateDocDisplay(); updatePhoneDisplay(); };
