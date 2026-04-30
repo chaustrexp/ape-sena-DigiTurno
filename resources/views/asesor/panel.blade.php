@@ -30,9 +30,13 @@
                 <div class="mt-16 relative z-10 flex justify-between items-end">
                     <div>
                         <p class="text-[10px] font-black text-white/80 uppercase tracking-[0.2em] mb-2">Ciudadano</p>
-                        <h3 class="text-3xl font-black text-white leading-tight">{{ $atencion->turno->solicitante->persona->pers_nombres }} {{ $atencion->turno->solicitante->persona->pers_apellidos }}</h3>
+                        <h3 class="text-3xl font-black text-white leading-tight">
+                            {{ $atencion->turno->solicitante?->persona?->pers_nombres ?? 'Ciudadano' }} 
+                            {{ $atencion->turno->solicitante?->persona?->pers_apellidos ?? 'No Registrado' }}
+                        </h3>
                         <p class="text-sm font-bold text-white/70 mt-1">
-                            {{ $atencion->turno->solicitante->persona->pers_tipodoc }} {{ $atencion->turno->solicitante->persona->pers_doc }}
+                            {{ $atencion->turno->solicitante?->persona?->pers_tipodoc ?? 'DOC' }} 
+                            {{ $atencion->turno->solicitante?->persona?->pers_doc ?? '—' }}
                         </p>
                     </div>
                     <button onclick="toggleEditModal(true)" class="bg-white/10 hover:bg-white/20 p-4 rounded-2xl border border-white/20 transition-all group active:scale-95" title="Editar datos del ciudadano">
@@ -68,10 +72,10 @@
                     <h3 class="text-2xl font-black text-gray-900 italic">Esperando Ciudadano...</h3>
                     <p class="text-sm font-medium text-gray-400 mt-2">Actualmente no tienes ninguna atención activa.</p>
                 </div>
-                <form action="{{ route('asesor.llamar') }}" method="POST" class="w-full max-w-xs">
+                <form id="autoCallForm" action="{{ route('asesor.llamar') }}" method="POST" class="w-full max-w-xs">
                     @csrf
                     <input type="hidden" name="ase_id" value="{{ $asesor->ase_id }}">
-                    <button type="submit" class="w-full bg-sena-blue text-white font-black py-6 rounded-[2rem] shadow-xl hover:bg-sena-blue/90 hover:-translate-y-1 transition-all active:scale-95 uppercase tracking-widest text-xs">
+                    <button type="submit" id="autoCallBtn" class="w-full bg-sena-blue text-white font-black py-6 rounded-[2rem] shadow-xl hover:bg-sena-blue/90 hover:-translate-y-1 transition-all active:scale-95 uppercase tracking-widest text-xs">
                         Llamar Siguiente Turno
                     </button>
                 </form>
@@ -141,7 +145,12 @@
 
                     <div class="space-y-4 bg-gray-50 p-6 rounded-3xl border border-gray-100/50">
                         <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Hora de llegada</p>
-                        <h5 class="text-lg font-black text-gray-800">{{ \Carbon\Carbon::parse($atencion->turno->tur_hora_fecha ?? now())->format('h:i A') }}</h5>
+                        <h5 class="text-lg font-black text-gray-800 flex items-center space-x-3">
+                            <span>{{ \Carbon\Carbon::parse($atencion->turno->tur_hora_fecha ?? now())->format('h:i A') }}</span>
+                            <span id="arrival-relative-time" class="text-[9px] font-black bg-sena-blue/10 text-sena-blue px-3 py-1 rounded-full uppercase tracking-tighter" data-arrival="{{ \Carbon\Carbon::parse($atencion->turno->tur_hora_fecha ?? now())->timestamp }}">
+                                Calculando...
+                            </span>
+                        </h5>
                     </div>
 
                     @if($atencion)
@@ -305,37 +314,37 @@
                         </button>
                     </div>
 
-                    <form action="{{ route('asesor.persona.update', $atencion->turno->solicitante->persona->pers_doc) }}" method="POST" class="space-y-6">
+                    <form action="{{ route('asesor.persona.update', $atencion->turno->solicitante?->persona?->pers_doc ?? '0') }}" method="POST" class="space-y-6">
                         @csrf
                         <div class="grid grid-cols-2 gap-5">
                             <div class="space-y-1.5">
                                 <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Tipo Doc</label>
                                 <select name="pers_tipodoc" class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-bold text-gray-700 focus:ring-2 focus:ring-sena-blue/20 focus:border-sena-blue outline-none transition-all">
-                                    <option value="CC" {{ $atencion->turno->solicitante->persona->pers_tipodoc == 'CC' ? 'selected' : '' }}>Cédula de Ciudadanía</option>
-                                    <option value="TI" {{ $atencion->turno->solicitante->persona->pers_tipodoc == 'TI' ? 'selected' : '' }}>Tarjeta de Identidad</option>
-                                    <option value="CE" {{ $atencion->turno->solicitante->persona->pers_tipodoc == 'CE' ? 'selected' : '' }}>Cédula de Extranjería</option>
-                                    <option value="PEP" {{ $atencion->turno->solicitante->persona->pers_tipodoc == 'PEP' ? 'selected' : '' }}>PEP</option>
+                                    <option value="CC" {{ ($atencion->turno->solicitante?->persona?->pers_tipodoc ?? '') == 'CC' ? 'selected' : '' }}>Cédula de Ciudadanía</option>
+                                    <option value="TI" {{ ($atencion->turno->solicitante?->persona?->pers_tipodoc ?? '') == 'TI' ? 'selected' : '' }}>Tarjeta de Identidad</option>
+                                    <option value="CE" {{ ($atencion->turno->solicitante?->persona?->pers_tipodoc ?? '') == 'CE' ? 'selected' : '' }}>Cédula de Extranjería</option>
+                                    <option value="PEP" {{ ($atencion->turno->solicitante?->persona?->pers_tipodoc ?? '') == 'PEP' ? 'selected' : '' }}>PEP</option>
                                 </select>
                             </div>
                             <div class="space-y-1.5 opacity-60">
                                 <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Documento</label>
-                                <input type="text" value="{{ $atencion->turno->solicitante->persona->pers_doc }}" disabled class="w-full bg-gray-100 border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-bold text-gray-500 cursor-not-allowed">
+                                <input type="text" value="{{ $atencion->turno->solicitante?->persona?->pers_doc ?? '—' }}" disabled class="w-full bg-gray-100 border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-bold text-gray-500 cursor-not-allowed">
                             </div>
                         </div>
 
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nombres</label>
-                            <input type="text" name="pers_nombres" value="{{ $atencion->turno->solicitante->persona->pers_nombres }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-bold text-gray-700 focus:ring-2 focus:ring-sena-blue/20 focus:border-sena-blue outline-none transition-all">
+                            <input type="text" name="pers_nombres" value="{{ $atencion->turno->solicitante?->persona?->pers_nombres ?? '' }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-bold text-gray-700 focus:ring-2 focus:ring-sena-blue/20 focus:border-sena-blue outline-none transition-all">
                         </div>
 
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Apellidos</label>
-                            <input type="text" name="pers_apellidos" value="{{ $atencion->turno->solicitante->persona->pers_apellidos }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-bold text-gray-700 focus:ring-2 focus:ring-sena-blue/20 focus:border-sena-blue outline-none transition-all">
+                            <input type="text" name="pers_apellidos" value="{{ $atencion->turno->solicitante?->persona?->pers_apellidos ?? '' }}" required class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-bold text-gray-700 focus:ring-2 focus:ring-sena-blue/20 focus:border-sena-blue outline-none transition-all">
                         </div>
 
                         <div class="space-y-1.5">
                             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Teléfono / Celular</label>
-                            <input type="text" name="pers_telefono" value="{{ $atencion->turno->solicitante->persona->pers_telefono }}" class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-bold text-gray-700 focus:ring-2 focus:ring-sena-blue/20 focus:border-sena-blue outline-none transition-all" placeholder="Ej: 3001234567">
+                            <input type="text" name="pers_telefono" value="{{ $atencion->turno->solicitante?->persona?->pers_telefono ?? '' }}" class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-bold text-gray-700 focus:ring-2 focus:ring-sena-blue/20 focus:border-sena-blue outline-none transition-all" placeholder="Ej: 3001234567">
                         </div>
 
                         <div class="flex space-x-4 pt-4">
@@ -396,13 +405,37 @@
             mEl.textContent = m;
             sEl.textContent = s;
         }, 1000);
+    }
 
-        const btnResume = document.getElementById('btn-resume-work');
-        if(btnResume) {
-            btnResume.addEventListener('click', () => {
-                localStorage.removeItem('ape_pause_start');
-            });
+    // Actualización de tiempo relativo de llegada
+    const arrivalElement = document.getElementById('arrival-relative-time');
+    if (arrivalElement) {
+        const arrivalTimestamp = parseInt(arrivalElement.dataset.arrival);
+        
+        function updateArrivalRelativeTime() {
+            const now = Math.floor(Date.now() / 1000);
+            const diffInSeconds = now - arrivalTimestamp;
+            const diffInMinutes = Math.floor(diffInSeconds / 60);
+            
+            if (diffInMinutes < 1) {
+                arrivalElement.textContent = 'Hace un momento';
+            } else if (diffInMinutes < 60) {
+                arrivalElement.textContent = `Hace ${diffInMinutes} min`;
+            } else {
+                const hours = Math.floor(diffInMinutes / 60);
+                arrivalElement.textContent = `Hace ${hours}h ${diffInMinutes % 60}min`;
+            }
         }
+        
+        updateArrivalRelativeTime();
+        setInterval(updateArrivalRelativeTime, 60000); // Actualizar cada minuto
+    }
+
+    const btnResume = document.getElementById('btn-resume-work');
+    if(btnResume) {
+        btnResume.addEventListener('click', () => {
+            localStorage.removeItem('ape_pause_start');
+        });
     }
 
     function toggleEditModal(show) {
@@ -459,5 +492,23 @@
             window.location.reload();
         }
     }, 20000); // 20 segundos
+
+    // AUTO-LLAMADO AUTOMÁTICO (Nueva Función Solicitada)
+    // Si no hay atención activa Y hay turnos en espera Y no estamos en pausa
+    @if(!$atencion && count($turnosEnEspera) > 0 && !$isPause)
+        const autoForm = document.getElementById('autoCallForm');
+        const autoBtn = document.getElementById('autoCallBtn');
+        if (autoForm && autoBtn) {
+            let timer = 3;
+            const autoInterval = setInterval(() => {
+                autoBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> LLAMANDO EN ${timer}...`;
+                timer--;
+                if (timer < 0) {
+                    clearInterval(autoInterval);
+                    autoForm.submit();
+                }
+            }, 1000);
+        }
+    @endif
 </script>
 @endsection

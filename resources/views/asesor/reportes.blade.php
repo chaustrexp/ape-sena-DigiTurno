@@ -13,11 +13,14 @@
             <i class="fa-solid fa-file-pdf"></i>
             <span>Descargar PDF Pro</span>
         </button>
-        <select class="bg-white px-6 py-3 rounded-2xl shadow-sm border border-gray-100 text-xs font-black text-gray-700 uppercase tracking-widest outline-none">
-            <option>Últimos 7 días</option>
-            <option>Este Mes</option>
-            <option>Año Actual</option>
-        </select>
+        <form action="{{ route('asesor.reportes') }}" method="GET" id="filterForm">
+            <select name="periodo" onchange="document.getElementById('filterForm').submit()" class="bg-white px-6 py-3 rounded-2xl shadow-sm border border-gray-100 text-xs font-black text-gray-700 uppercase tracking-widest outline-none cursor-pointer hover:bg-gray-50 transition-all">
+                <option value="today" {{ ($periodo ?? '') == 'today' ? 'selected' : '' }}>Hoy</option>
+                <option value="7d" {{ ($periodo ?? '') == '7d' ? 'selected' : '' }}>Últimos 7 días</option>
+                <option value="month" {{ ($periodo ?? '') == 'month' ? 'selected' : '' }}>Este Mes</option>
+                <option value="year" {{ ($periodo ?? '') == 'year' ? 'selected' : '' }}>Año Actual</option>
+            </select>
+        </form>
     </div>
 </div>
 

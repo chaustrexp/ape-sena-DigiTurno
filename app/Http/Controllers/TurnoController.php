@@ -53,18 +53,26 @@ class TurnoController extends Controller
                 'sol_tipo' => $request->tur_perfil,
             ]);
 
-            // ── Regla de Negocio: Un documento NO puede tener DOS turnos activos simultáneamente ──
-            $hasActive = Turno::where('SOLICITANTE_sol_id', $solicitante->sol_id)
-                ->whereDate('tur_hora_fecha', now()->toDateString())
-                ->where(function ($q) {
-                    $q->whereDoesntHave('atencion')            // En espera
-                      ->orWhereHas('atencion', function ($q2) {
-                          $q2->whereNull('atnc_hora_fin');     // En atención activa
-                      });
-                })->exists();
+            // ── Regla de Negocio: Límite de un turno por persona según el periodo (día, semana, mes) ──
+            $periodoReinicio = env('PERIODO_REINICIO_TURNOS', 'day'); // Valores: 'day', 'week', 'month'
+            
+            $fechaInicio = match($periodoReinicio) {
+                'month' => now()->startOfMonth(),
+                'week'  => now()->startOfWeek(),
+                default => now()->startOfDay(),
+            };
 
-            if ($hasActive) {
-                return back()->with('error', 'Ya tienes un turno activo para hoy. Por favor, espera a ser atendido.');
+            $turnosExistentes = Turno::where('SOLICITANTE_sol_id', $solicitante->sol_id)
+                ->where('tur_hora_fecha', '>=', $fechaInicio)
+                ->exists();
+
+            if ($turnosExistentes) {
+                $mensajeError = match($periodoReinicio) {
+                    'month' => 'Estos datos ya existen. Solo puedes solicitar un (1) turno por mes.',
+                    'week'  => 'Estos datos ya existen. Solo puedes solicitar un (1) turno por semana.',
+                    default => 'Estos datos ya existen. Solo puedes solicitar un (1) turno por día.'
+                };
+                return back()->with('error', $mensajeError);
             }
 
             // ── Perfilamiento: Prioridad Víctima > Empresario > Prioritario > General ──

@@ -11,10 +11,33 @@
         tailwind.config = {theme: {extend: {fontFamily: { sans: ['Inter', 'sans-serif'], poppins: ['Poppins', 'sans-serif']}, colors: {sena: { 50: '#F0F5FF', 100: '#C6D4FF', 500: '#10069F', 600: '#000080', orange: '#FF671F', yellow: '#FFB500'}}}}}
     </script>
     <style>
+        :root {
+            --sena-navy: #000080;
+            --sena-green: #39A900;
+        }
+        .bg-sena-navy { background-color: var(--sena-navy); }
+        .text-sena-navy { color: var(--sena-navy); }
+        .bg-sena-green { background-color: var(--sena-green); }
+        .text-sena-green { color: var(--sena-green); }
+        .border-sena-green { border-color: var(--sena-green); }
+
         body {
-            background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("{{ asset('images/fondo.jpg') }}");
-            background-size: cover; background-position: center; background-attachment: fixed;
-            overflow-x: hidden; overflow-y: auto;
+            background-color: #0f172a;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+        .video-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none; overflow: hidden;
+        }
+        .video-container iframe {
+            width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        .video-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,128,0.3), rgba(0,0,0,0.7));
+            backdrop-filter: blur(2px);
         }
         .main-card {
             background-color: rgba(255,255,255,0.85);
@@ -29,9 +52,21 @@
         .progress-dot.active { @apply bg-sena-500 w-8; }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #10069F; border-radius: 10px; }
+        .main-card { overscroll-behavior: contain; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center relative p-2 md:p-6 bg-fixed bg-cover">
+<body class="min-h-screen flex items-center justify-center relative p-2 md:p-6 antialiased">
+
+<!-- YouTube Video Background -->
+<div class="video-container">
+    <iframe 
+        src="https://www.youtube.com/embed/_MZRAUSIZtQ?autoplay=1&mute=1&loop=1&playlist=_MZRAUSIZtQ&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1" 
+        frameborder="0" 
+        allow="autoplay; encrypted-media" 
+        allowfullscreen>
+    </iframe>
+    <div class="video-overlay"></div>
+</div>
 
 <!-- Alerts -->
 <div class="fixed top-8 left-1/2 transform -translate-x-1/2 z-[100] w-full max-w-2xl px-4 space-y-4">
@@ -49,65 +84,65 @@
     @endif
 </div>
 
-<div class="w-full max-w-4xl mx-auto main-card rounded-[2.5rem] flex flex-col items-center relative shadow-2xl overflow-y-auto overflow-x-hidden" style="max-height: 92vh;">
+<div class="w-full max-w-5xl mx-auto main-card rounded-[2.5rem] flex flex-col relative shadow-2xl overflow-hidden bg-white/90 backdrop-blur-xl border border-white/20" style="height: 90vh; max-height: 850px;">
 
-    <!-- Header -->
-    <header class="w-full px-8 py-5 flex flex-col items-center justify-center space-y-3 z-10 shrink-0">
-        <div class="flex flex-col items-center space-y-2">
-            <div class="w-10 h-10 bg-sena-500 rounded-xl flex items-center justify-center shadow-lg">
-                <i class="fa-solid fa-landmark text-white text-lg"></i>
-            </div>
-            <h1 class="text-xl font-poppins font-black text-sena-500 tracking-tight leading-none">SENA Digital Turnos</h1>
+    <!-- Top Bar (Fixed) -->
+    <header class="w-full px-8 py-4 flex items-center justify-between shrink-0 bg-white/50 border-b border-slate-100 z-30">
+        <div class="flex items-center space-x-3">
+            <img src="{{ asset('images/logo.jpeg') }}" class="w-8 h-8 object-contain rounded" alt="SENA Logo">
+            <h1 class="text-xl font-poppins font-black text-sena-navy tracking-tight uppercase">SENA Digital</h1>
         </div>
-        <div class="flex items-center space-x-8 text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">
-            <div onclick="toggleLanguage(); playKey();" class="flex items-center space-x-2 cursor-pointer hover:text-sena-500 transition-colors">
-                <i class="fa-solid fa-globe text-xs"></i><span id="langLabel">ES / EN</span>
+        <div class="flex items-center space-x-4">
+            <div class="hidden sm:flex items-center space-x-2 bg-slate-50 px-3 py-1 rounded-full border border-slate-200">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Activo</span>
             </div>
-            <div class="w-px h-3 bg-gray-200"></div>
-            <div onclick="showHelp(); playKey();" class="flex items-center space-x-2 cursor-pointer hover:text-sena-500 transition-colors">
-                <i class="fa-solid fa-circle-question text-xs"></i><span id="helpLabel">AYUDA</span>
+            <div class="flex items-center space-x-2 text-sena-navy">
+                <i class="fa-solid fa-clock text-xs"></i>
+                <span id="kiosco-clock" class="text-xs font-black tracking-widest">00:00 AM</span>
             </div>
         </div>
     </header>
 
-    <!-- Formulario -->
-    <form id="kioskForm" action="{{ route('turnos.store') }}" method="POST" onsubmit="return validateForm();" class="flex-1 w-full flex flex-col items-center justify-center min-h-0">
+    <!-- Content Area (Scrollable) -->
+    <form id="kioskForm" action="{{ route('turnos.store') }}" method="POST" onsubmit="return validateForm();" class="flex-1 w-full overflow-y-auto overflow-x-hidden pt-4 pb-10 custom-scrollbar">
         @csrf
 
         <!-- STEP 1: BIENVENIDA -->
-        <div id="step1" class="step-content active w-full flex-col items-center justify-center text-center p-10 space-y-8">
-            <div class="w-24 h-24 bg-white rounded-[1.5rem] shadow-xl flex items-center justify-center p-4 relative mx-auto">
-                <div class="absolute -inset-2 bg-sena-500/10 blur-xl rounded-[2rem] -z-10 animate-pulse"></div>
-                <img src="{{ asset('images/logoSena.png') }}" class="w-full h-auto" alt="Logo SENA">
+        <div id="step1" class="step-content active w-full flex-col items-center justify-center text-center px-6 md:px-10 py-4 md:py-8 space-y-6 md:space-y-10">
+            <div class="space-y-4 max-w-3xl">
+                <h1 id="welcomeTitle" class="text-3xl md:text-5xl lg:text-6xl font-black text-sena-navy tracking-tight leading-tight uppercase">Bienvenido al <br>Centro de Atención</h1>
+                <p id="welcomeDescription" class="text-sm md:text-base lg:text-lg font-medium text-slate-500 max-w-2xl mx-auto">Por favor toca el botón para iniciar tu proceso de asignación de turno.</p>
             </div>
-            <div class="space-y-3">
-                <h1 id="welcomeTitle" class="text-5xl font-black text-slate-800 tracking-tighter leading-tight uppercase">Bienvenido al <br><span class="text-sena-500">Centro de Atención</span></h1>
-                <p id="welcomeDescription" class="text-sm font-bold text-slate-400 uppercase tracking-[0.3em]">Por favor toca el botón para iniciar tu proceso</p>
-            </div>
-            <button type="button" onclick="nextStep(2); playKey();" class="group relative px-16 py-7 bg-gray-900 rounded-[2rem] overflow-hidden hover:scale-105 active:scale-95 transition-all duration-500 shadow-2xl shadow-gray-900/40 mx-auto">
-                <div class="absolute inset-0 bg-gradient-to-r from-sena-500 to-sena-orange opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <span id="startButton" class="relative text-white font-black text-xl uppercase tracking-[0.3em]">Empezar Aquí</span>
+
+            <button type="button" onclick="nextStep(2); playKey();" class="group relative px-10 md:px-14 py-5 md:py-7 bg-sena-navy rounded-2xl overflow-hidden hover:scale-105 active:scale-95 transition-all duration-500 shadow-xl mx-auto flex items-center gap-4">
+                <div class="absolute inset-0 bg-gradient-to-r from-sena-navy to-slate-800 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <i class="fa-solid fa-hand-pointer text-white text-2xl relative z-10"></i>
+                <span id="startButton" class="relative text-white font-black text-xl md:text-2xl uppercase tracking-[0.2em]">Empezar Aquí</span>
             </button>
-            <div class="flex flex-wrap items-center justify-center gap-4">
-                <div class="flex items-center space-x-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-xl border border-white/50 shadow-sm">
-                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    <span class="text-[9px] font-black text-slate-600 uppercase tracking-widest">Sistema Activo</span>
+
+            <!-- Feature Cards (Optimized for Height) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-5xl pt-4">
+                <div class="bg-white/50 backdrop-blur-md p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center space-y-2">
+                    <div class="w-10 h-10 bg-sena-green/10 text-sena-green rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-gauge-high"></i></div>
+                    <h4 class="text-base font-black text-sena-navy">Atención Ágil</h4>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none">Mínima espera</p>
                 </div>
-                <div class="flex items-center space-x-2 bg-white/60 backdrop-blur-md px-4 py-2 rounded-xl border border-white/50 shadow-sm">
-                    <i class="fa-solid fa-clock text-sena-500 text-xs"></i>
-                    <span id="kiosco-clock" class="text-[9px] font-black text-slate-600 uppercase tracking-widest">00:00 AM</span>
+                <div class="bg-white/50 backdrop-blur-md p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center space-y-2">
+                    <div class="w-10 h-10 bg-sena-green/10 text-sena-green rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-list-check"></i></div>
+                    <h4 class="text-base font-black text-sena-navy">Trámites Claros</h4>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none">Transparencia</p>
                 </div>
-            </div>
-            <!-- Accesos rápidos -->
-            <div class="flex items-center justify-center gap-3 flex-wrap pt-2">
-                <a href="{{ route('pantalla.index') }}" class="flex items-center gap-2 px-4 py-2 bg-white/60 hover:bg-white text-slate-600 text-xs font-bold rounded-xl border border-white/50 transition-all"><i class="fa-solid fa-display text-sena-500"></i> Pantalla</a>
-                <a href="{{ route('asesor.login') }}" class="flex items-center gap-2 px-4 py-2 bg-white/60 hover:bg-white text-slate-600 text-xs font-bold rounded-xl border border-white/50 transition-all"><i class="fa-solid fa-headset text-sena-500"></i> Asesor</a>
-                <a href="{{ route('coordinador.login') }}" class="flex items-center gap-2 px-4 py-2 bg-white/60 hover:bg-white text-slate-600 text-xs font-bold rounded-xl border border-white/50 transition-all"><i class="fa-solid fa-user-tie text-sena-500"></i> Coordinador</a>
+                <div class="bg-white/50 backdrop-blur-md p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center space-y-2">
+                    <div class="w-10 h-10 bg-sena-green/10 text-sena-green rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-hands-holding-child"></i></div>
+                    <h4 class="text-base font-black text-sena-navy">Apoyo Humano</h4>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none">Personalizado</p>
+                </div>
             </div>
         </div>
 
         <!-- STEP 2: TRATAMIENTO DE DATOS -->
-        <div id="step2" class="step-content w-full flex-col items-center justify-center p-10 md:p-14 space-y-8">
+        <div id="step2" class="step-content w-full flex-col items-center justify-start p-6 md:p-10 space-y-6">
             <div class="text-center space-y-3">
                 <h3 class="text-5xl font-poppins font-black text-[#1e293b] tracking-tighter leading-none">Tratamiento de Datos</h3>
                 <p class="text-base text-slate-500 font-medium">Para brindarte un servicio personalizado, requerimos procesar tu información institucional.</p>
@@ -115,7 +150,7 @@
                     <span class="text-[10px] font-black text-sena-500 uppercase tracking-[0.2em]">Aceptación de Términos Institucionales</span>
                 </div>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-5 w-full max-w-4xl">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 w-full max-w-4xl">
                 @php $newTerms = [
                     ['icon'=>'fa-shield-heart',    'title'=>'Privacidad',        'desc'=>'Datos protegidos bajo estándares internacionales.',    'color'=>'bg-sena-50 text-sena-500'],
                     ['icon'=>'fa-user-check',       'title'=>'Seguridad',         'desc'=>'Protocolos robustos contra acceso no autorizado.',     'color'=>'bg-sena-50 text-sena-500'],
@@ -123,20 +158,20 @@
                     ['icon'=>'fa-fingerprint',      'title'=>'Identidad Digital', 'desc'=>'Perfil digital para agilizar futuros accesos.',         'color'=>'bg-sena-50 text-sena-500'],
                 ]; @endphp
                 @foreach($newTerms as $t)
-                <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col items-center text-center space-y-3">
-                    <div class="w-12 h-12 {{ $t['color'] }} rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid {{ $t['icon'] }}"></i></div>
-                    <h4 class="text-base font-black text-slate-800">{{ $t['title'] }}</h4>
-                    <p class="text-[11px] text-slate-400 font-medium leading-relaxed">{{ $t['desc'] }}</p>
+                <div class="bg-white p-4 rounded-[1.5rem] border border-slate-100 shadow-sm flex flex-col items-center text-center space-y-2 transition-all hover:shadow-md">
+                    <div class="w-10 h-10 {{ $t['color'] }} rounded-xl flex items-center justify-center text-lg"><i class="fa-solid {{ $t['icon'] }}"></i></div>
+                    <h4 class="text-[13px] font-black text-slate-800">{{ $t['title'] }}</h4>
+                    <p class="text-[9px] text-slate-400 font-bold leading-tight uppercase tracking-tight">{{ $t['desc'] }}</p>
                 </div>
                 @endforeach
             </div>
-            <div class="w-full max-w-3xl bg-white border-2 border-gray-100 rounded-[2.5rem] p-8 shadow-sm">
-                <label class="flex items-center gap-6 cursor-pointer group" for="termsCheck">
+            <div class="w-full max-w-2xl bg-white border border-slate-100 rounded-3xl p-5 shadow-sm">
+                <label class="flex items-center gap-4 cursor-pointer group" for="termsCheck">
                     <div class="relative shrink-0">
-                        <input type="checkbox" id="termsCheck" onchange="toggleBtn(this)" class="peer appearance-none w-14 h-14 rounded-2xl bg-gray-100 border-2 border-gray-200 checked:bg-sena-500 checked:border-sena-500 transition-all cursor-pointer">
-                        <i class="fa-solid fa-check absolute inset-0 flex items-center justify-center text-white text-2xl scale-0 peer-checked:scale-100 transition-transform pointer-events-none"></i>
+                        <input type="checkbox" id="termsCheck" onchange="toggleBtn(this)" class="peer appearance-none w-10 h-10 rounded-xl bg-slate-50 border-2 border-slate-200 checked:bg-sena-500 checked:border-sena-500 transition-all cursor-pointer">
+                        <i class="fa-solid fa-check absolute inset-0 flex items-center justify-center text-white text-lg scale-0 peer-checked:scale-100 transition-transform pointer-events-none"></i>
                     </div>
-                    <span class="text-xl font-black text-slate-700 leading-snug">Autorizo el tratamiento de mis datos personales según las políticas del SENA.</span>
+                    <span class="text-base font-black text-slate-700 leading-tight">Autorizo el tratamiento de mis datos personales según las políticas del SENA.</span>
                 </label>
             </div>
             <div class="flex gap-4 w-full max-w-3xl">
@@ -148,7 +183,7 @@
         </div>
 
         <!-- STEP 3: PERFIL DE ATENCIÓN -->
-        <div id="step3" class="step-content w-full flex-col items-center justify-center p-6 md:p-8 space-y-6">
+        <div id="step3" class="step-content w-full flex-col items-center justify-start p-6 md:p-10 space-y-6">
             <div class="text-center space-y-2">
                 <h2 class="text-3xl font-poppins font-black text-[#1e293b] tracking-tight leading-tight">¿Cuál es su <span class="text-sena-500">categoría</span> de usuario?</h2>
                 <p class="text-sm font-medium text-slate-500">Seleccione la opción que mejor describa su condición.</p>
@@ -175,7 +210,7 @@
         </div>
 
         <!-- STEP 3.5: SERVICIO Y TIPO DE ATENCIÓN -->
-        <div id="step3_5" class="step-content w-full flex-col items-center justify-center p-8 md:p-14 lg:p-16 space-y-12">
+        <div id="step3_5" class="step-content w-full flex-col items-center justify-start p-6 md:p-10 space-y-8">
             <div class="text-center space-y-4 max-w-4xl mx-auto">
                 <h2 class="text-5xl font-poppins font-black text-[#1e293b] tracking-tighter leading-none">DETALLES DE LA <span class="text-sena-500">VISITA</span></h2>
             </div>
@@ -209,7 +244,7 @@
         </div>
 
         <!-- STEP 4: IDENTIDAD -->
-        <div id="step4" class="step-content w-full flex-col items-center justify-center p-6 md:p-10 space-y-6">
+        <div id="step4" class="step-content w-full flex-col items-center justify-start p-6 md:p-10 space-y-5">
             <div class="text-center space-y-2">
                 <h3 class="text-5xl font-poppins font-black text-[#1e293b] tracking-tighter leading-none">Ingrese su <span class="text-sena-500">Documento</span></h3>
                 <p class="text-base text-slate-500 font-medium">Seleccione el tipo e ingrese su número de identificación.</p>
@@ -223,13 +258,13 @@
                 <span id="docDisplay" class="text-6xl font-black text-[#1e293b] tracking-widest flex-1 text-center truncate">_ _ _ _ _ _ _ _ _ _</span>
                 <div class="w-1 h-12 bg-sena-500 animate-pulse rounded-full ml-2 shrink-0"></div>
             </div>
-            <div class="grid grid-cols-3 gap-3 w-full max-w-2xl">
+            <div class="grid grid-cols-3 gap-2 w-full max-w-2xl">
                 @for($i=1;$i<=9;$i++)
-                <button type="button" onclick="pressNum('{{ $i }}'); playKey();" class="h-20 bg-slate-50 hover:bg-white border-2 border-transparent hover:border-sena-100 rounded-2xl flex items-center justify-center text-3xl font-black text-slate-700 shadow-sm hover:shadow-md transition-all active:scale-95">{{ $i }}</button>
+                <button type="button" onclick="pressNum('{{ $i }}'); playKey();" class="h-14 bg-slate-50 hover:bg-white border-2 border-transparent hover:border-sena-100 rounded-xl flex items-center justify-center text-2xl font-black text-slate-700 shadow-sm hover:shadow-md transition-all active:scale-95">{{ $i }}</button>
                 @endfor
-                <button type="button" onclick="clearNum(); playKey();" class="h-20 bg-rose-50 hover:bg-rose-100 rounded-2xl flex items-center justify-center text-2xl text-rose-500 shadow-sm transition-all active:scale-95"><i class="fa-solid fa-trash-can"></i></button>
-                <button type="button" onclick="pressNum('0'); playKey();" class="h-20 bg-slate-50 hover:bg-white border-2 border-transparent hover:border-sena-100 rounded-2xl flex items-center justify-center text-3xl font-black text-slate-700 shadow-sm hover:shadow-md transition-all active:scale-95">0</button>
-                <button type="button" onclick="backspace(); playKey();" class="h-20 bg-slate-50 hover:bg-white rounded-2xl flex items-center justify-center text-2xl text-slate-400 shadow-sm transition-all active:scale-95"><i class="fa-solid fa-delete-left"></i></button>
+                <button type="button" onclick="clearNum(); playKey();" class="h-14 bg-rose-50 hover:bg-rose-100 rounded-xl flex items-center justify-center text-xl text-rose-500 shadow-sm transition-all active:scale-95"><i class="fa-solid fa-trash-can"></i></button>
+                <button type="button" onclick="pressNum('0'); playKey();" class="h-14 bg-slate-50 hover:bg-white border-2 border-transparent hover:border-sena-100 rounded-xl flex items-center justify-center text-2xl font-black text-slate-700 shadow-sm hover:shadow-md transition-all active:scale-95">0</button>
+                <button type="button" onclick="backspace(); playKey();" class="h-14 bg-slate-50 hover:bg-white rounded-xl flex items-center justify-center text-xl text-slate-400 shadow-sm transition-all active:scale-95"><i class="fa-solid fa-delete-left"></i></button>
             </div>
             <button type="button" onclick="validateDoc(); playKey();" class="w-full max-w-2xl py-6 bg-sena-orange text-white font-black text-xl rounded-[2rem] shadow-xl hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-4 uppercase tracking-widest">
                 <span>CONTINUAR</span><i class="fa-solid fa-arrow-right"></i>
@@ -237,7 +272,7 @@
         </div>
 
         <!-- STEP 5: CONTACTO -->
-        <div id="step5" class="step-content w-full flex-col items-center justify-center p-6 md:p-8 space-y-5">
+        <div id="step5" class="step-content w-full flex-col items-center justify-start p-6 md:p-10 space-y-5">
             <div class="text-center space-y-1">
                 <h3 class="text-3xl font-poppins font-black text-[#1e293b] tracking-tight">Datos de <span class="text-sena-500">Contacto</span></h3>
                 <p class="text-sm text-slate-500 font-medium uppercase tracking-wider">Ingrese su número celular para el turno</p>
@@ -261,7 +296,7 @@
         </div>
 
         <!-- STEP 6: CANAL DE ENTREGA -->
-        <div id="step6" class="step-content w-full flex-col items-center justify-center p-6 md:p-8 space-y-6">
+        <div id="step6" class="step-content w-full flex-col items-center justify-start p-6 md:p-10 space-y-6">
             <div class="text-center space-y-2">
                 <h3 class="text-3xl font-poppins font-black text-[#1e293b] tracking-tight">Canal de <span class="text-sena-500">Entrega</span></h3>
                 <p class="text-sm font-medium text-slate-500 uppercase tracking-widest">¿Por qué medio desea recibir su turno?</p>
@@ -326,14 +361,22 @@
         <input type="hidden" name="receive_method"     id="hidden_receive_method"     value="{{ old('receive_method','SMS') }}">
     </form>
 
-    <!-- Footer -->
-    <footer class="w-full px-8 py-4 flex flex-col items-center justify-center text-center space-y-2 border-t border-gray-100/50 shrink-0">
-        <div class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">© 2026 SENA. Todos los derechos reservados.</div>
-        <div class="flex items-center justify-center gap-6 text-[9px] font-black text-gray-300 uppercase tracking-[0.2em]">
-            <button type="button" onclick="showPortalInfo('Portal SENA'); playKey();" class="hover:text-sena-500 transition-colors">Portal SENA</button>
-            <button type="button" onclick="showPortalInfo('Transparencia'); playKey();" class="hover:text-sena-500 transition-colors">Transparencia</button>
-            <button type="button" onclick="showPortalInfo('Contacto'); playKey();" class="hover:text-sena-500 transition-colors">Contacto</button>
-            <button type="button" onclick="showPortalInfo('PQRS'); playKey();" class="hover:text-sena-500 transition-colors">PQRS</button>
+    <!-- Footer (Fixed Bottom) -->
+    <footer class="w-full px-6 py-4 flex flex-col sm:flex-row items-center justify-between border-t border-slate-100 shrink-0 bg-slate-50/80 backdrop-blur-sm z-30 space-y-3 sm:space-y-0">
+        <div class="flex items-center space-x-6">
+            <a href="{{ route('pantalla.index') }}" class="flex items-center space-x-2 text-[10px] font-black text-slate-400 hover:text-sena-navy transition-all uppercase tracking-widest">
+                <i class="fa-solid fa-display"></i><span class="hidden lg:inline">Pantalla</span>
+            </a>
+            <a href="{{ route('asesor.login') }}" class="flex items-center space-x-2 text-[10px] font-black text-slate-400 hover:text-sena-navy transition-all uppercase tracking-widest">
+                <i class="fa-solid fa-headset"></i><span class="hidden lg:inline">Asesor</span>
+            </a>
+            <a href="{{ route('coordinador.login') }}" class="flex items-center space-x-2 text-[10px] font-black text-slate-400 hover:text-sena-navy transition-all uppercase tracking-widest">
+                <i class="fa-solid fa-user-tie"></i><span class="hidden lg:inline">Coordinador</span>
+            </a>
+        </div>
+        <div class="flex items-center space-x-6">
+            <button type="button" onclick="showHelp(); playKey();" class="text-[10px] font-black text-slate-400 hover:text-sena-navy transition-all uppercase tracking-widest">Ayuda</button>
+            <button type="button" onclick="showEmergency(); playKey();" class="text-[10px] font-black text-rose-500 hover:text-rose-600 transition-all uppercase tracking-widest">Emergencia</button>
         </div>
     </footer>
 </div>
@@ -556,6 +599,19 @@ function showHelp() { const data = translations[currentLang]; showKioscoModal(da
 function showPortalInfo(name) {
     const body = `<div class="flex flex-col items-center space-y-6"><p class="text-slate-500">Puedes acceder al ${name} escaneando este código QR con tu dispositivo móvil.</p><div class="w-48 h-48 bg-slate-100 rounded-3xl flex items-center justify-center border-4 border-slate-50 shadow-inner"><i class="fa-solid fa-qrcode text-8xl text-slate-300"></i></div><div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">SENA DIGITAL • CONECTIVIDAD</div></div>`;
     showKioscoModal('ACCESO MÓVIL', name, body, 'fa-mobile-screen-button');
+}
+function showEmergency() {
+    const body = `<div class="flex flex-col items-center space-y-6 text-center">
+        <div class="w-24 h-24 bg-rose-50 rounded-full flex items-center justify-center animate-pulse">
+            <i class="fa-solid fa-phone-volume text-4xl text-rose-500"></i>
+        </div>
+        <p class="text-slate-600 font-medium">Si tiene una emergencia médica o de seguridad, por favor diríjase de inmediato a la recepción o comuníquese con el personal de seguridad más cercano.</p>
+        <div class="bg-rose-50 p-4 rounded-2xl border border-rose-100 w-full">
+            <p class="text-rose-600 font-black text-2xl tracking-tighter">EXT. 1234</p>
+            <p class="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Línea de Atención Inmediata</p>
+        </div>
+    </div>`;
+    showKioscoModal('BOTÓN DE EMERGENCIA', 'ASISTENCIA INMEDIATA', body, 'fa-triangle-exclamation');
 }
 function updateClock() { const el = document.getElementById('kiosco-clock'); if (!el) return; const now = new Date(); el.textContent = now.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', hour12:true }); }
 setInterval(updateClock, 1000); updateClock();

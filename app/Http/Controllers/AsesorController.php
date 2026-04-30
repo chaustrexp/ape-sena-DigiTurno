@@ -203,7 +203,8 @@ class AsesorController extends Controller
             $fileName = 'Registro_Actividad_Asesor_' . date('Y-m-d_H-i-s') . '.xls';
 
             // Calcular estadísticas para el resumen inferior
-            $totalAtendidos = $queryExport->whereNotNull('atnc_hora_fin')->count();
+            $totalAtendidos = $queryExport->whereNotNull('atnc_hora_fin')->filter(function($q) { return !$q->turno || $q->turno->tur_estado !== 'Ausente'; })->count();
+            $totalAusentes = $queryExport->whereNotNull('atnc_hora_fin')->filter(function($q) { return $q->turno && $q->turno->tur_estado === 'Ausente'; })->count();
             $totalEnProceso = $queryExport->whereNull('atnc_hora_fin')->count();
             $tiempoTotal = 0;
             $countConDuracion = 0;
@@ -259,9 +260,22 @@ class AsesorController extends Controller
                 $horaInicio = $ini->format('d/m/Y h:i A');
                 $horaFin = $finCarbon ? $finCarbon->format('d/m/Y h:i A') : '—';
                 $duracion = $finCarbon ? $ini->diffInMinutes($finCarbon) . ' min' : '—';
-                $estado = $finCarbon ? 'ATENDIDO' : 'EN PROCESO';
-                $estadoColor = $finCarbon ? '#166534' : '#1e40af';
-                $estadoBg = $finCarbon ? '#dcfce7' : '#dbeafe';
+                
+                $esAusente = $finCarbon && $atn->turno && $atn->turno->tur_estado === 'Ausente';
+                if ($esAusente) {
+                    $estado = 'AUSENTE';
+                    $estadoColor = '#e11d48'; // rose-600
+                    $estadoBg = '#fff1f2'; // rose-50
+                } elseif ($finCarbon) {
+                    $estado = 'ATENDIDO';
+                    $estadoColor = '#166534';
+                    $estadoBg = '#dcfce7';
+                } else {
+                    $estado = 'EN PROCESO';
+                    $estadoColor = '#1e40af';
+                    $estadoBg = '#dbeafe';
+                }
+                
                 $bgRow = ($row % 2 == 0) ? '#f9fafb' : '#ffffff';
 
                 $html .= '<tr style="height:34px; background-color:' . $bgRow . ';">';
@@ -282,9 +296,9 @@ class AsesorController extends Controller
             $html .= '<td colspan="2" style="border:2px solid #86efac; font-weight:bold; font-size:11px; color:#166534; text-align:center; vertical-align:middle;">RESUMEN</td>';
             $html .= '<td style="border:2px solid #86efac; font-weight:bold; font-size:11px; color:#15803d; text-align:center;">Total: ' . $queryExport->count() . '</td>';
             $html .= '<td style="border:2px solid #86efac; font-weight:bold; font-size:11px; color:#166534; text-align:center;">—</td>';
-            $html .= '<td style="border:2px solid #86efac; font-weight:bold; font-size:11px; color:#166534; text-align:center;">—</td>';
             $html .= '<td style="border:2px solid #86efac; font-weight:bold; font-size:11px; color:#166534; text-align:center;">Promedio: ' . $promedioDuracion . ' min</td>';
             $html .= '<td style="border:2px solid #86efac; font-weight:bold; font-size:11px; color:#166534; text-align:center;">Atendidos: ' . $totalAtendidos . '</td>';
+            $html .= '<td style="border:2px solid #86efac; font-weight:bold; font-size:11px; color:#e11d48; text-align:center;">Ausentes: ' . $totalAusentes . '</td>';
             $html .= '<td style="border:2px solid #86efac; font-weight:bold; font-size:11px; color:#1e40af; text-align:center;">En Proceso: ' . $totalEnProceso . '</td>';
             $html .= '</tr>';
 
@@ -311,7 +325,7 @@ class AsesorController extends Controller
         return view('asesor.tramites', compact('asesor'));
     }
 
-    public function reportes()
+    public function reportes(Request $request)
     {
         if (!$this->checkAuth())
             return redirect()->route('asesor.login');
@@ -324,12 +338,21 @@ class AsesorController extends Controller
             $asesor->modulo = '04';
         }
 
-        $hoy = now()->today();
+        $periodo = $request->get('periodo', 'today');
+        $query = Atencion::where('ASESOR_ase_id', $ase_id);
 
-        $atencionesHoy = Atencion::where('ASESOR_ase_id', $ase_id)
-            ->whereDate('atnc_hora_inicio', $hoy)
-            ->with('turno')
-            ->get();
+        if ($periodo == '7d') {
+            $query->where('atnc_hora_inicio', '>=', now()->subDays(7));
+        } elseif ($periodo == 'month') {
+            $query->whereMonth('atnc_hora_inicio', now()->month)
+                  ->whereYear('atnc_hora_inicio', now()->year);
+        } elseif ($periodo == 'year') {
+            $query->whereYear('atnc_hora_inicio', now()->year);
+        } else {
+            $query->whereDate('atnc_hora_inicio', now()->today());
+        }
+
+        $atencionesHoy = $query->with('turno')->get();
 
         $distribucionTipos = [
             'General' => $atencionesHoy->where('atnc_tipo', 'General')->count(),
@@ -377,7 +400,8 @@ class AsesorController extends Controller
             'metas',
             'topTramites',
             'feedback',
-            'turnos'
+            'turnos',
+            'periodo'
         ));
     }
 
@@ -428,10 +452,14 @@ class AsesorController extends Controller
     {
         if (!$this->checkAuth())
             return redirect()->route('asesor.login');
-        $atencion = Atencion::findOrFail($atnc_id);
+        $atencion = Atencion::with('turno')->findOrFail($atnc_id);
         $atencion->update([
             'atnc_hora_fin' => now()
         ]);
+        
+        if ($atencion->turno) {
+            $atencion->turno->update(['tur_estado' => 'Finalizado']);
+        }
 
         return redirect()->route('asesor.index')->with('success', 'Atención finalizada con éxito.');
     }
@@ -440,11 +468,14 @@ class AsesorController extends Controller
     {
         if (!$this->checkAuth())
             return redirect()->route('asesor.login');
-        $atencion = Atencion::findOrFail($atnc_id);
+        $atencion = Atencion::with('turno')->findOrFail($atnc_id);
         $atencion->update([
             'atnc_hora_fin' => now()
-            // No cambiamos el tipo aquí ya que el enum es restrictivo (General/Prioritaria/Victimas)
         ]);
+
+        if ($atencion->turno) {
+            $atencion->turno->update(['tur_estado' => 'Ausente']);
+        }
 
         return redirect()->route('asesor.index')->with('warning', 'Ciudadano marcado como ausente.');
     }

@@ -97,10 +97,17 @@
                     </td>
                     <td class="px-10 py-8 text-center">
                         @if($atn->atnc_hora_fin)
-                            <div class="inline-flex items-center space-x-2 bg-emerald-50 text-emerald-600 text-[10px] font-black px-5 py-2 rounded-xl border border-emerald-100 uppercase tracking-widest">
-                                <i class="fa-solid fa-check-double"></i>
-                                <span>Atendido</span>
-                            </div>
+                            @if($atn->turno && $atn->turno->tur_estado === 'Ausente')
+                                <div class="inline-flex items-center space-x-2 bg-rose-50 text-rose-600 text-[10px] font-black px-5 py-2 rounded-xl border border-rose-100 uppercase tracking-widest">
+                                    <i class="fa-solid fa-user-xmark"></i>
+                                    <span>Ausente</span>
+                                </div>
+                            @else
+                                <div class="inline-flex items-center space-x-2 bg-emerald-50 text-emerald-600 text-[10px] font-black px-5 py-2 rounded-xl border border-emerald-100 uppercase tracking-widest">
+                                    <i class="fa-solid fa-check-double"></i>
+                                    <span>Atendido</span>
+                                </div>
+                            @endif
                         @else
                             <div class="inline-flex items-center space-x-2 bg-blue-50 text-blue-600 text-[10px] font-black px-5 py-2 rounded-xl border border-blue-100 uppercase tracking-widest animate-pulse">
                                 <i class="fa-solid fa-spinner fa-spin"></i>

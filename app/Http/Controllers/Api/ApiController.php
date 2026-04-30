@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\TurnoRepository;
+use App\Models\Turno;
 use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
@@ -52,10 +53,19 @@ class ApiController extends Controller
             'tur_numero' => $atencionActual->turno->tur_numero,
             'modulo' => $atencionActual->ASESOR_ase_id,
             'ase_foto' => $atencionActual->asesor->ase_foto ? asset($atencionActual->asesor->ase_foto) : asset('images/foto de perfil.jpg'),
-            'atnc_id' => $atencionActual->atnc_id
+            'atnc_id' => $atencionActual->atnc_id,
+            'ciudadano' => $atencionActual->turno->solicitante?->persona?->pers_nombres ?? 'Ciudadano'
         ] : null;
 
-        $turnosEnEspera = $this->turnoRepo->getWaitingForPublicScreen()
+        $turnosEnEspera = Turno::whereDate('tur_hora_fecha', now()->toDateString())
+                                ->where('tur_estado', 'Espera')
+                                ->orderByRaw("CASE
+                                    WHEN tur_perfil = 'Victima'     THEN 1
+                                    WHEN tur_perfil = 'Empresario'  THEN 2
+                                    WHEN tur_perfil = 'Prioritario' THEN 3
+                                    ELSE 4 END ASC")
+                                ->orderBy('tur_id', 'asc')
+                                ->get()
                                 ->map(function($t) {
                                     return [
                                         'tur_id' => $t->tur_id,

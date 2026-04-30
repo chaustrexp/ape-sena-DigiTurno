@@ -59,9 +59,9 @@
         @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-[#F8FAFC] font-sans antialiased overflow-hidden min-h-screen">
+<body class="bg-[#F8FAFC] font-sans antialiased min-h-screen flex items-center justify-center p-4">
 
-    <!-- YouTube Video Background -->
+    <!-- YouTube Video Background (Immersive) -->
     <div class="video-container">
         <iframe 
             src="https://www.youtube.com/embed/_MZRAUSIZtQ?autoplay=1&mute=1&loop=1&playlist=_MZRAUSIZtQ&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1" 
@@ -69,117 +69,111 @@
             allow="autoplay; encrypted-media" 
             allowfullscreen>
         </iframe>
-        <!-- Overlay for readability -->
-        <div class="absolute inset-0 bg-sena-navy/40 backdrop-blur-[1px]"></div>
+        <!-- Darker Overlay for maximum contrast with Glassmorphism -->
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-[2px]"></div>
     </div>
 
-    <div class="flex min-h-screen">
+    <!-- Login Card (Glassmorphism) -->
+    <div class="w-full max-w-md bg-white/90 backdrop-blur-md rounded-[2.5rem] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.5)] p-8 lg:p-12 border border-white/20 fade-up relative overflow-hidden">
         
-        <!-- Left Section: Content matching the screenshot -->
-        <div class="hidden lg:flex lg:w-[60%] relative flex-col justify-between p-16 overflow-hidden">
-            
-            <!-- Top Logo -->
-            <div class="relative z-10 flex items-center space-x-3 fade-up">
-                <div class="bg-sena-green p-2 rounded-lg">
-                    <i class="fa-solid fa-graduation-cap text-white text-2xl"></i>
-                </div>
-                <span class="text-white text-2xl font-poppins font-bold">SENA Portal</span>
+        <!-- Subtle Background Glow (Navy Theme) -->
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-sena-navy/5 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-sena-navy/5 rounded-full blur-3xl"></div>
+
+        <div class="relative z-10">
+            <!-- Branding -->
+            <div class="text-center mb-8">
+                <img src="{{ asset('images/logo.jpeg') }}" alt="Logo SENA" class="h-20 mx-auto mb-4 drop-shadow-sm">
+                <h2 class="text-3xl font-poppins font-black text-sena-navy tracking-tight">Acceso Asesores</h2>
+                <p class="text-slate-500 font-medium text-sm mt-2 italic">Forjando el futuro del talento colombiano</p>
             </div>
 
-            <!-- Main Title & Subtitle -->
-            <div class="relative z-10 max-w-2xl fade-up" style="animation-delay: 0.2s">
-                <h1 class="text-white text-6xl font-poppins font-extrabold leading-[1.1] mb-8">
-                    Transformando el futuro profesional de Colombia.
-                </h1>
-                <p class="text-white/80 text-xl font-medium leading-relaxed max-w-lg">
-                    Accede a la red de formación más grande del país y gestiona tu carrera con herramientas de vanguardia.
+            @if(session('error'))
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-xl text-red-600 text-sm font-bold flex items-center animate-shake">
+                <i class="fa-solid fa-circle-exclamation mr-3 text-lg"></i>
+                {{ session('error') }}
+            </div>
+            @endif
+
+            <!-- Login Form -->
+            <form action="{{ url('/asesor/login') }}" method="POST" class="space-y-5">
+                @csrf
+                
+                <div class="space-y-1.5">
+                    <label class="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Correo Electrónico</label>
+                    <div class="relative group">
+                        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sena-navy transition-colors">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <input type="email" name="email" value="{{ old('email') }}" required autofocus
+                            class="w-full pl-12 pr-4 py-4 bg-slate-50/50 border-2 border-slate-100 rounded-2xl text-slate-900 font-semibold focus:bg-white focus:border-sena-navy focus:ring-4 focus:ring-sena-navy/10 outline-none transition-all placeholder:text-slate-400/60"
+                            placeholder="ejemplo@sena.edu.co">
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center px-1">
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-widest">Contraseña</label>
+                        <a href="#" class="text-[10px] font-black text-sena-navy hover:underline transition-colors uppercase tracking-tighter">¿Olvidaste tu contraseña?</a>
+                    </div>
+                    <div class="relative group">
+                        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sena-navy transition-colors">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <input type="password" name="password" required
+                            class="w-full pl-12 pr-4 py-4 bg-slate-50/50 border-2 border-slate-100 rounded-2xl text-slate-900 font-semibold focus:bg-white focus:border-sena-navy focus:ring-4 focus:ring-sena-navy/10 outline-none transition-all placeholder:text-slate-400/60"
+                            placeholder="••••••••••••">
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-2 px-1">
+                    <input type="checkbox" id="remember" class="w-4 h-4 rounded border-slate-300 text-sena-navy focus:ring-sena-navy transition-all">
+                    <label for="remember" class="text-xs font-bold text-slate-500 cursor-pointer">Recordar mi sesión</label>
+                </div>
+
+                <button type="submit" class="w-full bg-sena-navy hover:bg-sena-dark active:scale-[0.98] text-white font-black py-4 rounded-2xl shadow-xl shadow-sena-navy/30 hover:shadow-2xl hover:shadow-sena-navy/40 transition-all flex items-center justify-center gap-3 group mt-4">
+                    <span class="tracking-widest uppercase">Ingresar</span>
+                    <i class="fa-solid fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
+                </button>
+
+                <!-- Separator -->
+                <div class="relative py-4">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200"></div></div>
+                    <div class="relative flex justify-center text-[10px]">
+                        <span class="bg-white/0 px-4 text-slate-400 font-black tracking-[0.3em] uppercase backdrop-blur-sm">Alternativas</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <a href="{{ route('coordinador.login') }}" class="flex items-center justify-center gap-2 py-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all text-xs font-bold text-slate-700 shadow-sm">
+                        <i class="fa-solid fa-user-shield text-sena-navy"></i>
+                        <span>Coordinador</span>
+                    </a>
+                    <a href="{{ url('/') }}" class="flex items-center justify-center gap-2 py-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all text-xs font-bold text-slate-700 shadow-sm">
+                        <i class="fa-solid fa-house text-sena-navy"></i>
+                        <span>Inicio</span>
+                    </a>
+                </div>
+            </form>
+
+            <!-- Footer Compliance -->
+            <div class="mt-10 text-center">
+                <p class="text-[9px] text-slate-400 leading-relaxed font-bold uppercase tracking-widest">
+                    Servicio Nacional de Aprendizaje SENA<br>
+                    <span class="opacity-60">Dirección de Empleo, Trabajo y Emprendimiento</span>
                 </p>
             </div>
-
-            <!-- Bottom Quality Sello -->
-            <div class="relative z-10 fade-up" style="animation-delay: 0.4s">
-                <p class="text-sena-green font-black text-sm tracking-widest uppercase mb-1">Calidad Certificada</p>
-                <p class="text-white/70 text-base">Excelencia en formación integral</p>
-            </div>
-            
-        </div>
-
-        <!-- Right Section: Pure Login Focus (Solid White) -->
-        <div class="w-full lg:w-[40%] bg-white flex flex-col justify-center px-10 sm:px-20 py-12 relative shadow-[-20px_0_50px_rgba(0,0,0,0.1)]">
-            
-            <div class="w-full max-w-[400px] mx-auto fade-up">
-                
-                <h2 class="text-4xl font-poppins font-black text-sena-navy mb-2">Bienvenido</h2>
-                <p class="text-slate-500 font-medium mb-10">Ingresa tus credenciales para acceder al portal.</p>
-
-                @if(session('error'))
-                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-8 text-red-600 text-sm font-bold flex items-center">
-                    <i class="fa-solid fa-circle-exclamation mr-3"></i>
-                    {{ session('error') }}
-                </div>
-                @endif
-
-                <!-- Login Form -->
-                <form action="{{ url('/asesor/login') }}" method="POST" class="space-y-6">
-                    @csrf
-                    
-                    <div class="space-y-2">
-                        <label class="text-sm font-bold text-slate-700 ml-1">Correo o Documento</label>
-                        <div class="relative group">
-                            <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sena-navy transition-colors"></i>
-                            <input type="email" name="email" value="{{ old('email') }}" required autofocus
-                                class="w-full pl-12 pr-4 py-4 bg-slate-100 border-transparent border-2 rounded-xl text-slate-900 font-medium focus:bg-white focus:border-sena-navy outline-none transition-all placeholder:text-slate-400"
-                                placeholder="Ej: 1020304050">
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-center px-1">
-                            <label class="text-sm font-bold text-slate-700">Contraseña</label>
-                            <a href="#" class="text-xs font-bold text-sena-navy hover:underline">¿Olvidaste tu contraseña?</a>
-                        </div>
-                        <div class="relative group">
-                            <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sena-navy transition-colors"></i>
-                            <input type="password" name="password" required
-                                class="w-full pl-12 pr-4 py-4 bg-slate-100 border-transparent border-2 rounded-xl text-slate-900 font-medium focus:bg-white focus:border-sena-navy outline-none transition-all"
-                                placeholder="••••••••">
-                        </div>
-                    </div>
-
-                    <button type="submit" class="w-full bg-sena-navy active:bg-sena-dark text-white font-bold py-4 rounded-xl shadow-lg shadow-sena-navy/20 transition-all hover:translate-y-[-2px] flex items-center justify-center gap-3">
-                        <span>Ingresar</span>
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-
-                    <div class="relative py-4">
-                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200"></div></div>
-                        <div class="relative flex justify-center text-xs">
-                            <span class="bg-white px-4 text-slate-400 font-black tracking-widest uppercase">Otras Opciones</span>
-                        </div>
-                    </div>
-
-                    <a href="{{ route('coordinador.login') }}" class="w-full border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-900 font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-3 mb-4">
-                        <i class="fa-solid fa-lock-open text-sm"></i>
-                        <span>Acceso Coordinador</span>
-                    </a>
-
-                    <div class="text-center">
-                        <a href="{{ url('/') }}" class="inline-flex items-center gap-2 text-slate-500 font-bold hover:text-sena-navy transition-all text-sm">
-                            <i class="fa-solid fa-house"></i>
-                            <span>Volver al Inicio</span>
-                        </a>
-                    </div>
-                </form>
-
-                <!-- Footer Text -->
-                <div class="mt-20 text-center">
-                    <p class="text-[10px] text-slate-400 leading-relaxed font-medium">
-                        © 2024 Servicio Nacional de Aprendizaje SENA.<br>
-                        Institución Pública de Educación Técnica y Tecnológica.
-                    </p>
-                </div>
-            </div>
         </div>
     </div>
+
+    <style>
+        .animate-shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+    </style>
 </body>
 </html>
