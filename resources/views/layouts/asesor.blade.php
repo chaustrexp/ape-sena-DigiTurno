@@ -121,10 +121,13 @@
                     <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Módulo {{ $asesor->modulo ?? '04' }}</p>
                 </div>
             </div>
-            <div class="bg-gray-50 rounded-2xl p-4 mt-6">
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Ayuda</p>
-                <p class="text-[11px] text-gray-600 leading-relaxed italic">¿Necesitas ayuda?</p>
-                <a href="{{ route('manual.asesor') }}" class="inline-block mt-2 text-[11px] font-bold text-sena-500 hover:underline">Manual de usuario</a>
+            <div class="bg-gray-50 rounded-[2rem] p-5 mt-6 border border-gray-100/50 shadow-inner">
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-1">Ayuda</p>
+                <p class="text-[11px] text-gray-500 leading-relaxed italic mb-4 px-1">¿Necesitas ayuda con el sistema?</p>
+                <a href="{{ route('manual.asesor') }}" class="w-full flex items-center justify-center bg-white border border-sena-500/20 text-sena-500 font-black py-3 rounded-2xl hover:bg-sena-50 transition-all hover:-translate-y-0.5 active:scale-95 space-x-2 text-[10px] uppercase tracking-widest shadow-sm">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Manual de usuario</span>
+                </a>
             </div>
         </div>
     </aside>

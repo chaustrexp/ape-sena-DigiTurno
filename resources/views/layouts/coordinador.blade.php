@@ -147,10 +147,13 @@
 
             <!-- Sidebar Footer -->
             <div class="p-6 border-t border-gray-50 space-y-3">
-                <div class="bg-gray-50 rounded-2xl p-4">
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Ayuda</p>
-                    <p class="text-[11px] text-gray-600 leading-relaxed">¿Necesitas ayuda con el sistema?</p>
-                    <a href="{{ route('manual.coordinador') }}" class="inline-block mt-3 text-[11px] font-bold text-sena-blue hover:underline">Manual de usuario</a>
+                <div class="bg-gray-50 rounded-[2rem] p-5 border border-gray-100/50 shadow-inner">
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2 px-1">Ayuda</p>
+                    <p class="text-[11px] text-gray-500 leading-relaxed italic mb-4 px-1">¿Necesitas ayuda con el sistema?</p>
+                    <a href="{{ route('manual.coordinador') }}" class="w-full flex items-center justify-center bg-white border border-sena-blue/20 text-sena-blue font-black py-3 rounded-2xl hover:bg-sena-50 transition-all hover:-translate-y-0.5 active:scale-95 space-x-2 text-[10px] uppercase tracking-widest shadow-sm">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span>Manual de usuario</span>
+                    </a>
                 </div>
                 <form action="{{ route('coordinador.logout') }}" method="POST">
                     @csrf
