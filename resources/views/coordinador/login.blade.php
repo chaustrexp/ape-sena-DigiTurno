@@ -200,34 +200,6 @@
             <!-- Institutional Footer -->
             <div class="mt-8 pt-6 border-t border-slate-100 text-center">
 
-                {{-- Credenciales de acceso --}}
-                <div class="mb-5 bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left space-y-2">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 text-center">Credenciales de Acceso</p>
-                    <div class="flex items-center justify-between bg-white rounded-xl px-3 py-2 border border-slate-100">
-                        <div class="flex items-center gap-2">
-                            <div class="w-7 h-7 bg-sena-navy/10 rounded-lg flex items-center justify-center">
-                                <i class="fa-solid fa-envelope text-sena-navy text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Correo</p>
-                                <p class="text-xs font-black text-slate-700">coordinador@sena.edu.co</p>
-                            </div>
-                        </div>
-                        <button onclick="document.querySelector('[name=email]').value='coordinador@sena.edu.co'" class="text-[9px] font-black text-sena-navy hover:underline uppercase tracking-wider">Usar</button>
-                    </div>
-                    <div class="flex items-center justify-between bg-white rounded-xl px-3 py-2 border border-slate-100">
-                        <div class="flex items-center gap-2">
-                            <div class="w-7 h-7 bg-sena-navy/10 rounded-lg flex items-center justify-center">
-                                <i class="fa-solid fa-key text-sena-navy text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Contraseña</p>
-                                <p class="text-xs font-black text-slate-700">sena2026</p>
-                            </div>
-                        </div>
-                        <button onclick="document.getElementById('passInput').value='sena2026'" class="text-[9px] font-black text-sena-navy hover:underline uppercase tracking-wider">Usar</button>
-                    </div>
-                </div>
 
                 <p class="text-[9px] text-slate-400 font-bold uppercase tracking-[0.3em] leading-relaxed">
                     © 2026 Servicio Nacional de Aprendizaje SENA<br>

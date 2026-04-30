@@ -159,34 +159,6 @@
             <!-- Footer Compliance -->
             <div class="mt-8 text-center">
 
-                {{-- Credenciales de acceso --}}
-                <div class="mb-5 bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left space-y-2">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 text-center">Credenciales de Acceso</p>
-                    <div class="flex items-center justify-between bg-white rounded-xl px-3 py-2 border border-slate-100">
-                        <div class="flex items-center gap-2">
-                            <div class="w-7 h-7 bg-sena-navy/10 rounded-lg flex items-center justify-center">
-                                <i class="fa-solid fa-user text-sena-navy text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Correo</p>
-                                <p class="text-xs font-black text-slate-700">asesor@sena.edu.co</p>
-                            </div>
-                        </div>
-                        <button onclick="document.querySelector('[name=email]').value='asesor@sena.edu.co'" class="text-[9px] font-black text-sena-navy hover:underline uppercase tracking-wider">Usar</button>
-                    </div>
-                    <div class="flex items-center justify-between bg-white rounded-xl px-3 py-2 border border-slate-100">
-                        <div class="flex items-center gap-2">
-                            <div class="w-7 h-7 bg-sena-navy/10 rounded-lg flex items-center justify-center">
-                                <i class="fa-solid fa-lock text-sena-navy text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Contraseña</p>
-                                <p class="text-xs font-black text-slate-700">123456</p>
-                            </div>
-                        </div>
-                        <button onclick="document.querySelector('[name=password]').value='123456'" class="text-[9px] font-black text-sena-navy hover:underline uppercase tracking-wider">Usar</button>
-                    </div>
-                </div>
 
                 <p class="text-[9px] text-slate-400 leading-relaxed font-bold uppercase tracking-widest">
                     Servicio Nacional de Aprendizaje SENA<br>
