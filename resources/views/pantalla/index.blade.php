@@ -269,7 +269,7 @@
             voiceVolume: 1.0
         };
 
-        let audioEnabled = false;
+        let audioEnabled = true;
         let audioCtx = null;
         let announcementQueue = [];
         let isSpeaking = false;
@@ -296,7 +296,7 @@
         // --- SISTEMA DE AUDIO ---
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         let vozEspanol = null;
-        let audioListo = false;
+        let audioListo = true;
 
         function cargarVoz() {
             const voces = window.speechSynthesis.getVoices();
@@ -355,22 +355,25 @@
         });
 
         function playProfessionalChime() {
-            if (!audioCtx || !audioEnabled) return;
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const now = audioCtx.currentTime;
-            [440, 554.37, 659.25].forEach((freq, index) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, now + (index * 0.1));
-                gain.gain.setValueAtTime(0, now);
-                gain.gain.linearRampToValueAtTime(AUDIO_CONFIG.chimeVolume / 3, now + 0.2 + (index * 0.1));
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 2 + (index * 0.1));
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(now);
-                osc.stop(now + 3);
-            });
+            try {
+                if (!audioCtx) audioCtx = new AudioContext();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                
+                const now = audioCtx.currentTime;
+                [440, 554.37, 659.25].forEach((freq, index) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + (index * 0.1));
+                    gain.gain.setValueAtTime(0, now);
+                    gain.gain.linearRampToValueAtTime(AUDIO_CONFIG.chimeVolume / 3, now + 0.2 + (index * 0.1));
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 2 + (index * 0.1));
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 3);
+                });
+            } catch(e) { console.warn("Error en timbre:", e); }
         }
 
         // --- SISTEMA DE COLA DE ANUNCIOS ---
@@ -384,18 +387,14 @@
             isSpeaking = true;
             const turno = announcementQueue.shift();
 
-            // Chime siempre (si audio está activo)
-            if (audioEnabled) playProfessionalChime();
+            // Intentar sonar el timbre (el navegador lo permitirá si ya hubo interacción o permisos)
+            playProfessionalChime();
 
             setTimeout(() => {
                 try {
-                    if (!audioListo) {
-                        // Audio no activado aún — solo mostrar modal, sin voz
-                        isSpeaking = false;
-                        return;
-                    }
-
-                    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+                    // Intentar reactivar audio context si está suspendido
+                    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+                    
                     window.speechSynthesis.cancel();
 
                     const partes = turno.numero.split('-');
@@ -499,17 +498,17 @@
                 const badgeLabel = isUrgent ? 'Urgente' : (isPriority ? 'Prioridad' : 'General');
                 const firstChar = t.tur_numero.charAt(0);
                 html += `
-                    <div class="bg-gray-50/50 rounded-[1.5rem] lg:rounded-[2rem] p-4 lg:p-6 flex items-center justify-between border border-gray-100 hover:bg-white hover:shadow-xl transition-all duration-300 group animate-fade-in" data-id="${t.tur_id}">
-                        <div class="flex items-center space-x-4 lg:space-x-6">
-                            <div class="w-16 h-16 lg:w-20 lg:h-20 rounded-xl lg:rounded-2xl ${sideColor} flex items-center justify-center text-white text-2xl lg:text-3xl font-black shadow-lg group-hover:rotate-3 transition-transform">
+                    <div class="bg-gray-50/50 rounded-[1.5rem] lg:rounded-[2rem] p-3 lg:p-4 flex items-center justify-between border border-gray-100 hover:bg-white hover:shadow-xl transition-all duration-300 group animate-fade-in" data-id="${t.tur_id}">
+                        <div class="flex items-center space-x-3 lg:space-x-4">
+                            <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl ${sideColor} flex items-center justify-center text-white text-base lg:text-lg font-black shadow-lg group-hover:rotate-3 transition-transform">
                                 ${firstChar}
                             </div>
                             <div>
-                                <h4 class="text-3xl lg:text-5xl font-black text-gray-900 tracking-tighter">${t.tur_numero}</h4>
-                                <p class="text-[9px] lg:text-sm font-bold text-gray-400 uppercase tracking-widest mt-0.5">En espera</p>
+                                <h4 class="text-xl lg:text-2xl font-black text-gray-900 tracking-tighter">${t.tur_numero}</h4>
+                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">En espera</p>
                             </div>
                         </div>
-                        <span class="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${badgeClass}">
+                        <span class="px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${badgeClass}">
                             ${badgeLabel}
                         </span>
                     </div>
