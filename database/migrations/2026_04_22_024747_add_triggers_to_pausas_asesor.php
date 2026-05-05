@@ -12,11 +12,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Los triggers y vistas son sintaxis MySQL — se omiten en SQLite (tests)
-        if (DB::getDriverName() === 'sqlite') {
-            return;
-        }
-
         // 1. Trigger para cálculo automático de duración
         DB::unprepared("
             DROP TRIGGER IF EXISTS trg_calc_duracion_receso;
@@ -86,10 +81,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (DB::getDriverName() === 'sqlite') {
-            return;
-        }
-
         DB::unprepared("DROP TRIGGER IF EXISTS trg_calc_duracion_receso;");
         DB::unprepared("DROP TRIGGER IF EXISTS trg_evitar_doble_receso;");
         DB::unprepared("DROP VIEW IF EXISTS view_resumen_pausas_hoy;");

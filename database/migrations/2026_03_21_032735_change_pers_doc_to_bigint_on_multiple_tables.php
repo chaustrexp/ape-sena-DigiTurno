@@ -12,11 +12,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // SQLite no soporta DROP FOREIGN KEY ni MODIFY — se omite en entorno de tests
-        if (DB::getDriverName() === 'sqlite') {
-            return;
-        }
-
         // 1. Eliminar llaves foráneas existentes
         DB::statement('ALTER TABLE `asesor` DROP FOREIGN KEY `asesor_ibfk_1`');
         DB::statement('ALTER TABLE `coordinador` DROP FOREIGN KEY `coordinador_ibfk_1`');
@@ -34,12 +29,11 @@ return new class extends Migration
         DB::statement('ALTER TABLE `solicitante` ADD CONSTRAINT `solicitante_ibfk_1` FOREIGN KEY (`PERSONA_pers_doc`) REFERENCES `persona` (`pers_doc`)');
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        if (DB::getDriverName() === 'sqlite') {
-            return;
-        }
-
         DB::statement('ALTER TABLE `asesor` DROP FOREIGN KEY `asesor_ibfk_1`');
         DB::statement('ALTER TABLE `coordinador` DROP FOREIGN KEY `coordinador_ibfk_1`');
         DB::statement('ALTER TABLE `solicitante` DROP FOREIGN KEY `solicitante_ibfk_1`');

@@ -168,9 +168,9 @@
                 <h2 class="text-sm font-bold text-gray-900 tracking-wide uppercase">Distribución Geográfica de Sede</h2>
             </div>
             <div class="relative h-64 border-2 border-dashed border-gray-100 rounded-3xl flex items-center justify-center bg-gray-50/50 overflow-hidden">
-                <!-- Abstract Map Graphic -->
-                <div class="relative w-full h-full flex items-center justify-center opacity-10">
-                   <i class="fa-solid fa-map text-[200px]"></i>
+                <!-- Real Map Image -->
+                <div class="absolute inset-0 w-full h-full">
+                   <img src="{{ asset('images/mapa.png') }}" class="w-full h-full object-cover opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
                 </div>
 
                 <!-- Pins Dynamically Mapped to Advisors -->
@@ -195,12 +195,10 @@
                         $bgClass = 'bg-sena-orange/10';
                     }
                 @endphp
-                <div class="absolute flex flex-col items-center justify-center group cursor-pointer" style="left: {{ $pos['left'] ?? 'auto' }}; top: {{ $pos['top'] ?? 'auto' }}; bottom: {{ $pos['bottom'] ?? 'auto' }}; z-index: 10;">
-                    <div class="w-10 h-10 {{ $bgClass }} rounded-full flex items-center justify-center shadow-md border-2 border-white group-hover:scale-110 transition relative">
-                        @if(strtoupper($ase['estado']) == 'ATENDIENDO')
-                            <div class="absolute inset-0 {{ $colorClass }} rounded-full animate-ping opacity-20"></div>
-                        @endif
-                        <div class="w-3 h-3 {{ $colorClass }} rounded-full"></div>
+                <div id="pin-container-{{ $ase['modulo'] }}" class="absolute flex flex-col items-center justify-center group cursor-pointer" style="left: {{ $pos['left'] ?? 'auto' }}; top: {{ $pos['top'] ?? 'auto' }}; bottom: {{ $pos['bottom'] ?? 'auto' }}; z-index: 10;">
+                    <div id="pin-outer-{{ $ase['modulo'] }}" class="w-10 h-10 {{ $bgClass }} rounded-full flex items-center justify-center shadow-md border-2 border-white group-hover:scale-110 transition relative">
+                        <div id="pin-ping-{{ $ase['modulo'] }}" class="absolute inset-0 {{ $colorClass }} rounded-full animate-ping opacity-20 {{ strtoupper($ase['estado']) == 'ATENDIENDO' ? '' : 'hidden' }}"></div>
+                        <div id="pin-inner-{{ $ase['modulo'] }}" class="w-3 h-3 {{ $colorClass }} rounded-full"></div>
                     </div>
                     <span class="text-[9px] font-black text-gray-700 mt-2 bg-white px-2 py-1 rounded shadow-sm border border-gray-100">Mod {{ sprintf('%02d', $ase['modulo']) }}</span>
                 </div>
@@ -364,7 +362,7 @@
 
     // FLOW PER HOUR (Bar Chart)
     const flowCtx = document.getElementById('flowChart').getContext('2d');
-    new Chart(flowCtx, {
+    const flowChart = new Chart(flowCtx, {
         type: 'bar',
         data: {
             labels: @json($flowLabels),
@@ -392,7 +390,7 @@
 
     // DOCUMENT TYPES (Doughnut Chart)
     const docCtx = document.getElementById('docChart').getContext('2d');
-    new Chart(docCtx, {
+    const docChart = new Chart(docCtx, {
         type: 'doughnut',
         data: {
             labels: @json(array_keys($docData)),
@@ -420,10 +418,57 @@
             const result = await response.json();
 
             if (result.success) {
-                // Actualizar los IDs del DOM con animación suave
-                updateValueWithAnimation('count-general', result.data.General);
-                updateValueWithAnimation('count-prioritario', result.data.Prioritario);
-                updateValueWithAnimation('count-victimas', result.data.Victimas);
+                // 1. Actualizar contadores numéricos
+                updateValueWithAnimation('count-general', result.waiting.General);
+                updateValueWithAnimation('count-prioritario', result.waiting.Prioritario);
+                updateValueWithAnimation('count-victimas', result.waiting.Victimas);
+                
+                // 2. Actualizar Gráfico de Flujo por Hora
+                if (result.flowValues) {
+                    flowChart.data.datasets[0].data = result.flowValues;
+                    flowChart.update('none'); // Update without animation for smoother polling
+                }
+
+                // 3. Actualizar Gráfico de Documentos
+                if (result.docData) {
+                    const docLabels = Object.keys(result.docData);
+                    const docValues = Object.values(result.docData);
+                    docChart.data.labels = docLabels;
+                    docChart.data.datasets[0].data = docValues;
+                    docChart.update('none');
+                }
+
+                // 4. Actualizar Mapa de Sede (Pines)
+                if (result.modulos) {
+                    result.modulos.forEach(mod => {
+                        const pinOuter = document.getElementById(`pin-outer-${mod.modulo}`);
+                        const pinInner = document.getElementById(`pin-inner-${mod.modulo}`);
+                        const pinPing = document.getElementById(`pin-ping-${mod.modulo}`);
+
+                        if (pinOuter && pinInner && pinPing) {
+                            // Reset classes
+                            pinOuter.className = 'w-10 h-10 rounded-full flex items-center justify-center shadow-md border-2 border-white group-hover:scale-110 transition relative';
+                            pinInner.className = 'w-3 h-3 rounded-full';
+                            pinPing.className = 'absolute inset-0 rounded-full animate-ping opacity-20';
+
+                            if (mod.estado === 'ATENDIENDO') {
+                                pinOuter.classList.add('bg-sena-blue/10');
+                                pinInner.classList.add('bg-sena-blue');
+                                pinPing.classList.add('bg-sena-blue');
+                                pinPing.classList.remove('hidden');
+                            } else if (mod.estado === 'DESCANSO') {
+                                pinOuter.classList.add('bg-sena-orange/10');
+                                pinInner.classList.add('bg-sena-orange');
+                                pinPing.classList.add('bg-sena-orange');
+                                pinPing.classList.add('hidden');
+                            } else {
+                                pinOuter.classList.add('bg-gray-100');
+                                pinInner.classList.add('bg-gray-400');
+                                pinPing.classList.add('hidden');
+                            }
+                        }
+                    });
+                }
                 
                 console.log(`Última actualización: ${result.timestamp}`);
             }
@@ -446,9 +491,9 @@
         }
     }
 
-    // Ejecutar inmediatamente al cargar y luego cada 5 minutos (300,000 ms)
+    // Ejecutar inmediatamente al cargar y luego cada 30 segundos
     updateDashboardStats();
-    setInterval(updateDashboardStats, 300000); 
+    setInterval(updateDashboardStats, 30000); 
 
 </script>
 @endsection

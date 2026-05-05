@@ -44,8 +44,9 @@ class TurnoRepository
 
     /**
      * Obtiene turnos en espera según el perfil del asesor (CU-02).
-     * Orientador Técnico (OT): General + Prioritario
-     * Orientador de Víctimas (OV): Victima + Empresario
+     * OT = Orientador Técnico    → General + Prioritario
+     * OV = Orientador de Víctimas → Victima + Empresario
+     * AT = Asesor Total           → Todos los perfiles (General, Prioritario, Victima, Empresario)
      */
     public function getWaitingForAsesor($tipoAsesor)
     {
@@ -53,14 +54,22 @@ class TurnoRepository
                       ->where('tur_estado', 'Espera');
 
         if ($tipoAsesor === 'OV') {
-            // Orientador de Víctimas: Empresario primero, luego Víctima
             return $query->whereIn('tur_perfil', ['Victima', 'Empresario'])
                          ->orderByRaw("CASE WHEN tur_perfil = 'Empresario' THEN 1 ELSE 2 END ASC")
                          ->orderBy('tur_hora_fecha', 'asc')
                          ->get();
+        } elseif ($tipoAsesor === 'AT') {
+            // Asesor Total: atiende todos los perfiles con prioridad completa
+            return $query->whereIn('tur_perfil', ['Victima', 'Empresario', 'Prioritario', 'General'])
+                         ->orderByRaw("CASE
+                             WHEN tur_perfil = 'Victima'     THEN 1
+                             WHEN tur_perfil = 'Empresario'  THEN 2
+                             WHEN tur_perfil = 'Prioritario' THEN 3
+                             ELSE 4 END ASC")
+                         ->orderBy('tur_hora_fecha', 'asc')
+                         ->get();
         } else {
-            // Orientador Técnico (OT): Prioritario vs General (3:1)
-            // Para la vista de espera, simplemente los mostramos priorizando Prioritario
+            // OT: Prioritario primero, luego General
             return $query->whereIn('tur_perfil', ['Prioritario', 'General'])
                          ->orderByRaw("CASE WHEN tur_perfil = 'Prioritario' THEN 1 ELSE 2 END ASC")
                          ->orderBy('tur_hora_fecha', 'asc')
@@ -95,6 +104,17 @@ class TurnoRepository
                 // Orientador de Víctimas (Role 1): Empresario → Victima
                 $turno = $query->whereIn('tur_perfil', ['Victima', 'Empresario'])
                                ->orderByRaw("CASE WHEN tur_perfil = 'Empresario' THEN 1 ELSE 2 END ASC")
+                               ->orderBy('tur_hora_fecha', 'asc')
+                               ->lockForUpdate()
+                               ->first();
+            } elseif ($tipoAsesor === 'AT') {
+                // Asesor Total: atiende todos los perfiles con prioridad completa
+                $turno = $query->whereIn('tur_perfil', ['Victima', 'Empresario', 'Prioritario', 'General'])
+                               ->orderByRaw("CASE
+                                   WHEN tur_perfil = 'Victima'     THEN 1
+                                   WHEN tur_perfil = 'Empresario'  THEN 2
+                                   WHEN tur_perfil = 'Prioritario' THEN 3
+                                   ELSE 4 END ASC")
                                ->orderBy('tur_hora_fecha', 'asc')
                                ->lockForUpdate()
                                ->first();
@@ -193,6 +213,14 @@ class TurnoRepository
                                    ->exists();
         if ($pausaActiva) {
             return 'Ya tienes un receso activo en curso.';
+        }
+
+        // ── Bloqueo: Límite de 3 recesos por día ──
+        $recesosHoy = PausaAsesor::where('ASESOR_ase_id', $ase_id)
+                                 ->whereDate('hora_inicio', now()->toDateString())
+                                 ->count();
+        if ($recesosHoy >= 3) {
+            return 'Has alcanzado el límite máximo de 3 recesos permitidos por día.';
         }
 
         return PausaAsesor::create([

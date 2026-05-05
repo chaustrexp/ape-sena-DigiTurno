@@ -3,71 +3,74 @@
 @section('title', 'Reportes de Desempeño - APE Advisor')
 
 @section('content')
-<div class="mb-8 flex items-center justify-between">
+<div class="mb-10 flex items-center justify-between">
     <div>
-        <h2 class="text-2xl font-black text-gray-900 leading-tight">Analítica de Atención</h2>
-        <p class="text-gray-500 text-[11px] font-medium mt-0.5">Resumen estadístico de tu productividad y calidad de servicio.</p>
+        <h2 class="text-3xl font-black text-gray-900 leading-tight">Analítica de Atención</h2>
+        <p class="text-gray-500 text-sm font-medium mt-1">Resumen estadístico de tu productividad y calidad de servicio.</p>
     </div>
-    <div class="flex items-center space-x-3">
-        <button onclick="downloadPDF()" class="bg-sena-500 text-white font-black px-6 py-2.5 rounded-xl text-[9px] uppercase tracking-widest shadow-lg shadow-sena-500/20 hover:scale-105 active:scale-95 transition-all flex items-center space-x-2">
+    <div class="flex items-center space-x-4">
+        <button onclick="downloadPDF()" class="bg-sena-500 text-white font-black px-8 py-3 rounded-2xl text-[10px] uppercase tracking-widest shadow-xl shadow-sena-500/20 hover:scale-105 active:scale-95 transition-all flex items-center space-x-2">
             <i class="fa-solid fa-file-pdf"></i>
             <span>Descargar PDF Pro</span>
         </button>
-        <select class="bg-white px-4 py-2.5 rounded-xl shadow-sm border border-gray-100 text-[9px] font-black text-gray-700 uppercase tracking-widest outline-none">
-            <option>Últimos 7 días</option>
-            <option>Este Mes</option>
-            <option>Año Actual</option>
-        </select>
+        <form action="{{ route('asesor.reportes') }}" method="GET" id="filterForm">
+            <select name="periodo" onchange="document.getElementById('filterForm').submit()" class="bg-white px-6 py-3 rounded-2xl shadow-sm border border-gray-100 text-xs font-black text-gray-700 uppercase tracking-widest outline-none cursor-pointer hover:bg-gray-50 transition-all">
+                <option value="today" {{ ($periodo ?? '') == 'today' ? 'selected' : '' }}>Hoy</option>
+                <option value="7d" {{ ($periodo ?? '') == '7d' ? 'selected' : '' }}>Últimos 7 días</option>
+                <option value="month" {{ ($periodo ?? '') == 'month' ? 'selected' : '' }}>Este Mes</option>
+                <option value="year" {{ ($periodo ?? '') == 'year' ? 'selected' : '' }}>Año Actual</option>
+            </select>
+        </form>
     </div>
 </div>
 
 <div id="report-content" class="space-y-8">
     <!-- Fila 1: KPIs Principales -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div class="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Atendidos</p>
-            <h4 class="text-2xl font-black text-gray-900">{{ $metas['diaria_actual'] }}</h4>
-            <div class="mt-2 flex items-center text-emerald-500 space-x-1">
-                <i class="fa-solid fa-caret-up text-[10px]"></i>
-                <span class="text-[9px] font-black tracking-widest">+8.2% vs ayer</span>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
+            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Atendidos</p>
+            <h4 class="text-4xl font-black text-gray-900">{{ $metas['diaria_actual'] }}</h4>
+            <div class="mt-4 flex items-center text-emerald-500 space-x-1">
+                <i class="fa-solid fa-caret-up text-xs"></i>
+                <span class="text-[10px] font-black tracking-widest">+8.2% vs ayer</span>
             </div>
         </div>
-        <div class="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">T. Promedio</p>
-            <h4 class="text-2xl font-black text-gray-900">{{ $metas['atencion_actual'] }} <span class="text-xs">min</span></h4>
-            <div class="mt-2 flex items-center text-amber-500 space-x-1">
-                <i class="fa-solid fa-caret-down text-[10px]"></i>
-                <span class="text-[9px] font-black tracking-widest">-1.1% mejora</span>
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
+            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">T. Promedio</p>
+            <h4 class="text-4xl font-black text-gray-900">{{ $metas['atencion_actual'] }} <span class="text-sm">min</span></h4>
+            <div class="mt-4 flex items-center text-amber-500 space-x-1">
+                <i class="fa-solid fa-caret-down text-xs"></i>
+                <span class="text-[10px] font-black tracking-widest">-1.1% mejora</span>
             </div>
         </div>
-        <div class="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Calificación</p>
-            <h4 class="text-2xl font-black text-gray-900">{{ $metas['calificacion'] }}</h4>
-            <div class="mt-2 flex items-center text-emerald-500 space-x-1">
-                <i class="fa-solid fa-star text-[10px]"></i>
-                <span class="text-[9px] font-black tracking-widest">Nivel Excelente</span>
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
+            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Calificación</p>
+            <h4 class="text-4xl font-black text-gray-900">{{ $metas['calificacion'] }}</h4>
+            <div class="mt-4 flex items-center text-emerald-500 space-x-1">
+                <i class="fa-solid fa-star text-xs"></i>
+                <span class="text-[10px] font-black tracking-widest">Nivel Excelente</span>
             </div>
         </div>
-        <div class="bg-white p-6 rounded-[1.5rem] shadow-sm border border-gray-100">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Meta Diaria</p>
-            <h4 class="text-2xl font-black text-gray-900">{{ round(($metas['diaria_actual']/$metas['diaria_meta'])*100) }}%</h4>
-            <div class="mt-2 flex items-center text-blue-500 space-x-1">
-                <span class="text-[9px] font-black tracking-widest">{{ $metas['diaria_actual'] }} / {{ $metas['diaria_meta'] }} tickets</span>
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
+            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Meta Diaria</p>
+            <h4 class="text-4xl font-black text-gray-900">{{ round(($metas['diaria_actual']/$metas['diaria_meta'])*100) }}%</h4>
+            <div class="mt-4 flex items-center text-blue-500 space-x-1">
+                <span class="text-[10px] font-black tracking-widest">{{ $metas['diaria_actual'] }} / {{ $metas['diaria_meta'] }} tickets</span>
             </div>
         </div>
     </div>
 
     <!-- Fila 2: Gráficos de Distribución y Flujo -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div class="lg:col-span-1 bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 text-center">
-            <h4 class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-6">Distribución por Tipo</h4>
-            <div class="h-48 flex items-center justify-center">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div class="xl:col-span-1 bg-white p-8 rounded-[3rem] shadow-sm border border-gray-100 text-center">
+            <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-8">Distribución por Tipo</h4>
+            <div class="h-64 flex items-center justify-center">
                 <canvas id="typeDistributionChart"></canvas>
             </div>
         </div>
-        <div class="lg:col-span-2 bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
-            <h4 class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-6">Flujo Semanal de Ciudadanos</h4>
-            <div class="h-48">
+        <div class="xl:col-span-2 bg-white p-8 rounded-[3rem] shadow-sm border border-gray-100">
+            <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-8">Flujo Semanal de Ciudadanos</h4>
+            <div class="h-64">
                 <canvas id="performanceChart"></canvas>
             </div>
         </div>

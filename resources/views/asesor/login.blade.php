@@ -57,6 +57,15 @@
 
         .fade-up { animation: fadeUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards; opacity: 0; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Animations */
+        .animate-shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
     </style>
 </head>
 <body class="bg-[#F8FAFC] font-sans antialiased min-h-screen flex items-center justify-center p-4">
@@ -74,25 +83,22 @@
     </div>
 
     <!-- Login Card (Glassmorphism) -->
-    <div class="w-full max-w-md bg-white/90 backdrop-blur-md rounded-[2.5rem] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.5)] border border-white/20 fade-up relative overflow-hidden">
+    <div class="w-full max-w-md bg-white/90 backdrop-blur-md rounded-[2.5rem] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.5)] p-8 lg:p-12 border border-white/20 fade-up relative overflow-hidden">
         
-        <!-- Top Indicator Bar -->
-        <div class="h-1.5 w-full bg-gradient-to-r from-sena-navy via-sena-green to-sena-navy"></div>
-
         <!-- Subtle Background Glow (Navy Theme) -->
         <div class="absolute -top-24 -right-24 w-48 h-48 bg-sena-navy/5 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-sena-navy/5 rounded-full blur-3xl"></div>
 
-        <div class="relative z-10 p-8 lg:p-12">
+        <div class="relative z-10">
             <!-- Branding -->
             <div class="text-center mb-8">
                 <img src="{{ asset('images/logo.jpeg') }}" alt="Logo SENA" class="h-20 mx-auto mb-4 drop-shadow-sm">
                 <h2 class="text-3xl font-poppins font-black text-sena-navy tracking-tight">Acceso Asesores</h2>
-                <p class="text-slate-500 font-medium text-[10px] mt-2 uppercase tracking-[0.2em]">Gestión de Turnos y Atención</p>
+                <p class="text-slate-500 font-medium text-sm mt-2 italic">Forjando el futuro del talento colombiano</p>
             </div>
 
             @if(session('error'))
-            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-xl text-red-600 text-xs font-black flex items-center animate-shake uppercase tracking-wide">
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-xl text-red-600 text-sm font-bold flex items-center animate-shake">
                 <i class="fa-solid fa-circle-exclamation mr-3 text-lg"></i>
                 {{ session('error') }}
             </div>
@@ -103,33 +109,29 @@
                 @csrf
                 
                 <div class="space-y-1.5">
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Correo Electrónico del Asesor</label>
+                    <label class="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Correo Electrónico</label>
                     <div class="relative group">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sena-navy transition-colors">
                             <i class="fa-solid fa-envelope"></i>
                         </div>
                         <input type="email" name="email" value="{{ old('email') }}" required autofocus
-                            class="w-full pl-12 pr-4 py-4 bg-slate-50/50 border-2 border-slate-100 rounded-2xl text-slate-900 font-bold focus:bg-white focus:border-sena-navy focus:ring-4 focus:ring-sena-navy/10 outline-none transition-all placeholder:text-slate-400/60"
-                            placeholder="asesor@sena.edu.co">
+                            class="w-full pl-12 pr-4 py-4 bg-slate-50/50 border-2 border-slate-100 rounded-2xl text-slate-900 font-semibold focus:bg-white focus:border-sena-navy focus:ring-4 focus:ring-sena-navy/10 outline-none transition-all placeholder:text-slate-400/60"
+                            placeholder="ejemplo@sena.edu.co">
                     </div>
                 </div>
 
                 <div class="space-y-1.5">
                     <div class="flex justify-between items-center px-1">
-                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Contraseña</label>
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-widest">Contraseña</label>
                         <a href="#" class="text-[10px] font-black text-sena-navy hover:underline transition-colors uppercase tracking-tighter">¿Olvidaste tu contraseña?</a>
                     </div>
                     <div class="relative group">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sena-navy transition-colors">
                             <i class="fa-solid fa-lock"></i>
                         </div>
-                        <input type="password" name="password" id="passInput" required
-                            class="w-full pl-12 pr-12 py-4 bg-slate-50/50 border-2 border-slate-100 rounded-2xl text-slate-900 font-bold focus:bg-white focus:border-sena-navy focus:ring-4 focus:ring-sena-navy/10 outline-none transition-all placeholder:text-slate-400/60"
+                        <input type="password" name="password" required
+                            class="w-full pl-12 pr-4 py-4 bg-slate-50/50 border-2 border-slate-100 rounded-2xl text-slate-900 font-semibold focus:bg-white focus:border-sena-navy focus:ring-4 focus:ring-sena-navy/10 outline-none transition-all placeholder:text-slate-400/60"
                             placeholder="••••••••••••">
-                        <button type="button" onclick="togglePass()"
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-sena-navy transition-all">
-                            <i class="fa-solid fa-eye" id="eyeIcon"></i>
-                        </button>
                     </div>
                 </div>
 
@@ -147,24 +149,29 @@
                 <div class="relative py-4">
                     <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200"></div></div>
                     <div class="relative flex justify-center text-[10px]">
-                        <span class="bg-white px-4 text-slate-400 font-black tracking-[0.3em] uppercase">Alternativas</span>
+                        <span class="bg-white/0 px-4 text-slate-400 font-black tracking-[0.3em] uppercase backdrop-blur-sm">Alternativas</span>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <a href="{{ route('coordinador.login') }}" class="flex items-center justify-center gap-2 py-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all text-[10px] font-black text-slate-700 shadow-sm uppercase tracking-wider">
+                    <a href="{{ route('coordinador.login') }}" class="flex items-center justify-center gap-2 py-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all text-xs font-bold text-slate-700 shadow-sm">
                         <i class="fa-solid fa-user-shield text-sena-navy"></i>
                         <span>Coordinador</span>
                     </a>
-                    <a href="{{ url('/') }}" class="flex items-center justify-center gap-2 py-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all text-[10px] font-black text-slate-700 shadow-sm uppercase tracking-wider">
+                    <a href="{{ url('/') }}" class="flex items-center justify-center gap-2 py-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all text-xs font-bold text-slate-700 shadow-sm">
                         <i class="fa-solid fa-house text-sena-navy"></i>
                         <span>Inicio</span>
                     </a>
                 </div>
+
+                <p class="text-center text-xs text-slate-400 pt-2">
+                    ¿No tienes cuenta?
+                    <a href="{{ route('asesor.register') }}" class="text-sena-navy font-black hover:underline">Registrarse</a>
+                </p>
             </form>
 
             <!-- Footer Compliance -->
-            <div class="mt-8 text-center pt-6 border-t border-slate-100">
+            <div class="mt-10 text-center">
                 <p class="text-[9px] text-slate-400 leading-relaxed font-bold uppercase tracking-widest">
                     Servicio Nacional de Aprendizaje SENA<br>
                     <span class="opacity-60">Dirección de Empleo, Trabajo y Emprendimiento</span>
@@ -172,30 +179,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function togglePass() {
-            const input = document.getElementById('passInput');
-            const icon = document.getElementById('eyeIcon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        }
-    </script>
-
-    <style>
-        .animate-shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
-        }
-    </style>
 
 </body>
 </html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casos de Prueba - Digiturno</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #000;
+            background-color: #fff;
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #004085;
+            border-bottom: 2px solid #004085;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        .test-case-container {
+            margin-bottom: 50px;
+            page-break-inside: avoid;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+        th, td {
+            border: 2px solid #000;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .header-table th {
+            background-color: #fff;
+            font-weight: bold;
+        }
+        .header-table td:first-child {
+            font-weight: bold;
+            width: 30%;
+        }
+        .body-table th {
+            background-color: #fff;
+            font-weight: bold;
+            text-align: center;
+        }
+        .body-table td {
+            text-align: center;
+        }
+        .btn-print {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-print:hover {
+            background-color: #218838;
+        }
+        @media print {
+            .btn-print {
+                display: none;
+            }
+            body {
+                margin: 0;
+            }
+            h2 {
+                page-break-before: always;
+            }
+            h2:first-of-type {
+                page-break-before: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Casos de Prueba - Sistema Digiturno</h1>
+    <button class="btn-print" onclick="window.print()">🖨️ Exportar a PDF / Imprimir</button>
+
+    <!-- ============================================== -->
+    <!-- MÓDULO: PÁG COMPLETA -->
+    <!-- ============================================== -->
+    <h2>Módulo: Pág Completa</h2>
+
+    <div class="test-case-container">
+        <table class="header-table">
+            <tr>
+                <th>ID: CP-GEN-001</th>
+                <th>Título: Redireccionamiento Correcto de Rutas Principales</th>
+            </tr>
+            <tr>
+                <td>Prioridad</td>
+                <td>Alta</td>
+            </tr>
+            <tr>
+                <td>Módulo</td>
+                <td>Pág Completa</td>
+            </tr>
+            <tr>
+                <td>Precondición</td>
+                <td>1. Servidor Laravel ejecutándose correctamente.<br>2. Base de datos `ape-sena` conectada sin errores.</td>
+            </tr>
+            <tr>
+                <td>Descripción</td>
+                <td>Verificar que la ruta raíz (/) cargue la vista del Kiosco por defecto, y que las rutas protegidas (/asesor, /coordinador) bloqueen el acceso sin sesión.</td>
+            </tr>
+        </table>
+        <table class="body-table">
+            <thead>
+                <tr>
+                    <th width="20%">Datos de Entrada</th>
+                    <th width="20%">Pertenece a</th>
+                    <th width="30%">Resultado Esperado</th>
+                    <th width="20%">Resultado Actual</th>
+                    <th width="10%">Estado (Pasa/Falla)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>URL: localhost:8000/<br>URL: localhost:8000/asesor</td>
+                    <td>Rutas / Middleware</td>
+                    <td>La ruta '/' carga el Kiosco Digital interactivo. La ruta '/asesor' redirige a '/asesor/login' al no haber sesión activa.</td>
+                    <td>Redirección a login de Asesor funcionando. Kiosco carga en ruta inicial.</td>
+                    <td>Pasa</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MÓDULO: KIOSCO -->
+    <!-- ============================================== -->
+    <h2>Módulo: Kiosco</h2>
+
+    <div class="test-case-container">
+        <table class="header-table">
+            <tr>
+                <th>ID: CP-KIO-001</th>
+                <th>Título: Solicitud de Turno Válido y Completo</th>
+            </tr>
+            <tr>
+                <td>Prioridad</td>
+                <td>Alta</td>
+            </tr>
+            <tr>
+                <td>Módulo</td>
+                <td>Kiosco Digital</td>
+            </tr>
+            <tr>
+                <td>Precondición</td>
+                <td>1. El servidor está activo en localhost:8000<br>2. El ciudadano no tiene un turno activo para el día de hoy</td>
+            </tr>
+            <tr>
+                <td>Descripción</td>
+                <td>Verificar que el sistema genere correctamente un turno cuando se completan todos los pasos de la interfaz táctil del Kiosco.</td>
+            </tr>
+        </table>
+        <table class="body-table">
+            <thead>
+                <tr>
+                    <th width="20%">Datos de Entrada</th>
+                    <th width="20%">Pertenece a</th>
+                    <th width="30%">Resultado Esperado</th>
+                    <th width="20%">Resultado Actual</th>
+                    <th width="10%">Estado (Pasa/Falla)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>tur_perfil=Prioritario<br>tur_servicio=Orientacion<br>tur_tipo_atencion=Normal<br>pers_tipodoc=CC<br>pers_doc=12345678<br>pers_telefono=3000000000<br>receive_method=WhatsApp</td>
+                    <td>Generación Turno</td>
+                    <td>Sistema crea turno con prefijo especial (Ej. P-001), muestra toast success y guarda en BD en estado 'Espera'.</td>
+                    <td>Turno generado exitosamente. Se visualizó notificación flotante con el número de turno.</td>
+                    <td>Pasa</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="test-case-container">
+        <table class="header-table">
+            <tr>
+                <th>ID: CP-KIO-002</th>
+                <th>Título: Validación de Longitud Mínima de Documento y Teléfono</th>
+            </tr>
+            <tr>
+                <td>Prioridad</td>
+                <td>Alta</td>
+            </tr>
+            <tr>
+                <td>Módulo</td>
+                <td>Kiosco Digital</td>
+            </tr>
+            <tr>
+                <td>Precondición</td>
+                <td>1. Kiosco en la pantalla del Paso 4 (Identidad) o Paso 5 (Contacto).</td>
+            </tr>
+            <tr>
+                <td>Descripción</td>
+                <td>Comprobar que el sistema de validación del formulario impide avanzar si el documento tiene menos de 5 dígitos o el teléfono no tiene exactamente 10 dígitos.</td>
+            </tr>
+        </table>
+        <table class="body-table">
+            <thead>
+                <tr>
+                    <th width="20%">Datos de Entrada</th>
+                    <th width="20%">Pertenece a</th>
+                    <th width="30%">Resultado Esperado</th>
+                    <th width="20%">Resultado Actual</th>
+                    <th width="10%">Estado (Pasa/Falla)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Documento: 123<br>Teléfono: 300123</td>
+                    <td>Validación Front-end</td>
+                    <td>Muestra el modal 'kioscoInfoModal' indicando error ("IDENTIDAD REQUERIDA" o "NÚMERO INCOMPLETO").</td>
+                    <td>Modal de error se despliega correctamente, impidiendo la generación del turno.</td>
+                    <td>Pasa</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="test-case-container">
+        <table class="header-table">
+            <tr>
+                <th>ID: CP-KIO-003</th>
+                <th>Título: Consulta de Turno Existente Modal</th>
+            </tr>
+            <tr>
+                <td>Prioridad</td>
+                <td>Media</td>
+            </tr>
+            <tr>
+                <td>Módulo</td>
+                <td>Kiosco Digital</td>
+            </tr>
+            <tr>
+                <td>Precondición</td>
+                <td>1. El ciudadano tiene un turno previamente asignado con documento 10002000.</td>
+            </tr>
+            <tr>
+                <td>Descripción</td>
+                <td>Verificar el funcionamiento del botón "Consultar Turno" en el footer del kiosco, validando la respuesta AJAX y la tarjeta resultante.</td>
+            </tr>
+        </table>
+        <table class="body-table">
+            <thead>
+                <tr>
+                    <th width="20%">Datos de Entrada</th>
+                    <th width="20%">Pertenece a</th>
+                    <th width="30%">Resultado Esperado</th>
+                    <th width="20%">Resultado Actual</th>
+                    <th width="10%">Estado (Pasa/Falla)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Clic "Consultar Turno"<br>Input documento: 10002000</td>
+                    <td>Consulta AJAX</td>
+                    <td>Modal muestra estado de carga animado y retorna las tarjetas con el estado del turno (Ej. Espera/Atendido).</td>
+                    <td>Consulta completada, muestra tarjeta con detalle del turno activo correctamente.</td>
+                    <td>Pasa</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MÓDULO: PANTALLA -->
+    <!-- ============================================== -->
+    <h2>Módulo: Pantalla</h2>
+
+    <div class="test-case-container">
+        <table class="header-table">
+            <tr>
+                <th>ID: CP-PAN-001</th>
+                <th>Título: Refresco Automático del Último Turno Llamado</th>
+            </tr>
+            <tr>
+                <td>Prioridad</td>
+                <td>Alta</td>
+            </tr>
+            <tr>
+                <td>Módulo</td>
+                <td>Pantalla Principal</td>
+            </tr>
+            <tr>
+                <td>Precondición</td>
+                <td>1. Vista /pantalla cargada.<br>2. Un asesor ejecuta la ruta /asesor/llamar asignándose un turno.</td>
+            </tr>
+            <tr>
+                <td>Descripción</td>
+                <td>Verificar que la pantalla consulte el endpoint `/api/pantalla/ultimo-turno` (o reciba evento WebSocket) y actualice la interfaz sin recargar la página.</td>
+            </tr>
+        </table>
+        <table class="body-table">
+            <thead>
+                <tr>
+                    <th width="20%">Datos de Entrada</th>
+                    <th width="20%">Pertenece a</th>
+                    <th width="30%">Resultado Esperado</th>
+                    <th width="20%">Resultado Actual</th>
+                    <th width="10%">Estado (Pasa/Falla)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Acción: Asesor llama G-005 - Módulo 2</td>
+                    <td>Sincronización Interfaz</td>
+                    <td>El bloque central muestra G-005 en Módulo 2 de inmediato y suena alerta sonora.</td>
+                    <td>La pantalla se actualizó automáticamente vía API mostrando el turno G-005 sin recargar. Sonido emitido correctamente.</td>
+                    <td>Pasa</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MÓDULO: ASESOR -->
+    <!-- ============================================== -->
+    <h2>Módulo: Asesor</h2>
+
+    <div class="test-case-container">
+        <table class="header-table">
+            <tr>
+                <th>ID: CP-ASE-001</th>
+                <th>Título: Llamado del Siguiente Turno y Cronómetro</th>
+            </tr>
+            <tr>
+                <td>Prioridad</td>
+                <td>Alta</td>
+            </tr>
+            <tr>
+                <td>Módulo</td>
+                <td>Panel Asesor</td>
+            </tr>
+            <tr>
+                <td>Precondición</td>
+                <td>1. Asesor logueado con éxito.<br>2. Hay turnos pendientes en estado 'Espera' en la BD.</td>
+            </tr>
+            <tr>
+                <td>Descripción</td>
+                <td>Al presionar "Llamar Turno", se debe procesar la solicitud POST hacia `/asesor/llamar` e iniciar el registro de tiempo de atención (`atnc_hora_inicio`).</td>
+            </tr>
+        </table>
+        <table class="body-table">
+            <thead>
+                <tr>
+                    <th width="20%">Datos de Entrada</th>
+                    <th width="20%">Pertenece a</th>
+                    <th width="30%">Resultado Esperado</th>
+                    <th width="20%">Resultado Actual</th>
+                    <th width="10%">Estado (Pasa/Falla)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Botón: "Llamar Siguiente"</td>
+                    <td>Gestión Cola</td>
+                    <td>Asignación exitosa del turno. La interfaz del asesor actualiza datos del ciudadano, tipo de servicio y activa cronómetro de atención.</td>
+                    <td>Cronómetro inicia, estado cambia a "En Atención".</td>
+                    <td>Pasa</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="test-case-container">
+        <table class="header-table">
+            <tr>
+                <th>ID: CP-ASE-002</th>
+                <th>Título: Finalizar Turno y Liberar Módulo</th>
+            </tr>
+            <tr>
+                <td>Prioridad</td>
+                <td>Alta</td>
+            </tr>
+            <tr>
+                <td>Módulo</td>
+                <td>Panel Asesor</td>
+            </tr>
+            <tr>
+                <td>Precondición</td>
+                <td>1. El asesor está en atención activa con un turno específico (`atnc_id`).</td>
+            </tr>
+            <tr>
+                <td>Descripción</td>
+                <td>Verificar que la ruta `/asesor/finalizar/{atnc_id}` cambie el estado del turno a Finalizado, guarde `atnc_hora_fin` y libere al asesor.</td>
+            </tr>
+        </table>
+        <table class="body-table">
+            <thead>
+                <tr>
+                    <th width="20%">Datos de Entrada</th>
+                    <th width="20%">Pertenece a</th>
+                    <th width="30%">Resultado Esperado</th>
+                    <th width="20%">Resultado Actual</th>
+                    <th width="10%">Estado (Pasa/Falla)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Acción POST: /asesor/finalizar/1</td>
+                    <td>Flujo Atención</td>
+                    <td>Turno marca estado Finalizado en BD. Panel Asesor vuelve a estado "Disponible para llamar turno".</td>
+                    <td>El turno se guardó como finalizado con la hora exacta. El panel se limpió correctamente.</td>
+                    <td>Pasa</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MÓDULO: COORDINADOR -->
+    <!-- ============================================== -->
+    <h2>Módulo: Coordinador</h2>
+
+    <div class="test-case-container">
+        <table class="header-table">
+            <tr>
+                <th>ID: CP-COO-001</th>
+                <th>Título: Visualización Dashboard y Estadísticas</th>
+            </tr>
+            <tr>
+                <td>Prioridad</td>
+                <td>Alta</td>
+            </tr>
+            <tr>
+                <td>Módulo</td>
+                <td>Dashboard Coordinador</td>
+            </tr>
+            <tr>
+                <td>Precondición</td>
+                <td>1. Coordinador autenticado y accede a `/dashboard-coordinador`.</td>
+            </tr>
+            <tr>
+                <td>Descripción</td>
+                <td>Comprobar que el sistema carga las métricas agregadas obteniendo datos desde el API `/api/coordinador/stats` u originadas desde el controlador principal.</td>
+            </tr>
+        </table>
+        <table class="body-table">
+            <thead>
+                <tr>
+                    <th width="20%">Datos de Entrada</th>
+                    <th width="20%">Pertenece a</th>
+                    <th width="30%">Resultado Esperado</th>
+                    <th width="20%">Resultado Actual</th>
+                    <th width="10%">Estado (Pasa/Falla)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Carga de vista dashboard</td>
+                    <td>Reportes / UI</td>
+                    <td>Se renderizan las tarjetas numéricas con Turnos en Espera, Asesores Conectados, y Tiempos de Atención promedios actuales.</td>
+                    <td>Dashboard cargó las estadísticas en tiempo real sin errores. Gráficas visualizadas correctamente.</td>
+                    <td>Pasa</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="test-case-container">
+        <table class="header-table">
+            <tr>
+                <th>ID: CP-COO-002</th>
+                <th>Título: Creación de Nuevo Módulo/Asesor</th>
+            </tr>
+            <tr>
+                <td>Prioridad</td>
+                <td>Media</td>
+            </tr>
+            <tr>
+                <td>Módulo</td>
+                <td>Coordinador - Módulos</td>
+            </tr>
+            <tr>
+                <td>Precondición</td>
+                <td>1. Coordinador ubicado en `/coordinador/modulos`.</td>
+            </tr>
+            <tr>
+                <td>Descripción</td>
+                <td>Validar la ruta `/coordinador/modulos/store` enviando los datos necesarios para registrar un nuevo Asesor en el sistema.</td>
+            </tr>
+        </table>
+        <table class="body-table">
+            <thead>
+                <tr>
+                    <th width="20%">Datos de Entrada</th>
+                    <th width="20%">Pertenece a</th>
+                    <th width="30%">Resultado Esperado</th>
+                    <th width="20%">Resultado Actual</th>
+                    <th width="10%">Estado (Pasa/Falla)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Nombre Asesor, Documento, Clave, Número de Módulo</td>
+                    <td>Gestión Usuarios</td>
+                    <td>Redirección exitosa con mensaje success. El nuevo Asesor aparece listado y puede autenticarse.</td>
+                    <td>Asesor creado en BD. Se mostró mensaje de éxito y el usuario pudo iniciar sesión.</td>
+                    <td>Pasa</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

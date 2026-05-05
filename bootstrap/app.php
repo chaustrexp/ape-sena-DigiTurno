@@ -11,9 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->alias([
-            'auth.asesor'       => \App\Http\Middleware\AuthAsesor::class,
-            'auth.coordinador'  => \App\Http\Middleware\AuthCoordinador::class,
+        $middleware->validateCsrfTokens(except: [
+            'turno/solicitar',
+            'asesor/receso/iniciar'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

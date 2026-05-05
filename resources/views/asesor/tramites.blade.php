@@ -3,34 +3,34 @@
 @section('title', 'Trámites y Servicios - APE Advisor')
 
 @section('content')
-<div class="mb-6">
-    <h2 class="text-2xl font-black text-gray-900 leading-tight">Catálogo de Servicios</h2>
-    <p class="text-gray-500 text-[11px] font-medium mt-0.5">Gestión de trámites disponibles para la atención ciudadana.</p>
+<div class="mb-10">
+    <h2 class="text-3xl font-black text-gray-900 leading-tight">Catálogo de Servicios</h2>
+    <p class="text-gray-500 text-sm font-medium mt-1">Gestión de trámites disponibles para la atención ciudadana.</p>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
     @foreach([
-        ['title' => 'Inscripción Hoja de Vida', 'desc' => 'Registro y actualización de perfiles APE.', 'icon' => 'fa-file-signature', 'color' => 'emerald'],
-        ['title' => 'Orientación Laboral', 'desc' => 'Asesoria personalizada para búsqueda de empleo.', 'icon' => 'fa-user-tie', 'color' => 'blue'],
-        ['title' => 'Postulación a Vacantes', 'desc' => 'Apoyo en el proceso de aplicación a ofertas.', 'icon' => 'fa-briefcase', 'color' => 'indigo'],
-        ['title' => 'Certificaciones', 'desc' => 'Generación de certificados de inscripción.', 'icon' => 'fa-certificate', 'color' => 'amber'],
-        ['title' => 'Talleres APE', 'desc' => 'Inscripción a talleres de habilidades.', 'icon' => 'fa-users-gear', 'color' => 'rose'],
+        ['title' => 'Inscripción Hoja de Vida', 'desc' => 'Registro y actualización de perfiles en la plataforma APE.', 'icon' => 'fa-file-signature', 'color' => 'emerald'],
+        ['title' => 'Orientación Laboral', 'desc' => 'Asesoria personalizada para la búsqueda efectiva de empleo.', 'icon' => 'fa-user-tie', 'color' => 'blue'],
+        ['title' => 'Postulación a Vacantes', 'desc' => 'Apoyo en el proceso de aplicación a ofertas de trabajo.', 'icon' => 'fa-briefcase', 'color' => 'indigo'],
+        ['title' => 'Certificaciones', 'desc' => 'Generación de certificados de inscripción y participación.', 'icon' => 'fa-certificate', 'color' => 'amber'],
+        ['title' => 'Talleres APE', 'desc' => 'Inscripción a talleres de habilidades blandas y técnicas.', 'icon' => 'fa-users-gear', 'color' => 'rose'],
     ] as $serv)
-    <div class="bg-white p-5 rounded-[1.5rem] shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-500 group relative overflow-hidden flex flex-col justify-between">
-        <div class="absolute -right-6 -top-6 w-24 h-24 bg-{{ $serv['color'] ?? 'emerald' }}-50 rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
-        <div class="relative z-10 flex-1">
-            <div class="w-10 h-10 bg-{{ $serv['color'] ?? 'emerald' }}-50 text-{{ $serv['color'] ?? 'emerald' }}-500 rounded-xl flex items-center justify-center text-lg mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+    <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-500 group relative overflow-hidden">
+        <div class="absolute -right-6 -top-6 w-32 h-32 bg-{{ $serv['color'] ?? 'emerald' }}-50 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
+        <div class="relative z-10">
+            <div class="w-16 h-16 bg-{{ $serv['color'] ?? 'emerald' }}-50 text-{{ $serv['color'] ?? 'emerald' }}-500 rounded-2xl flex items-center justify-center text-2xl mb-8 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
                 <i class="fa-solid {{ $serv['icon'] }}"></i>
             </div>
-            <h3 class="text-sm font-black text-gray-900 mb-1 leading-tight">{{ $serv['title'] }}</h3>
-            <p class="text-[10px] font-medium text-gray-400 leading-relaxed mb-4">{{ $serv['desc'] }}</p>
-        </div>
-        
-        <div class="relative z-10 flex items-center justify-between pt-4 border-t border-gray-50 mt-auto">
-            <span id="badge-{{ Str::slug($serv['title']) }}" class="px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black uppercase tracking-widest transition-colors">Activo</span>
-            <button onclick="openConfigModal('{{ $serv['title'] }}', '{{ $serv['desc'] }}', '{{ $serv['color'] }}', '{{ Str::slug($serv['title']) }}')" class="text-sena-500 font-black text-[9px] uppercase tracking-widest hover:translate-x-1 transition-transform flex items-center">
-                Configurar <i class="fa-solid fa-arrow-right ml-1 text-[8px]"></i>
-            </button>
+            <h3 class="text-xl font-black text-gray-900 mb-3">{{ $serv['title'] }}</h3>
+            <p class="text-sm font-medium text-gray-400 leading-relaxed mb-8">{{ $serv['desc'] }}</p>
+            
+            <div class="flex items-center justify-between pt-6 border-t border-gray-50">
+                <span id="badge-{{ Str::slug($serv['title']) }}" class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest transition-colors">Activo</span>
+                <button onclick="openConfigModal('{{ $serv['title'] }}', '{{ $serv['desc'] }}', '{{ $serv['color'] }}', '{{ Str::slug($serv['title']) }}')" class="text-sena-500 font-black text-[10px] uppercase tracking-widest hover:translate-x-1 transition-transform flex items-center">
+                    Configurar <i class="fa-solid fa-arrow-right ml-1"></i>
+                </button>
+            </div>
         </div>
     </div>
     @endforeach
@@ -40,17 +40,17 @@
 <div id="configModal" class="fixed inset-0 z-50 hidden opacity-0 transition-opacity duration-300">
     <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="closeConfigModal()"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md transform scale-95 transition-transform duration-300 relative z-10 overflow-hidden" id="configModalContent">
+        <div class="bg-white rounded-[3rem] shadow-2xl w-full max-w-lg transform scale-95 transition-transform duration-300 relative z-10 overflow-hidden" id="configModalContent">
             <!-- Header Modal -->
-            <div id="modalHeader" class="p-6 border-b border-gray-50 bg-emerald-500 text-white relative">
-                <button onclick="closeConfigModal()" class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+            <div id="modalHeader" class="p-8 border-b border-gray-50 bg-emerald-500 text-white relative">
+                <button onclick="closeConfigModal()" class="absolute top-8 right-8 text-white/70 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
-                <div class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-lg mb-3 shadow-inner">
+                <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-xl mb-4 shadow-inner">
                     <i class="fa-solid fa-sliders"></i>
                 </div>
-                <h3 id="modalTitle" class="text-xl font-black leading-tight">Configuración</h3>
-                <p id="modalDesc" class="text-[11px] font-medium text-white/80 mt-0.5">Ajusta los parámetros de este trámite.</p>
+                <h3 id="modalTitle" class="text-2xl font-black leading-tight">Configuración</h3>
+                <p id="modalDesc" class="text-sm font-medium text-white/80 mt-1">Ajusta los parámetros de este trámite.</p>
             </div>
             
             <!-- Body Modal -->

@@ -21,10 +21,9 @@ class PantallaController extends Controller
 
         $turnoActual = $atencionActual ? (object)[
             'tur_numero' => $atencionActual->turno->tur_numero,
-            'ciudadano'  => $nombreCompleto,
-            'modulo'     => $atencionActual->ASESOR_ase_id,
-            'ase_foto'   => $atencionActual->asesor->ase_foto ?? 'images/foto de perfil.jpg',
-            'atnc_id'    => $atencionActual->atnc_id,
+            'ciudadano' => $nombreCompleto,
+            'modulo' => $atencionActual->ASESOR_ase_id,
+            'ase_foto' => $atencionActual->asesor->ase_foto ?? 'images/foto de perfil.jpg'
         ] : null;
 
         // Turnos en espera (Ordenados por prioridad SENA: Víctima > Prioritario > General)

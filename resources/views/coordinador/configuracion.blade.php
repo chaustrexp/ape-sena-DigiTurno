@@ -19,61 +19,6 @@
     {{-- Left: Main Settings --}}
     <div class="lg:col-span-2 space-y-6">
 
-    {{-- Card: Ciclo de Reinicio de Turnos --}}
-        <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
-            <div class="bg-gradient-to-r from-emerald-600 to-emerald-500 px-7 py-5 flex items-center space-x-3">
-                <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center text-white"><i class="fa-solid fa-rotate"></i></div>
-                <div>
-                    <h2 class="text-sm font-black text-white uppercase tracking-widest">Ciclo de Turnos</h2>
-                    <p class="text-white/70 text-[10px] font-medium mt-0.5">Controla cada cuánto se reinicia la numeración y la validación de duplicados</p>
-                </div>
-            </div>
-            <div class="p-7">
-                @php $cicloActual = \App\Models\ConfiguracionSistema::cicloDeTurno(); @endphp
-
-                @if(session('success'))
-                <div class="mb-5 bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-3 flex items-center gap-3">
-                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
-                    <p class="text-sm font-bold text-emerald-700">{{ session('success') }}</p>
-                </div>
-                @endif
-
-                <form action="{{ route('coordinador.ciclo.update') }}" method="POST">
-                    @csrf
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                        @foreach(['dia' => ['Diario', 'fa-sun', 'Los turnos se reinician cada día a medianoche. Un ciudadano no puede tener dos turnos activos el mismo día.'], 'semana' => ['Semanal', 'fa-calendar-week', 'Los turnos se reinician cada lunes. Un ciudadano no puede tener dos turnos activos en la misma semana.'], 'mes' => ['Mensual', 'fa-calendar-days', 'Los turnos se reinician el primer día de cada mes. Un ciudadano no puede tener dos turnos activos en el mismo mes.']] as $valor => [$etiqueta, $icono, $descripcion])
-                        <label class="cursor-pointer group">
-                            <input type="radio" name="ciclo_turno" value="{{ $valor }}" class="sr-only peer" {{ $cicloActual === $valor ? 'checked' : '' }}>
-                            <div class="border-2 rounded-2xl p-4 transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-50 border-gray-100 hover:border-emerald-200 hover:bg-emerald-50/50 h-full">
-                                <div class="flex items-center gap-3 mb-2">
-                                    <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center peer-checked:bg-emerald-500 peer-checked:text-white transition-all group-has-[:checked]:bg-emerald-500 group-has-[:checked]:text-white">
-                                        <i class="fa-solid {{ $icono }}"></i>
-                                    </div>
-                                    <span class="font-black text-gray-800 text-sm">{{ $etiqueta }}</span>
-                                    @if($cicloActual === $valor)
-                                    <span class="ml-auto text-[9px] font-black bg-emerald-500 text-white px-2 py-0.5 rounded-full uppercase tracking-wider">Activo</span>
-                                    @endif
-                                </div>
-                                <p class="text-[11px] text-gray-500 leading-relaxed">{{ $descripcion }}</p>
-                            </div>
-                        </label>
-                        @endforeach
-                    </div>
-
-                    <div class="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-3 flex items-start gap-3 mb-5">
-                        <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5 shrink-0"></i>
-                        <p class="text-xs text-amber-700 font-medium leading-relaxed">
-                            Cambiar el ciclo afecta inmediatamente la validación de turnos duplicados y la numeración correlativa en el kiosco. Los turnos ya generados no se modifican.
-                        </p>
-                    </div>
-
-                    <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 text-sm uppercase tracking-widest">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar Ciclo de Turnos
-                    </button>
-                </form>
-            </div>
-        </div>
-
         {{-- Card: Operación General --}}
         <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
             <div class="bg-gradient-to-r from-sena-500 to-sena-400 px-7 py-5 flex items-center space-x-3">

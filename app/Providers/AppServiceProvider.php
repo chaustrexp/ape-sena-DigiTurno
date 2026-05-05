@@ -23,10 +23,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         RateLimiter::for('kiosk', function (Request $request) {
-            // En entorno de testing se deshabilita el throttle para no interferir con los tests
-            if (app()->environment('testing')) {
-                return Limit::none();
-            }
             return Limit::perMinute(2)->by($request->ip())->response(function (Request $request) {
                 return back()->with('error', 'Has excedido el límite de turnos permitidos por minuto. Por favor, espera un momento.');
             });

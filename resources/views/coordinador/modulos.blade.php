@@ -220,6 +220,58 @@
                         @error('ase_password') <p class="text-[9px] text-red-500 font-bold ml-1">{{ $message }}</p> @enderror
                     </div>
 
+                    {{-- Tipo de Asesor --}}
+                    <div class="col-span-full space-y-2">
+                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Tipo de Asesor *</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="ase_tipo_asesor" value="OT" class="peer sr-only" required>
+                                <div class="flex items-start gap-3 p-4 rounded-2xl border-2 border-gray-200 peer-checked:border-sena-500 peer-checked:bg-sena-50 transition-all hover:border-gray-300">
+                                    <div class="w-8 h-8 rounded-xl bg-sena-blue/10 text-sena-blue flex items-center justify-center shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-users-gear text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-black text-gray-800">OT — Orientador Técnico</p>
+                                        <p class="text-[9px] text-gray-400 font-medium mt-0.5">Atiende: <span class="font-bold text-gray-600">General · Prioritario</span></p>
+                                    </div>
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="ase_tipo_asesor" value="OV" class="peer sr-only">
+                                <div class="flex items-start gap-3 p-4 rounded-2xl border-2 border-gray-200 peer-checked:border-sena-orange peer-checked:bg-orange-50 transition-all hover:border-gray-300">
+                                    <div class="w-8 h-8 rounded-xl bg-orange-100 text-sena-orange flex items-center justify-center shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-award text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-black text-gray-800">OV — Orientador Víctimas</p>
+                                        <p class="text-[9px] text-gray-400 font-medium mt-0.5">Atiende: <span class="font-bold text-gray-600">Víctima · Empresario</span></p>
+                                    </div>
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="ase_tipo_asesor" value="AT" class="peer sr-only">
+                                <div class="flex items-start gap-3 p-4 rounded-2xl border-2 border-gray-200 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 transition-all hover:border-gray-300">
+                                    <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-star text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-black text-gray-800">AT — Asesor Total</p>
+                                        <p class="text-[9px] text-gray-400 font-medium mt-0.5">Atiende: <span class="font-bold text-emerald-600">Los 4 perfiles</span></p>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        {{-- Leyenda de perfiles --}}
+                        <div class="grid grid-cols-4 gap-2 mt-2">
+                            @foreach([['General','bg-blue-100 text-blue-700','fa-user'],['Prioritario','bg-amber-100 text-amber-700','fa-wheelchair'],['Víctima','bg-rose-100 text-rose-700','fa-award'],['Empresario','bg-purple-100 text-purple-700','fa-building']] as [$label,$cls,$icon])
+                            <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl {{ $cls }}">
+                                <i class="fa-solid {{ $icon }} text-[9px]"></i>
+                                <span class="text-[9px] font-black uppercase tracking-wide">{{ $label }}</span>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+
                     <div class="space-y-2">
                         <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">N° de Contrato / Ficha</label>
                         <div class="relative group">

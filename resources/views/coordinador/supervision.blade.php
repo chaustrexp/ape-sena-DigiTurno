@@ -21,7 +21,7 @@
 </div>
 
 <!-- KPIs Ciclo de Vida (CU-01 / CU-04) -->
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     <div class="bg-white p-5 rounded-2xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center justify-between">
         <div class="w-12 h-12 bg-blue-50 text-sena-blue rounded-full flex items-center justify-center text-lg shrink-0">
             <i class="fa-solid fa-hourglass-half"></i>
@@ -46,6 +46,18 @@
                 {{ $tiemposMedios['tiempo_atencion_medio'] > 0 ? $tiemposMedios['tiempo_atencion_medio'] . ' min' : '—' }}
             </h3>
             <p class="text-[10px] font-bold text-gray-400 mt-1">Promedio hoy</p>
+        </div>
+    </div>
+    <div class="bg-white p-5 rounded-2xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-all" onclick="toggleAusenteModal(true)">
+        <div class="w-12 h-12 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid fa-user-xmark"></i>
+        </div>
+        <div class="text-right">
+            <p class="text-[11px] font-semibold text-gray-400 mb-0.5">Ciudadanos Ausentes</p>
+            <h3 class="text-2xl font-black text-gray-800 leading-none">
+                {{ $turnosAusentesHoy->count() }}
+            </h3>
+            <p class="text-[10px] font-bold text-rose-500 mt-1">Ver listado hoy</p>
         </div>
     </div>
 </div>
@@ -170,11 +182,11 @@
         </div>
     </div>
 
-    <!-- Alertas Espera >20 min -->
+    <!-- Alertas Espera >40 seg -->
     <div class="bg-white p-6 rounded-2xl shadow-[0_2px_10px_-3px_rgba(0,0,0,0.02)] border border-gray-100 {{ $turnosEspera20->count() > 0 ? 'border-l-4 border-l-red-500' : '' }}">
         <div class="flex items-center justify-between mb-6">
             <div>
-                <h3 class="text-[10px] font-black {{ $turnosEspera20->count() > 0 ? 'text-red-500' : 'text-gray-400' }} uppercase tracking-widest">Alertas de Espera &gt; 1 min</h3>
+                <h3 class="text-[10px] font-black {{ $turnosEspera20->count() > 0 ? 'text-red-500' : 'text-gray-400' }} uppercase tracking-widest">Alertas de Espera &gt; 40 seg</h3>
                 <p class="text-xs font-bold text-gray-600 mt-1">{{ $turnosEspera20->count() }} turno(s) con espera crítica</p>
             </div>
             <div class="w-10 h-10 {{ $turnosEspera20->count() > 0 ? 'bg-red-50 text-red-500 animate-bounce' : 'bg-green-50 text-green-500' }} rounded-xl flex items-center justify-center">
@@ -193,7 +205,7 @@
                         — {{ $t->tur_perfil }} | {{ $t->tur_servicio }}
                     </p>
                 </div>
-                <span class="text-[11px] font-black text-red-600 bg-red-100 px-3 py-1 rounded-full">{{ $t->minutos_espera }} min</span>
+                <span class="text-[11px] font-black text-red-600 bg-red-100 px-3 py-1 rounded-full">{{ $t->minutos_espera }} seg</span>
             </div>
             @empty
             <div class="text-center py-8">
@@ -201,7 +213,7 @@
                     <i class="fa-solid fa-check text-green-500 text-xl"></i>
                 </div>
                 <p class="text-xs font-black text-gray-900 uppercase tracking-wide">Todo en orden</p>
-                <p class="text-[10px] text-gray-400 mt-1">Todos los turnos en espera son &lt; 1 minuto</p>
+                <p class="text-[10px] text-gray-400 mt-1">Todos los turnos en espera son &lt; 40 segundos</p>
             </div>
             @endforelse
         </div>
@@ -265,10 +277,120 @@
 
 <!-- Auto-refresh note -->
 <p class="text-center text-[10px] text-gray-400 pb-6">
-    Actualización automática cada 60 seg &nbsp;·&nbsp; <a href="{{ route('coordinador.supervision') }}" class="text-sena-blue font-bold hover:underline">Actualizar ahora</a>
+    Actualización automática cada 10 seg &nbsp;·&nbsp; <a href="{{ route('coordinador.supervision') }}" class="text-sena-blue font-bold hover:underline">Actualizar ahora</a>
 </p>
 
-<!-- MODAL DE ALERTA CRÍTICA — TURNO LLAMADO SIN ATENDER -->
+<!-- MODAL DE LISTADO DE AUSENTES -->
+<div id="ausenteModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-6 bg-black/60 backdrop-blur-sm transition-all duration-300">
+    <div class="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden">
+        <div class="bg-rose-500 p-6 flex flex-col items-center text-center text-white relative">
+            <button onclick="toggleAusenteModal(false)" class="absolute top-4 right-4 text-white/80 hover:text-white transition text-2xl"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-3">
+                <i class="fa-solid fa-user-slash text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-black uppercase tracking-tight italic">Ciudadanos Ausentes Hoy</h3>
+            <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mt-1">Reporte de inasistencia en módulos</p>
+        </div>
+        <div class="p-8">
+            @if($turnosAusentesHoy->count() > 0)
+                <div class="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+                    @foreach($turnosAusentesHoy as $ta)
+                    <div class="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:bg-white hover:shadow-sm transition-all">
+                        <div class="flex items-center space-x-4">
+                            <span class="w-10 h-10 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center font-black text-xs">{{ $ta->tur_numero }}</span>
+                            <div>
+                                <p class="text-sm font-black text-gray-800">{{ $ta->solicitante->persona->pers_nombres ?? 'Ciudadano' }} {{ $ta->solicitante->persona->pers_apellidos ?? '' }}</p>
+                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">
+                                    D.I. {{ $ta->solicitante->persona->pers_doc ?? '—' }} · {{ $ta->tur_servicio }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] font-black text-gray-900">{{ \Carbon\Carbon::parse($ta->tur_hora_fecha)->format('h:i A') }}</p>
+                            <p class="text-[9px] font-bold text-rose-500 uppercase tracking-widest">Marcado Ausente</p>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-12">
+                    <div class="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-check text-emerald-500 text-2xl"></i>
+                    </div>
+                    <p class="text-sm font-black text-gray-900 uppercase tracking-wide">Sin ausentismo hoy</p>
+                    <p class="text-xs text-gray-400 mt-1">Todos los ciudadanos llamados han sido atendidos.</p>
+                </div>
+            @endif
+            <div class="mt-8">
+                <button onclick="toggleAusenteModal(false)" class="w-full py-4 bg-gray-900 text-white font-black rounded-2xl shadow-lg hover:bg-black transition-all active:scale-95 uppercase tracking-widest text-xs">Cerrar listado</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE ALERTA MÁXIMA (ESPERA > 1 MINUTO) -->
+<div id="maximaAlertaModal" class="fixed inset-0 z-[300] hidden items-center justify-center p-6 bg-red-950/90 backdrop-blur-md transition-all duration-500">
+    <div class="bg-white w-full max-w-2xl rounded-[3rem] shadow-[0_0_100px_rgba(220,38,38,0.8)] border-8 border-red-600 overflow-hidden animate-pulse">
+        <div class="bg-red-600 p-10 flex flex-col items-center text-center text-white relative">
+            <div class="absolute top-6 right-6">
+                <button onclick="cerrarMaximaAlerta()" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 transition shadow-lg text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="w-28 h-28 bg-white/10 rounded-full flex items-center justify-center mb-6 relative">
+                <div class="absolute inset-0 bg-white/20 rounded-full animate-ping"></div>
+                <i class="fa-solid fa-triangle-exclamation text-6xl animate-bounce"></i>
+            </div>
+            <h3 class="text-4xl font-black uppercase tracking-tighter italic">ALERTA MÁXIMA</h3>
+            <p class="text-xs font-bold uppercase tracking-[0.4em] opacity-90 mt-2">TIEMPO DE ESPERA EXCEDIDO (> 1 MINUTO)</p>
+        </div>
+        <div class="p-10 space-y-8">
+            <div class="space-y-4">
+                <p class="text-center text-sm font-black text-gray-500 uppercase tracking-[0.2em]">Turnos Críticos con Prioridad Absoluta:</p>
+                <div class="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                    @foreach($turnosEspera60 as $t)
+                    <div class="flex items-center justify-between p-5 bg-red-50 border-2 border-red-200 rounded-[2rem]">
+                        <div class="flex items-center space-x-4">
+                            <span class="w-14 h-14 bg-red-600 text-white rounded-2xl flex items-center justify-center font-black text-xl shadow-lg">{{ $t->tur_numero }}</span>
+                            <div>
+                                <p class="text-lg font-black text-gray-900 leading-tight">{{ $t->solicitante->persona->pers_nombres ?? 'Ciudadano' }}</p>
+                                <p class="text-[10px] font-bold text-red-600 uppercase tracking-widest mt-1">EN SALA · {{ $t->tur_perfil }} · {{ $t->tur_servicio }}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-2xl font-black text-red-600 block">{{ floor($t->minutos_espera / 60) }}m {{ $t->minutos_espera % 60 }}s</span>
+                            <span class="text-[9px] font-black text-red-400 uppercase tracking-tighter">ESPERA EN SALA</span>
+                        </div>
+                    </div>
+                    @endforeach
+
+                    @foreach($atencionesLlamadas60 as $at)
+                    <div class="flex items-center justify-between p-5 bg-orange-50 border-2 border-orange-200 rounded-[2rem]">
+                        <div class="flex items-center space-x-4">
+                            <span class="w-14 h-14 bg-orange-500 text-white rounded-2xl flex items-center justify-center font-black text-xl shadow-lg">{{ $at->turno->tur_numero }}</span>
+                            <div>
+                                <p class="text-lg font-black text-gray-900 leading-tight">Módulo {{ $at->ASESOR_ase_id }}</p>
+                                <p class="text-[10px] font-bold text-orange-600 uppercase tracking-widest mt-1">LLAMADO SIN RESPUESTA · {{ $at->asesor->persona->pers_nombres ?? 'Asesor' }}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-2xl font-black text-orange-600 block">{{ floor($at->segundos_llamado / 60) }}m {{ $at->segundos_llamado % 60 }}s</span>
+                            <span class="text-[9px] font-black text-orange-400 uppercase tracking-tighter">TIEMPO LLAMADO</span>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            <div class="flex flex-col space-y-4">
+                <button onclick="cerrarMaximaAlerta()" class="w-full py-6 bg-red-600 text-white font-black rounded-2xl shadow-2xl hover:bg-red-700 transition-all active:scale-95 uppercase tracking-widest text-sm flex items-center justify-center space-x-3">
+                    <i class="fa-solid fa-person-walking-arrow-right text-lg"></i>
+                    <span>INTERVENIR AHORA</span>
+                </button>
+                <p class="text-center text-[10px] font-bold text-gray-300 uppercase tracking-widest">Esta alerta persistirá hasta que los turnos sean atendidos</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE ALERTA CRÍTICA (ESPERA > 40 SEG) -->
 <div id="criticoModal" class="fixed inset-0 z-[200] hidden items-center justify-center p-6 bg-red-900/40 backdrop-blur-sm transition-all duration-500">
     <div class="bg-white w-full max-w-xl rounded-[2.5rem] shadow-[0_35px_60px_-15px_rgba(220,38,38,0.3)] border-4 border-red-500 overflow-hidden animate-in zoom-in duration-300">
         <div class="bg-red-500 p-8 flex flex-col items-center text-center text-white relative">
@@ -278,19 +400,32 @@
             <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-4 animate-bounce">
                 <i class="fa-solid fa-bell text-4xl"></i>
             </div>
-            <h3 class="text-2xl font-black uppercase tracking-tighter italic">Tiempo de Atención Vencido</h3>
-            <p class="text-[10px] font-bold uppercase tracking-[0.3em] opacity-80 mt-1">Turno llamado sin respuesta del ciudadano</p>
+            <h3 class="text-2xl font-black uppercase tracking-tighter italic">Alerta de Espera Crítica</h3>
+            <p class="text-[10px] font-bold uppercase tracking-[0.3em] opacity-80 mt-1">Supervisión en tiempo real — CU-04</p>
         </div>
         <div class="p-8 space-y-6">
             <div class="space-y-3">
-                <p class="text-center text-xs font-bold text-gray-400 uppercase tracking-widest">Turnos llamados hace más de 40 segundos:</p>
-                <div id="lista-vencidos" class="space-y-2 max-h-48 overflow-y-auto pr-2"></div>
+                <p class="text-center text-xs font-bold text-gray-400 uppercase tracking-widest">Turnos sin llamar por > 40 segundos:</p>
+                <div class="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                    @foreach($turnosEspera20 as $t)
+                    <div class="flex items-center justify-between p-4 bg-red-50 border border-red-100 rounded-2xl">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-10 h-10 bg-red-500 text-white rounded-xl flex items-center justify-center font-black text-xs shadow-sm">{{ $t->tur_numero }}</span>
+                            <div>
+                                <p class="text-sm font-black text-gray-800">{{ $t->solicitante->persona->pers_nombres ?? 'Ciudadano' }}</p>
+                                <p class="text-[9px] font-bold text-red-500 uppercase tracking-widest">{{ $t->tur_perfil }} · {{ $t->tur_servicio }}</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-black text-red-600 bg-white border border-red-100 px-3 py-1 rounded-full">{{ $t->minutos_espera }}s</span>
+                    </div>
+                    @endforeach
+                </div>
             </div>
             <div class="flex flex-col space-y-3">
-                <button onclick="cerrarAlertModal()" class="w-full py-5 bg-gray-900 text-white font-black rounded-2xl shadow-xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest text-xs">Entendido</button>
+                <button onclick="cerrarAlertModal()" class="w-full py-5 bg-gray-900 text-white font-black rounded-2xl shadow-xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest text-xs">Entendido, atender ahora</button>
                 <div class="flex items-center justify-center space-x-2 text-[9px] font-bold text-gray-300 uppercase tracking-widest">
                     <i class="fa-solid fa-clock"></i>
-                    <span>Verificación automática cada 15 segundos</span>
+                    <span>Siguiente verificación en 10 segundos</span>
                 </div>
             </div>
         </div>
@@ -302,33 +437,33 @@
 @section('scripts')
 <script>
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    let modalAbierto = false;
-
+    
     function playAlertSound() {
-        try {
-            const now = audioCtx.currentTime;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(440, now);
-            osc.frequency.exponentialRampToValueAtTime(880, now + 0.1);
-            osc.frequency.exponentialRampToValueAtTime(440, now + 0.2);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start(now);
-            osc.stop(now + 0.8);
-        } catch(e) {}
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.1);
+        osc.frequency.exponentialRampToValueAtTime(440, now + 0.2);
+        
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start(now);
+        osc.stop(now + 0.8);
     }
 
     function toggleAlertModal(show) {
         const modal = document.getElementById('criticoModal');
-        modalAbierto = show;
         if (show) {
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-            playAlertSound();
+            try { playAlertSound(); } catch(e) { console.log("Audio interaction required"); }
         } else {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
@@ -339,66 +474,45 @@
         toggleAlertModal(false);
     }
 
+    function cerrarMaximaAlerta() {
+        const modal = document.getElementById('maximaAlertaModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    function toggleAusenteModal(show) {
+        const modal = document.getElementById('ausenteModal');
+        if (show) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        } else {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    }
+
     function actualizarReloj() {
         const ahora = new Date();
         document.getElementById('reloj').textContent =
             ahora.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
 
-    function verificarTurnosVencidos() {
-        fetch('{{ route("coordinador.api.vencidos") }}')
-            .then(r => r.json())
-            .then(data => {
-                if (!data.success) return;
-
-                if (data.total > 0) {
-                    // Renderizar lista en el modal
-                    const lista = document.getElementById('lista-vencidos');
-                    lista.innerHTML = data.vencidos.map(t => {
-                        const mins = Math.floor(t.segundos / 60);
-                        const segs = t.segundos % 60;
-                        // Mostrar máximo "1m 00s" como límite visual
-                        const tiempoLabel = mins > 0 ? `${mins}m ${segs}s` : `${segs}s`;
-                        const tiempoColor = mins >= 1 ? 'text-red-600' : 'text-orange-500';
-                        return `
-                        <div class="flex items-center justify-between p-4 bg-red-50 border border-red-100 rounded-2xl">
-                            <div class="flex items-center space-x-3">
-                                <span class="w-10 h-10 bg-red-500 text-white rounded-xl flex items-center justify-center font-black text-xs shadow-sm">${t.tur_numero}</span>
-                                <div>
-                                    <p class="text-sm font-black text-gray-800">${t.ciudadano}</p>
-                                    <p class="text-[9px] font-bold text-red-500 uppercase tracking-widest">${t.tur_perfil} · ${t.tur_servicio} · Módulo ${t.modulo}</p>
-                                </div>
-                            </div>
-                            <span class="text-xs font-black ${tiempoColor} bg-white border border-red-100 px-3 py-1 rounded-full flex items-center gap-1">
-                                <i class="fa-solid fa-stopwatch text-[10px]"></i> ${tiempoLabel}
-                            </span>
-                        </div>
-                    `}).join('');
-
-                    // Solo abrir si no está ya abierto
-                    if (!modalAbierto) {
-                        toggleAlertModal(true);
-                    }
-                } else {
-                    // Si ya no hay vencidos y el modal estaba abierto, cerrarlo
-                    if (modalAbierto) {
-                        toggleAlertModal(false);
-                    }
-                }
-            })
-            .catch(() => {});
-    }
-
     window.onload = () => {
         actualizarReloj();
         setInterval(actualizarReloj, 1000);
+        
+        // Disparar alerta según criticidad
+        @if($turnosEspera60->count() > 0 || $atencionesLlamadas60->count() > 0)
+            const maxModal = document.getElementById('maximaAlertaModal');
+            maxModal.classList.remove('hidden');
+            maxModal.classList.add('flex');
+            try { playAlertSound(); } catch(e) {}
+        @elseif($turnosEspera20->count() > 0)
+            setTimeout(() => toggleAlertModal(true), 500);
+        @endif
 
-        // Verificar turnos vencidos cada 15 segundos
-        verificarTurnosVencidos();
-        setInterval(verificarTurnosVencidos, 15000);
-
-        // Auto-refresh de la página cada 60s
-        setTimeout(() => location.reload(), 60000);
+        // Auto-refresh cada 10s
+        setTimeout(() => location.reload(), 10000);
     };
 </script>
 @endsection

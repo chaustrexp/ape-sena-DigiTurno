@@ -8,7 +8,6 @@ use App\Models\Atencion;
 use App\Models\Asesor;
 use App\Models\Turno;
 use App\Models\PausaAsesor;
-use App\Models\ConfiguracionSistema;
 use App\Repositories\TurnoRepository;
 use Carbon\Carbon;
 
@@ -29,29 +28,22 @@ class CoordinadorController extends Controller
             'password' => 'required'
         ]);
 
+        // Validate against the coordinador table
         $coordinador = DB::table('coordinador')
             ->join('persona', 'coordinador.PERSONA_pers_doc', '=', 'persona.pers_doc')
             ->where('coordinador.coor_correo', trim($request->email))
-            ->select('coordinador.coor_id', 'coordinador.coor_password', 'coordinador.coor_correo',
-                     'persona.pers_nombres', 'persona.pers_apellidos')
+            ->select('coordinador.*', 'persona.pers_nombres', 'persona.pers_apellidos')
             ->first();
 
         $isValid = false;
         if ($coordinador) {
-            $currentStored = $coordinador->coor_password;
-            // Si empieza con $2y$, es un hash de Bcrypt
-            if (str_starts_with($currentStored, '$2y$')) {
-                if (\Illuminate\Support\Facades\Hash::check($request->password, $currentStored)) {
-                    $isValid = true;
-                }
+            if ($request->password === $coordinador->coor_password) {
+                $isValid = true;
             } else {
-                // Es texto plano: comparar directamente
-                if ($request->password === $currentStored) {
-                    $isValid = true;
-                    // Migrar a hash
-                    DB::table('coordinador')
-                        ->where('coor_id', $coordinador->coor_id)
-                        ->update(['coor_password' => \Illuminate\Support\Facades\Hash::make($request->password)]);
+                try {
+                    $isValid = \Illuminate\Support\Facades\Hash::check($request->password, $coordinador->coor_password);
+                } catch (\Exception $e) {
+                    $isValid = false;
                 }
             }
         }
@@ -71,6 +63,64 @@ class CoordinadorController extends Controller
     {
         session()->forget(['coordinador_id', 'coordinador_nombre']);
         return redirect()->route('coordinador.login')->with('success', 'Sesión cerrada correctamente.');
+    }
+
+    public function showRegister()
+    {
+        if (session()->has('coordinador_id')) {
+            return redirect()->route('coordinador.dashboard');
+        }
+        return view('coordinador.register');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'pers_tipodoc'   => 'required',
+            'pers_doc'       => 'required|numeric|unique:persona,pers_doc',
+            'pers_nombres'   => 'required|string|max:100',
+            'pers_apellidos' => 'required|string|max:100',
+            'pers_telefono'  => 'nullable|string|max:20',
+            'pers_fecha_nac' => 'nullable|date',
+            'coor_correo'    => 'required|email|unique:coordinador,coor_correo',
+            'password'       => 'required|string|min:6|confirmed',
+        ], [
+            'pers_doc.unique'    => 'Ya existe una persona registrada con ese documento.',
+            'coor_correo.unique' => 'Ese correo ya está en uso.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
+            'password.min'       => 'La contraseña debe tener al menos 6 caracteres.',
+        ]);
+
+        \DB::beginTransaction();
+        try {
+            $persona = \App\Models\Persona::create([
+                'pers_doc'       => $request->pers_doc,
+                'pers_tipodoc'   => $request->pers_tipodoc,
+                'pers_nombres'   => $request->pers_nombres,
+                'pers_apellidos' => $request->pers_apellidos,
+                'pers_telefono'  => $request->pers_telefono,
+                'pers_fecha_nac' => $request->pers_fecha_nac,
+            ]);
+
+            $coordinador = \DB::table('coordinador')->insertGetId([
+                'PERSONA_pers_doc' => $persona->pers_doc,
+                'coor_vigencia'    => now()->addYear()->toDateString(),
+                'coor_correo'      => $request->coor_correo,
+                'coor_password'    => bcrypt($request->password),
+            ]);
+
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return back()->withInput()->with('error', 'Error al registrar: ' . $e->getMessage());
+        }
+
+        session([
+            'coordinador_id'     => $coordinador,
+            'coordinador_nombre' => $persona->pers_nombres . ' ' . $persona->pers_apellidos,
+        ]);
+
+        return redirect()->route('coordinador.dashboard')->with('success', '¡Cuenta creada! Bienvenido, ' . $persona->pers_nombres);
     }
 
     private function checkAuth()
@@ -104,9 +154,9 @@ class CoordinadorController extends Controller
             return $at->turno ? $at->atnc_hora_inicio->diffInMinutes($at->turno->tur_hora_fecha) : 0;
         }) ?? 0);
 
-        // Chart 1: Flujo de turno por hora (Agrupado por hora)
+        // Chart 1: Flujo de turno por hora (Agrupado por hora con ajuste de zona horaria -5)
         $flowData = Turno::whereDate('tur_hora_fecha', $hoy)
-            ->selectRaw('HOUR(tur_hora_fecha) as hour, count(*) as count')
+            ->selectRaw('HOUR(DATE_SUB(tur_hora_fecha, INTERVAL 5 HOUR)) as hour, count(*) as count')
             ->groupBy('hour')
             ->orderBy('hour')
             ->pluck('count', 'hour')
@@ -114,7 +164,7 @@ class CoordinadorController extends Controller
         
         $flowLabels = [];
         $flowValues = [];
-        for ($i = 7; $i <= 18; $i++) {
+        for ($i = 6; $i <= 20; $i++) {
             $flowLabels[] = sprintf('%02d:00', $i);
             $flowValues[] = $flowData[$i] ?? 0;
         }
@@ -362,42 +412,25 @@ class CoordinadorController extends Controller
         return view('coordinador.configuracion');
     }
 
-    /**
-     * Actualiza el ciclo de reinicio de turnos (dia | semana | mes).
-     * Accesible solo para coordinadores autenticados.
-     */
-    public function actualizarCicloTurno(Request $request)
-    {
-        if (!$this->checkAuth()) return redirect()->route('coordinador.login');
-
-        $request->validate([
-            'ciclo_turno' => 'required|in:dia,semana,mes',
-        ]);
-
-        \App\Models\ConfiguracionSistema::set('ciclo_turno', $request->ciclo_turno);
-
-        $etiquetas = ['dia' => 'Diario', 'semana' => 'Semanal', 'mes' => 'Mensual'];
-        $etiqueta  = $etiquetas[$request->ciclo_turno] ?? $request->ciclo_turno;
-
-        return back()->with('success', "Ciclo de turnos actualizado a: {$etiqueta}. La validación de duplicados y la numeración correlativa ahora aplican por {$etiqueta}.");
-    }
-
     public function storeAsesor(Request $request)
     {
         if (!$this->checkAuth()) return redirect()->route('coordinador.login');
 
         $request->validate([
-            'pers_doc'      => 'required|string|max:20|unique:asesor,PERSONA_pers_doc',
-            'pers_tipodoc'  => 'required|string',
-            'pers_nombres'  => 'required|string|max:100',
-            'pers_apellidos'=> 'required|string|max:100',
-            'pers_telefono' => 'nullable|string|max:20',
-            'ase_correo'    => 'required|email|max:100|unique:asesor,ase_correo',
-            'ase_password'  => 'required|string|min:6',
+            'pers_doc'        => 'required|string|max:20|unique:asesor,PERSONA_pers_doc',
+            'pers_tipodoc'    => 'required|string',
+            'pers_nombres'    => 'required|string|max:100',
+            'pers_apellidos'  => 'required|string|max:100',
+            'pers_telefono'   => 'nullable|string|max:20',
+            'ase_correo'      => 'required|email|max:100|unique:asesor,ase_correo',
+            'ase_password'    => 'required|string|min:6',
+            'ase_tipo_asesor' => 'required|in:OT,OV,AT',
             'ase_nrocontrato' => 'nullable|string|max:50',
         ], [
-            'pers_doc.unique' => 'Este número de documento ya está registrado como asesor.',
-            'ase_correo.unique' => 'Este correo electrónico ya está en uso por otro asesor.',
+            'pers_doc.unique'          => 'Este número de documento ya está registrado como asesor.',
+            'ase_correo.unique'        => 'Este correo electrónico ya está en uso por otro asesor.',
+            'ase_tipo_asesor.required' => 'Debe seleccionar el tipo de asesor.',
+            'ase_tipo_asesor.in'       => 'El tipo de asesor debe ser OT, OV o AT.',
         ]);
 
         \DB::beginTransaction();
@@ -405,10 +438,10 @@ class CoordinadorController extends Controller
             \App\Models\Persona::firstOrCreate(
                 ['pers_doc' => $request->pers_doc],
                 [
-                    'pers_tipodoc'  => $request->pers_tipodoc,
-                    'pers_nombres'  => $request->pers_nombres,
-                    'pers_apellidos'=> $request->pers_apellidos,
-                    'pers_telefono' => $request->pers_telefono,
+                    'pers_tipodoc'   => $request->pers_tipodoc,
+                    'pers_nombres'   => $request->pers_nombres,
+                    'pers_apellidos' => $request->pers_apellidos,
+                    'pers_telefono'  => $request->pers_telefono,
                 ]
             );
 
@@ -417,9 +450,9 @@ class CoordinadorController extends Controller
                 'ase_correo'       => $request->ase_correo,
                 'ase_password'     => bcrypt($request->ase_password),
                 'ase_nrocontrato'  => $request->ase_nrocontrato ?? 'CONT-' . now()->format('Ymd'),
-                'ase_tipo_asesor'  => 'Asesor',
+                'ase_tipo_asesor'  => $request->ase_tipo_asesor, // OT o OV
                 'ase_vigencia'     => now()->addYear()->toDateString(),
-                'ase_foto'         => 'images/foto de perfil.jpg', // Default photo
+                'ase_foto'         => 'images/foto de perfil.jpg',
             ]);
 
             \DB::commit();
