@@ -1,0 +1,206 @@
+﻿<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8">
+<style>
+body{font-family:Calibri,Arial,sans-serif;font-size:11px;}
+table{border-collapse:collapse;width:100%;}
+th,td{border:1px solid #bbb;padding:6px 10px;vertical-align:top;}
+.titulo{background:#10069F;color:#fff;font-size:16px;font-weight:bold;text-align:center;height:48px;vertical-align:middle;}
+.subtitulo{background:#e8eaf6;color:#10069F;font-size:11px;font-weight:bold;text-align:center;padding:6px;}
+.cu-header{background:#1a237e;color:#fff;font-size:13px;font-weight:bold;padding:10px;vertical-align:middle;}
+.campo{background:#e8eaf6;color:#1a237e;font-weight:bold;width:18%;white-space:nowrap;}
+.valor{background:#ffffff;color:#212121;}
+.flujo-header{background:#283593;color:#fff;font-weight:bold;font-size:11px;padding:6px;}
+.flujo-normal{background:#e8f5e9;color:#1b5e20;}
+.flujo-alt{background:#fff8e1;color:#e65100;}
+.flujo-principal{background:#e3f2fd;color:#0d47a1;}
+.post{background:#f3e5f5;color:#4a148c;}
+.pre{background:#fce4ec;color:#880e4f;}
+.separador{height:16px;border:none;background:#f5f5f5;}
+.nota{background:#fff9c4;color:#f57f17;font-style:italic;font-size:10px;}
+.ok{color:#1b5e20;font-weight:bold;}
+.warn{color:#e65100;font-weight:bold;}
+</style>
+</head>
+<body>
+<table>
+<tr><td colspan="2" class="titulo">ESPECIFICACIÓN DE CASOS DE USO — DigiTurno APE SENA</td></tr>
+<tr><td colspan="2" class="subtitulo">Sistema Digital de Turnos &nbsp;|&nbsp; Verificado contra código fuente &nbsp;|&nbsp; 5 de Mayo de 2026</td></tr>
+
+<!-- ESPACIO -->
+<tr><td colspan="2" class="separador"></td></tr>
+
+<!-- ══════════════════════════════════════════════════════ CU-01 -->
+<tr><td colspan="2" class="cu-header">&#128187; CU-01 — Generar Turno de Atención y Perfilamiento</td></tr>
+<tr><td class="campo">ID</td><td class="valor">CU-01</td></tr>
+<tr><td class="campo">Nombre</td><td class="valor">Generar Turno de Atención y Perfilamiento</td></tr>
+<tr><td class="campo">Descripción</td><td class="valor">Permite al ciudadano ingresar sus datos, ser perfilado según su grupo poblacional y seleccionar el servicio requerido para ingresar a la cola de espera.</td></tr>
+<tr><td class="campo">Actor</td><td class="valor">Usuario General (Ciudadano / NIT de Empresa)</td></tr>
+<tr><td class="campo">Precondiciones</td><td class="pre">El kiosco debe mostrar la pantalla de bienvenida y términos de uso de datos. Vigilante capacitado disponible para soporte opcional.</td></tr>
+<tr><td class="campo">Flujo Normal</td><td class="flujo-normal">
+1. El usuario acepta términos y condiciones.<br>
+2. Selección de Perfil: General, Víctima, Prioritario o Empresario.<br>
+3. Selección de Tipo de Atención: "Normal" o "Especial".<br>
+4. Selección de Documento: CC, TI o CE.<br>
+5. Ingreso de número de identificación.<br>
+6. Validación de Registro: Si no tiene registro en la APE, el sistema permite continuar pero emite advertencia.<br>
+7. Ingreso de Teléfono (Opcional).<br>
+8. Selección de Servicio: Orientación Laboral, Formación Académica o Emprendimiento.<br>
+9. El sistema genera el turno con código alfanumérico según prioridad y lo guarda en la BD.
+</td></tr>
+<tr><td class="campo">Postcondiciones</td><td class="post">Se registra el turno en estado "Espera" y se libera la interfaz del kiosco.</td></tr>
+<tr><td class="campo">Flujos Alternativos</td><td class="flujo-alt">
+4.a: Si el número ya tiene un turno activo, el sistema notifica error: "Solo puedes solicitar un (1) turno por día".<br>
+4.b: Si la longitud del documento no cumple la normativa colombiana (CC/TI: 8-10 dígitos, CE: mínimo 6), solicita corregir.<br>
+5.a: El usuario deja el campo de teléfono vacío y presiona "Continuar" (flujo permitido).
+</td></tr>
+<tr><td class="campo">Flujo Principal</td><td class="flujo-principal">El sistema valida los datos de identificación, asigna un código alfanumérico según la prioridad (V/E/P/G) y lo ingresa a la base de datos de la APE con estado "Espera".</td></tr>
+<tr><td class="campo">Estado en código</td><td class="ok">✅ IMPLEMENTADO COMPLETAMENTE — TurnoController::store() con lockForUpdate()</td></tr>
+
+<tr><td colspan="2" class="separador"></td></tr>
+
+<!-- ══════════════════════════════════════════════════════ CU-02 -->
+<tr><td colspan="2" class="cu-header">&#128100; CU-02 — Gestión de Atención al Ciudadano</td></tr>
+<tr><td class="campo">ID</td><td class="valor">CU-02</td></tr>
+<tr><td class="campo">Nombre</td><td class="valor">Gestión de Atención al Ciudadano</td></tr>
+<tr><td class="campo">Descripción</td><td class="valor">El asesor solicita un turno de la fila, lo atiende y actualiza la información en la pantalla pública.</td></tr>
+<tr><td class="campo">Actor</td><td class="valor">Usuario Asesor (OT / OV / AT)</td></tr>
+<tr><td class="campo">Precondiciones</td><td class="pre">El asesor debe estar logueado y en estado "Disponible" (sin atención activa y sin pausa activa).</td></tr>
+<tr><td class="campo">Flujo Normal</td><td class="flujo-normal">
+1. El asesor presiona "Llamar Siguiente Turno".<br>
+1.1 El sistema busca el turno prioritario más antiguo según el tipo de asesor (OT: Prioritario→General 3:1 / OV: Empresario→Víctima / AT: todos).<br>
+1.2 El sistema muestra los datos del ciudadano en el panel del asesor.<br>
+1.3 El sistema actualiza la pantalla pública con audio (chime + voz).<br>
+2. El asesor realiza el trámite con el ciudadano.<br>
+3. El asesor presiona "Finalizar Atención".<br>
+4. El sistema registra hora de fin y cambia el estado del turno a "Finalizado".
+</td></tr>
+<tr><td class="campo">Postcondiciones</td><td class="post">El turno cambia a estado "Finalizado", el asesor queda libre y se registran los tiempos (atnc_hora_inicio / atnc_hora_fin) para reportes de la coordinadora.</td></tr>
+<tr><td class="campo">Flujos Alternativos</td><td class="flujo-alt">
+3.a: El ciudadano no se presenta → El asesor presiona "Ciudadano Ausente" → El sistema cambia el estado a "Ausente" y registra la hora de fin.<br>
+3.b: El asesor intenta llamar un nuevo turno con atención activa → El botón "Llamar Siguiente" no aparece hasta finalizar la atención actual.
+</td></tr>
+<tr><td class="campo">Flujo Principal</td><td class="flujo-principal">El sistema vincula el turno con el módulo del asesor mediante lockForUpdate(), actualiza los tiempos de respuesta en tiempo real y notifica a la sala de espera vía polling.</td></tr>
+<tr><td class="campo">Estado en código</td><td class="warn">⚠️ IMPLEMENTADO — Falta campo de "conclusión/observaciones del trámite" (pendiente)</td></tr>
+
+<tr><td colspan="2" class="separador"></td></tr>
+
+<!-- ══════════════════════════════════════════════════════ CU-03 -->
+<tr><td colspan="2" class="cu-header">&#9749; CU-03 — Registrar Receso Temporal</td></tr>
+<tr><td class="campo">ID</td><td class="valor">CU-03</td></tr>
+<tr><td class="campo">Nombre</td><td class="valor">Registrar Receso Temporal (Baño / Pausa)</td></tr>
+<tr><td class="campo">Descripción</td><td class="valor">Permite al asesor ausentarse temporalmente sin que el sistema le asigne nuevos turnos, informando su estado a la coordinación.</td></tr>
+<tr><td class="campo">Actor</td><td class="valor">Orientador Técnico (OT) / Orientador de Víctimas (OV) / Asesor Total (AT)</td></tr>
+<tr><td class="campo">Precondiciones</td><td class="pre">El asesor no debe tener un turno activo en ese momento. Máximo 3 recesos por jornada.</td></tr>
+<tr><td class="campo">Flujo Normal</td><td class="flujo-normal">
+1. El asesor selecciona "Iniciar Receso" en el sidebar.<br>
+2. El sistema verifica que no haya atención activa.<br>
+3. El sistema registra la hora de inicio en tabla pausas_asesor.<br>
+4. El estado del módulo cambia a "Pausa" — no recibe nuevos turnos.<br>
+5. Al regresar, el asesor presiona "Finalizar Receso".<br>
+6. El sistema calcula la duración (diffInMinutes) y guarda en BD.<br>
+7. El estado vuelve a "Activo" — el módulo vuelve a recibir turnos.
+</td></tr>
+<tr><td class="campo">Postcondiciones</td><td class="post">Se guarda el registro de duración de la pausa en tabla pausas_asesor para el reporte de productividad de la coordinadora.</td></tr>
+<tr><td class="campo">Flujos Alternativos</td><td class="flujo-alt">
+1.a: Si intenta pausar mientras atiende a alguien → Sistema muestra: "No puedes iniciar un receso mientras tienes una atención activa".<br>
+1.b: Si ya tiene 3 recesos en el día → Sistema muestra: "Has alcanzado el límite máximo de 3 recesos permitidos por día".<br>
+1.c: Si ya tiene un receso activo → Sistema muestra: "Ya tienes un receso activo en curso".
+</td></tr>
+<tr><td class="campo">Flujo Principal</td><td class="flujo-principal">El sistema bloquea la recepción de turnos en el módulo mientras el asesor está en receso, asegurando que la pantalla no llame a nadie a un módulo vacío.</td></tr>
+<tr><td class="campo">Estado en código</td><td class="ok">✅ IMPLEMENTADO COMPLETAMENTE — TurnoRepository::iniciarReceso() / finalizarReceso()</td></tr>
+
+<tr><td colspan="2" class="separador"></td></tr>
+
+<!-- ══════════════════════════════════════════════════════ CU-04 -->
+<tr><td colspan="2" class="cu-header">&#128737; CU-04 — Visualizar Reportes y Gestión de Flujo (Coordinación)</td></tr>
+<tr><td class="campo">ID</td><td class="valor">CU-04</td></tr>
+<tr><td class="campo">Nombre</td><td class="valor">Visualizar Reportes y Gestión de Flujo (Coordinación)</td></tr>
+<tr><td class="campo">Descripción</td><td class="valor">Herramienta para la coordinación donde se supervisa la operatividad de los módulos y el cumplimiento de metas de atención.</td></tr>
+<tr><td class="campo">Actor</td><td class="valor">Coordinador</td></tr>
+<tr><td class="campo">Precondiciones</td><td class="pre">El coordinador debe estar autenticado con credenciales de supervisión y tener acceso al panel administrativo.</td></tr>
+<tr><td class="campo">Flujo Normal</td><td class="flujo-normal">
+1. El coordinador ingresa al Dashboard de Coordinación.<br>
+2. El sistema carga KPIs: turnos hoy, en espera, en atención, finalizados, ausentes, tiempo medio.<br>
+3. Supervisa que los módulos 15 y 19 cumplan la ruta de víctimas (Meta: ~6 emprendedores/semana).<br>
+4. Controla los tiempos de espera — Alerta si superan los 20 minutos.<br>
+5. Verifica la rotación bimestral del personal de apoyo (días restantes ≤ 60).<br>
+6. Analiza gráficas de flujo por hora (Chart.js).<br>
+7. Genera reporte diario exportable a Excel.
+</td></tr>
+<tr><td class="campo">Postcondiciones</td><td class="post">Generación de métricas de productividad. Registro de incidencias por tiempos excedidos. Actualización del historial de rotación de personal. Consolidación de datos para informes gerenciales.</td></tr>
+<tr><td class="campo">Flujos Alternativos</td><td class="flujo-alt">
+2.a: Si un turno supera los 20 minutos en espera → El sistema emite alerta visual crítica en el Dashboard (color rojo).<br>
+2.b: Si el conteo de emprendedores es inferior al proyectado → El indicador se marca en color de advertencia.<br>
+2.c: Si el personal de vigilancia supera el periodo bimestral → El sistema genera recordatorio de gestión administrativa.
+</td></tr>
+<tr><td class="campo">Flujo Principal</td><td class="flujo-principal">El coordinador ingresa al módulo de reportes. El sistema valida permisos y despliega información actualizada. Se verifica cumplimiento de metas en módulos 15 y 19. Se auditan tiempos de respuesta y pertinencia del servicio según perfil del usuario.</td></tr>
+<tr><td class="campo">Estado en código</td><td class="ok">✅ CORREGIDO — Alerta ahora dispara a los 20 min (subMinutes(20)) según especificación</td></tr>
+
+<tr><td colspan="2" class="separador"></td></tr>
+
+<!-- ══════════════════════════════════════════════════════ CU-05 -->
+<tr><td colspan="2" class="cu-header">&#128269; CU-05 — Consulta de Estado de Turno</td></tr>
+<tr><td class="campo">ID</td><td class="valor">CU-05</td></tr>
+<tr><td class="campo">Nombre</td><td class="valor">Consulta de Estado de Turno</td></tr>
+<tr><td class="campo">Descripción</td><td class="valor">Permite a un ciudadano verificar la información y el estado actual de su turno (Espera, Atendiendo, etc.) en tiempo real mediante su documento de identidad, sin necesidad de iniciar un nuevo proceso de registro.</td></tr>
+<tr><td class="campo">Actor</td><td class="valor">Solicitante / Usuario del Kiosco</td></tr>
+<tr><td class="campo">Precondiciones</td><td class="pre">El ciudadano debe haber solicitado un turno previamente en la fecha actual dentro del sistema DigiTurno.</td></tr>
+<tr><td class="campo">Flujo Normal</td><td class="flujo-normal">
+1. El ciudadano selecciona "CONSULTAR TURNO" en el footer del kiosco.<br>
+2. El sistema abre un modal y solicita el número de documento de identidad.<br>
+3. El ciudadano ingresa su identificación y presiona "Buscar".<br>
+4. El sistema valida que el documento tenga un turno activo para el día de hoy.<br>
+5. El sistema consulta la BD y extrae: Código, Estado, Servicio, Perfil y Hora.<br>
+6. El sistema presenta los datos en una tarjeta informativa dentro del modal.<br>
+7. El ciudadano cierra la ventana tras visualizar su estado.
+</td></tr>
+<tr><td class="campo">Postcondiciones</td><td class="post">El ciudadano queda informado sobre su turno sin generar un registro duplicado.</td></tr>
+<tr><td class="campo">Flujos Alternativos</td><td class="flujo-alt">
+A1: No existe turno → El sistema informa: "No se encontraron turnos activos para este documento hoy".<br>
+A2: Error de Red → El sistema notifica fallo de comunicación con el servidor.
+</td></tr>
+<tr><td class="campo">Flujo Principal</td><td class="flujo-principal">1. Inicio de consulta. 2. Validación de identidad. 3. Recuperación de datos del turno vía GET /api/turno/consultar/{documento}. 4. Presentación de información al ciudadano en modal.</td></tr>
+<tr><td class="campo">Estado en código</td><td class="ok">✅ IMPLEMENTADO COMPLETAMENTE — ApiController::consultarTurno() + modal en kiosco</td></tr>
+
+<tr><td colspan="2" class="separador"></td></tr>
+
+<!-- ══════════════════════════════════════════════════════ CU-06 -->
+<tr><td colspan="2" class="cu-header">&#128272; CU-06 — Gestión y Registro de Usuarios del Sistema</td></tr>
+<tr><td class="campo">ID</td><td class="valor">CU-06</td></tr>
+<tr><td class="campo">Nombre</td><td class="valor">Gestión y Registro de Usuarios del Sistema</td></tr>
+<tr><td class="campo">Descripción</td><td class="valor">Permite al Coordinador registrar nuevos usuarios (Asesores) en el sistema, definiendo su rol, credenciales de acceso y validando la integridad de los datos.</td></tr>
+<tr><td class="campo">Actor</td><td class="valor">Coordinador</td></tr>
+<tr><td class="campo">Precondiciones</td><td class="pre">El sistema debe estar activo y el Coordinador debe tener acceso al panel de control o a la URL de registro.</td></tr>
+<tr><td class="campo">Flujo Normal</td><td class="flujo-normal">
+1. El Coordinador accede a "Gestión de Módulos" → "Nuevo Asesor".<br>
+2. El sistema despliega el formulario con campos: Tipo Doc, Documento, Nombres, Apellidos, Teléfono, Correo, Contraseña, Tipo de Asesor.<br>
+3. El Coordinador selecciona el Tipo de Asesor: OT (Orientador Técnico), OV (Orientador de Víctimas) o AT (Asesor Total).<br>
+4. El sistema valida formato de correo, longitud de contraseña (mínimo 6 caracteres) y unicidad del documento y correo.<br>
+5. El sistema crea la Persona y el Asesor en la BD con contraseña hasheada (bcrypt).<br>
+6. El sistema muestra mensaje de confirmación: "Asesor registrado exitosamente".
+</td></tr>
+<tr><td class="campo">Postcondiciones</td><td class="post">El asesor queda creado en la BD con el tipo asignado (OT/OV/AT). El sistema queda disponible para que el nuevo asesor inicie sesión con sus credenciales.</td></tr>
+<tr><td class="campo">Flujos Alternativos</td><td class="flujo-alt">
+1.a: Correo ya registrado → "Este correo electrónico ya está en uso por otro asesor".<br>
+1.b: Documento ya registrado → "Este número de documento ya está registrado como asesor".<br>
+1.c: Tipo de asesor no seleccionado → "Debe seleccionar el tipo de asesor".<br>
+1.d: Contraseña menor a 6 caracteres → Validación de Laravel bloquea el envío.<br>
+1.e: Auto-registro desde /asesor/register → El asesor puede registrarse directamente, inicia sesión automáticamente y redirige al panel.
+</td></tr>
+<tr><td class="campo">Flujo Principal</td><td class="flujo-principal">El Coordinador accede al módulo de registro. El sistema valida privilegios. Se capturan los datos del nuevo asesor. El sistema ejecuta la persistencia en BD (Persona + Asesor) con transacción DB::beginTransaction(). El sistema confirma el registro exitoso.</td></tr>
+<tr><td class="campo">Tipos de Asesor</td><td class="valor">
+<b>OT — Orientador Técnico:</b> Atiende General y Prioritario (relación 3:1)<br>
+<b>OV — Orientador de Víctimas:</b> Atiende Víctima y Empresario<br>
+<b>AT — Asesor Total:</b> Atiende los 4 perfiles con prioridad completa (Víctima → Empresario → Prioritario → General)
+</td></tr>
+<tr><td class="campo">Estado en código</td><td class="ok">✅ IMPLEMENTADO COMPLETAMENTE — CoordinadorController::storeAsesor() + AsesorController::register()</td></tr>
+
+<tr><td colspan="2" class="separador"></td></tr>
+
+<!-- RESUMEN -->
+<tr><td colspan="2" style="background:#1a237e;color:#fff;font-weight:bold;text-align:center;padding:8px;font-size:12px;">
+RESUMEN DE IMPLEMENTACIÓN &nbsp;|&nbsp; CU-01 ✅ &nbsp;|&nbsp; CU-02 ⚠️ &nbsp;|&nbsp; CU-03 ✅ &nbsp;|&nbsp; CU-04 ✅ (corregido) &nbsp;|&nbsp; CU-05 ✅ &nbsp;|&nbsp; CU-06 ✅
+</td></tr>
+<tr><td colspan="2" class="nota">Nota: CU-02 pendiente — agregar campo de observaciones/conclusión del trámite. CU-04 corregido: alerta ahora dispara a los 20 minutos según especificación.</td></tr>
+</table>
+</body></html>

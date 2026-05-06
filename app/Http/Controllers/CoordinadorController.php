@@ -202,15 +202,15 @@ class CoordinadorController extends Controller
 
         $alertas = [];
 
-        // 1. Turnos en espera > 15 min usando tur_estado
+        // 1. Turnos en espera > 20 min usando tur_estado (CU-04 especifica 20 min)
         $turnosRetrasados = Turno::whereDate('tur_hora_fecha', $hoy)
             ->where('tur_estado', 'Espera')
-            ->where('tur_hora_fecha', '<', now()->subMinutes(15))
+            ->where('tur_hora_fecha', '<', now()->subMinutes(20))
             ->count();
             
         if ($turnosRetrasados > 0) {
             $alertas[] = [
-                'msg' => "$turnosRetrasados Turno(s) en espera > 15 min",
+                'msg' => "$turnosRetrasados Turno(s) en espera > 20 min",
                 'time' => 'Crítico',
                 'tipo' => 'critica'
             ];
