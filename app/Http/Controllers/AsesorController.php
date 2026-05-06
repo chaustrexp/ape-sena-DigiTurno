@@ -519,11 +519,14 @@ class AsesorController extends Controller
     {
         if (!$this->checkAuth())
             return redirect()->route('asesor.login');
+
+        $request = request();
         $atencion = Atencion::with('turno')->findOrFail($atnc_id);
         $atencion->update([
-            'atnc_hora_fin' => now()
+            'atnc_hora_fin'  => now(),
+            'observaciones'  => $request->input('observaciones'),
         ]);
-        
+
         if ($atencion->turno) {
             $atencion->turno->update(['tur_estado' => 'Finalizado']);
         }
@@ -535,9 +538,12 @@ class AsesorController extends Controller
     {
         if (!$this->checkAuth())
             return redirect()->route('asesor.login');
+
+        $request = request();
         $atencion = Atencion::with('turno')->findOrFail($atnc_id);
         $atencion->update([
-            'atnc_hora_fin' => now()
+            'atnc_hora_fin' => now(),
+            'observaciones' => $request->input('observaciones'),
         ]);
 
         if ($atencion->turno) {

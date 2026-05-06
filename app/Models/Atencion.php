@@ -11,7 +11,7 @@ class Atencion extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'atnc_hora_inicio', 'atnc_hora_fin', 'atnc_tipo', 'ASESOR_ase_id', 'TURNO_tur_id'
+        'atnc_hora_inicio', 'atnc_hora_fin', 'atnc_tipo', 'observaciones', 'ASESOR_ase_id', 'TURNO_tur_id'
     ];
 
     protected $casts = [

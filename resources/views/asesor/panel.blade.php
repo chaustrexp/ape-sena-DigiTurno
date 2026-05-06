@@ -63,21 +63,39 @@
                 </div>
 
                 {{-- Mientras hay atención activa: solo Finalizar y Ausente --}}
-                <div class="grid grid-cols-2 gap-3 mt-6 relative z-10">
-                    <form action="{{ route('asesor.finalizar', $atencion->atnc_id) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="w-full bg-white text-sena-blue font-extrabold py-3.5 rounded-xl hover:bg-gray-50 transition-all flex items-center justify-center space-x-2 shadow-lg active:scale-95">
-                            <i class="fa-solid fa-circle-check text-sm"></i>
-                            <span class="uppercase tracking-widest text-xs">Finalizar Atención</span>
-                        </button>
-                    </form>
-                    <form action="{{ route('asesor.ausente', $atencion->atnc_id) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="w-full bg-rose-500 text-white font-extrabold py-3.5 rounded-xl hover:bg-rose-600 transition-all flex items-center justify-center space-x-2 shadow-lg active:scale-95">
-                            <i class="fa-solid fa-user-slash text-sm"></i>
-                            <span class="uppercase tracking-widest text-xs">Ciudadano Ausente</span>
-                        </button>
-                    </form>
+                <div class="mt-6 relative z-10 space-y-3">
+                    {{-- Campo de observaciones --}}
+                    <div>
+                        <label class="block text-[9px] font-black text-white/70 uppercase tracking-widest mb-1.5">
+                            <i class="fa-solid fa-clipboard-list mr-1"></i> Conclusión / Observaciones del Trámite
+                        </label>
+                        <textarea id="obs-textarea" rows="2"
+                            placeholder="Ej: Se orientó al ciudadano sobre inscripción SENA, se entregó documentación..."
+                            class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-xs text-white placeholder-white/40 focus:outline-none focus:border-white/50 resize-none transition-all"
+                        ></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <form id="form-finalizar-{{ $atencion->atnc_id }}" action="{{ route('asesor.finalizar', $atencion->atnc_id) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="observaciones" id="obs-finalizar-{{ $atencion->atnc_id }}">
+                            <button type="button"
+                                onclick="submitConObs('finalizar', {{ $atencion->atnc_id }})"
+                                class="w-full bg-white text-sena-blue font-extrabold py-3.5 rounded-xl hover:bg-gray-50 transition-all flex items-center justify-center space-x-2 shadow-lg active:scale-95">
+                                <i class="fa-solid fa-circle-check text-sm"></i>
+                                <span class="uppercase tracking-widest text-xs">Finalizar Atención</span>
+                            </button>
+                        </form>
+                        <form id="form-ausente-{{ $atencion->atnc_id }}" action="{{ route('asesor.ausente', $atencion->atnc_id) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="observaciones" id="obs-ausente-{{ $atencion->atnc_id }}">
+                            <button type="button"
+                                onclick="submitConObs('ausente', {{ $atencion->atnc_id }})"
+                                class="w-full bg-rose-500 text-white font-extrabold py-3.5 rounded-xl hover:bg-rose-600 transition-all flex items-center justify-center space-x-2 shadow-lg active:scale-95">
+                                <i class="fa-solid fa-user-slash text-sm"></i>
+                                <span class="uppercase tracking-widest text-xs">Ciudadano Ausente</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
             @else
@@ -452,6 +470,16 @@
     }
 
 
+
+    // --- OBSERVACIONES DEL TRÁMITE (CU-02) ---
+    function submitConObs(tipo, atncId) {
+        const obs = document.getElementById('obs-textarea');
+        const val = obs ? obs.value.trim() : '';
+        const hiddenInput = document.getElementById('obs-' + tipo + '-' + atncId);
+        if (hiddenInput) hiddenInput.value = val;
+        const form = document.getElementById('form-' + tipo + '-' + atncId);
+        if (form) form.submit();
+    }
     // --- SELECTOR DE MÓDULO ---
     let moduloActual = parseInt('{{ $asesor->ase_id ?? 1 }}') || 1;
     const moduloMin = 1;
@@ -541,6 +569,7 @@
     @endif
 </script>
 @endsection
+
 
 
 
