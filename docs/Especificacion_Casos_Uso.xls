@@ -1,325 +1,124 @@
-﻿<html xmlns:v="urn:schemas-microsoft-com:vml"
-xmlns:o="urn:schemas-microsoft-com:office:office"
-xmlns:x="urn:schemas-microsoft-com:office:excel"
-xmlns="http://www.w3.org/TR/REC-html40">
-
-<head>
-<meta name="Excel Workbook Frameset">
-<meta http-equiv=Content-Type content="text/html; charset=utf-8">
-<meta name=ProgId content=Excel.Sheet>
-<meta name=Generator content="Microsoft Excel 15">
-<link rel=File-List href="Especificacion_Casos_Uso_archivos/filelist.xml">
-<![if !supportTabStrip]>
-<link id="shLink" href="Especificacion_Casos_Uso_archivos/sheet001.htm">
-
-<link id="shLink">
-
-<script language="JavaScript">
-<!--
- var c_lTabs=1;
-
- var c_rgszSh=new Array(c_lTabs);
- c_rgszSh[0] = "Especificacion_Casos_Uso";
-
-
-
- var c_rgszClr=new Array(8);
- c_rgszClr[0]="window";
- c_rgszClr[1]="buttonface";
- c_rgszClr[2]="windowframe";
- c_rgszClr[3]="windowtext";
- c_rgszClr[4]="threedlightshadow";
- c_rgszClr[5]="threedhighlight";
- c_rgszClr[6]="threeddarkshadow";
- c_rgszClr[7]="threedshadow";
-
- var g_iShCur;
- var g_rglTabX=new Array(c_lTabs);
-
-function fnGetIEVer()
-{
- var ua=window.navigator.userAgent
- var msie=ua.indexOf("MSIE")
- if (msie>0 && window.navigator.platform=="Win32")
-  return parseInt(ua.substring(msie+5,ua.indexOf(".", msie)));
- else
-  return 0;
-}
-
-function fnBuildFrameset()
-{
- var szHTML="<frameset rows=\"*,18\" border=0 width=0 frameborder=no framespacing=0>"+
-  "<frame src=\""+document.all.item("shLink")[0].href+"\" name=\"frSheet\" noresize>"+
-  "<frameset cols=\"54,*\" border=0 width=0 frameborder=no framespacing=0>"+
-  "<frame src=\"\" name=\"frScroll\" marginwidth=0 marginheight=0 scrolling=no>"+
-  "<frame src=\"\" name=\"frTabs\" marginwidth=0 marginheight=0 scrolling=no>"+
-  "</frameset></frameset><plaintext>";
-
- with (document) {
-  open("text/html","replace");
-  write(szHTML);
-  close();
- }
-
- fnBuildTabStrip();
-}
-
-function fnBuildTabStrip()
-{
- var szHTML=
-  "<html><head><style>.clScroll {font:8pt Courier New;color:"+c_rgszClr[6]+";cursor:default;line-height:10pt;}"+
-  ".clScroll2 {font:10pt Arial;color:"+c_rgszClr[6]+";cursor:default;line-height:11pt;}</style></head>"+
-  "<body onclick=\"event.returnValue=false;\" ondragstart=\"event.returnValue=false;\" onselectstart=\"event.returnValue=false;\" bgcolor="+c_rgszClr[4]+" topmargin=0 leftmargin=0><table cellpadding=0 cellspacing=0 width=100%>"+
-  "<tr><td colspan=6 height=1 bgcolor="+c_rgszClr[2]+"></td></tr>"+
-  "<tr><td style=\"font:1pt\">&nbsp;<td>"+
-  "<td valign=top id=tdScroll class=\"clScroll\" onclick=\"parent.fnFastScrollTabs(0);\" onmouseover=\"parent.fnMouseOverScroll(0);\" onmouseout=\"parent.fnMouseOutScroll(0);\"><a>&#171;</a></td>"+
-  "<td valign=top id=tdScroll class=\"clScroll2\" onclick=\"parent.fnScrollTabs(0);\" ondblclick=\"parent.fnScrollTabs(0);\" onmouseover=\"parent.fnMouseOverScroll(1);\" onmouseout=\"parent.fnMouseOutScroll(1);\"><a>&lt</a></td>"+
-  "<td valign=top id=tdScroll class=\"clScroll2\" onclick=\"parent.fnScrollTabs(1);\" ondblclick=\"parent.fnScrollTabs(1);\" onmouseover=\"parent.fnMouseOverScroll(2);\" onmouseout=\"parent.fnMouseOutScroll(2);\"><a>&gt</a></td>"+
-  "<td valign=top id=tdScroll class=\"clScroll\" onclick=\"parent.fnFastScrollTabs(1);\" onmouseover=\"parent.fnMouseOverScroll(3);\" onmouseout=\"parent.fnMouseOutScroll(3);\"><a>&#187;</a></td>"+
-  "<td style=\"font:1pt\">&nbsp;<td></tr></table></body></html>";
-
- with (frames['frScroll'].document) {
-  open("text/html","replace");
-  write(szHTML);
-  close();
- }
-
- szHTML =
-  "<html><head>"+
-  "<style>A:link,A:visited,A:active {text-decoration:none;"+"color:"+c_rgszClr[3]+";}"+
-  ".clTab {cursor:hand;background:"+c_rgszClr[1]+";font:9pt Arial;padding-left:3px;padding-right:3px;text-align:center;}"+
-  ".clBorder {background:"+c_rgszClr[2]+";font:1pt;}"+
-  "</style></head><body onload=\"parent.fnInit();\" onselectstart=\"event.returnValue=false;\" ondragstart=\"event.returnValue=false;\" bgcolor="+c_rgszClr[4]+
-  " topmargin=0 leftmargin=0><table id=tbTabs cellpadding=0 cellspacing=0>";
-
- var iCellCount=(c_lTabs+1)*2;
-
- var i;
- for (i=0;i<iCellCount;i+=2)
-  szHTML+="<col width=1><col>";
-
- var iRow;
- for (iRow=0;iRow<6;iRow++) {
-
-  szHTML+="<tr>";
-
-  if (iRow==5)
-   szHTML+="<td colspan="+iCellCount+"></td>";
-  else {
-   if (iRow==0) {
-    for(i=0;i<iCellCount;i++)
-     szHTML+="<td height=1 class=\"clBorder\"></td>";
-   } else if (iRow==1) {
-    for(i=0;i<c_lTabs;i++) {
-     szHTML+="<td height=1 nowrap class=\"clBorder\">&nbsp;</td>";
-     szHTML+=
-      "<td id=tdTab height=1 nowrap class=\"clTab\" onmouseover=\"parent.fnMouseOverTab("+i+");\" onmouseout=\"parent.fnMouseOutTab("+i+");\">"+
-      "<a href=\""+document.all.item("shLink")[i].href+"\" target=\"frSheet\" id=aTab>&nbsp;"+c_rgszSh[i]+"&nbsp;</a></td>";
-    }
-    szHTML+="<td id=tdTab height=1 nowrap class=\"clBorder\"><a id=aTab>&nbsp;</a></td><td width=100%></td>";
-   } else if (iRow==2) {
-    for (i=0;i<c_lTabs;i++)
-     szHTML+="<td height=1></td><td height=1 class=\"clBorder\"></td>";
-    szHTML+="<td height=1></td><td height=1></td>";
-   } else if (iRow==3) {
-    for (i=0;i<iCellCount;i++)
-     szHTML+="<td height=1></td>";
-   } else if (iRow==4) {
-    for (i=0;i<c_lTabs;i++)
-     szHTML+="<td height=1 width=1></td><td height=1></td>";
-    szHTML+="<td height=1 width=1></td><td></td>";
-   }
-  }
-  szHTML+="</tr>";
- }
-
- szHTML+="</table></body></html>";
- with (frames['frTabs'].document) {
-  open("text/html","replace");
-  charset=document.charset;
-  write(szHTML);
-  close();
- }
-}
-
-function fnInit()
-{
- g_rglTabX[0]=0;
- var i;
- for (i=1;i<=c_lTabs;i++)
-  with (frames['frTabs'].document.all.tbTabs.rows[1].cells[fnTabToCol(i-1)])
-   g_rglTabX[i]=offsetLeft+offsetWidth-6;
-}
-
-function fnTabToCol(iTab)
-{
- return 2*iTab+1;
-}
-
-function fnNextTab(fDir)
-{
- var iNextTab=-1;
- var i;
-
- with (frames['frTabs'].document.body) {
-  if (fDir==0) {
-   if (scrollLeft>0) {
-    for (i=0;i<c_lTabs&&g_rglTabX[i]<scrollLeft;i++);
-    if (i<c_lTabs)
-     iNextTab=i-1;
-   }
-  } else {
-   if (g_rglTabX[c_lTabs]+6>offsetWidth+scrollLeft) {
-    for (i=0;i<c_lTabs&&g_rglTabX[i]<=scrollLeft;i++);
-    if (i<c_lTabs)
-     iNextTab=i;
-   }
-  }
- }
- return iNextTab;
-}
-
-function fnScrollTabs(fDir)
-{
- var iNextTab=fnNextTab(fDir);
-
- if (iNextTab>=0) {
-  frames['frTabs'].scroll(g_rglTabX[iNextTab],0);
-  return true;
- } else
-  return false;
-}
-
-function fnFastScrollTabs(fDir)
-{
- if (c_lTabs>16)
-  frames['frTabs'].scroll(g_rglTabX[fDir?c_lTabs-1:0],0);
- else
-  if (fnScrollTabs(fDir)>0) window.setTimeout("fnFastScrollTabs("+fDir+");",5);
-}
-
-function fnSetTabProps(iTab,fActive)
-{
- var iCol=fnTabToCol(iTab);
- var i;
-
- if (iTab>=0) {
-  with (frames['frTabs'].document.all) {
-   with (tbTabs) {
-    for (i=0;i<=4;i++) {
-     with (rows[i]) {
-      if (i==0)
-       cells[iCol].style.background=c_rgszClr[fActive?0:2];
-      else if (i>0 && i<4) {
-       if (fActive) {
-        cells[iCol-1].style.background=c_rgszClr[2];
-        cells[iCol].style.background=c_rgszClr[0];
-        cells[iCol+1].style.background=c_rgszClr[2];
-       } else {
-        if (i==1) {
-         cells[iCol-1].style.background=c_rgszClr[2];
-         cells[iCol].style.background=c_rgszClr[1];
-         cells[iCol+1].style.background=c_rgszClr[2];
-        } else {
-         cells[iCol-1].style.background=c_rgszClr[4];
-         cells[iCol].style.background=c_rgszClr[(i==2)?2:4];
-         cells[iCol+1].style.background=c_rgszClr[4];
-        }
-       }
-      } else
-       cells[iCol].style.background=c_rgszClr[fActive?2:4];
-     }
-    }
-   }
-   with (aTab[iTab].style) {
-    cursor=(fActive?"default":"hand");
-    color=c_rgszClr[3];
-   }
-  }
- }
-}
-
-function fnMouseOverScroll(iCtl)
-{
- frames['frScroll'].document.all.tdScroll[iCtl].style.color=c_rgszClr[7];
-}
-
-function fnMouseOutScroll(iCtl)
-{
- frames['frScroll'].document.all.tdScroll[iCtl].style.color=c_rgszClr[6];
-}
-
-function fnMouseOverTab(iTab)
-{
- if (iTab!=g_iShCur) {
-  var iCol=fnTabToCol(iTab);
-  with (frames['frTabs'].document.all) {
-   tdTab[iTab].style.background=c_rgszClr[5];
-  }
- }
-}
-
-function fnMouseOutTab(iTab)
-{
- if (iTab>=0) {
-  var elFrom=frames['frTabs'].event.srcElement;
-  var elTo=frames['frTabs'].event.toElement;
-
-  if ((!elTo) ||
-   (elFrom.tagName==elTo.tagName) ||
-   (elTo.tagName=="A" && elTo.parentElement!=elFrom) ||
-   (elFrom.tagName=="A" && elFrom.parentElement!=elTo)) {
-
-   if (iTab!=g_iShCur) {
-    with (frames['frTabs'].document.all) {
-     tdTab[iTab].style.background=c_rgszClr[1];
-    }
-   }
-  }
- }
-}
-
-function fnSetActiveSheet(iSh)
-{
- if (iSh!=g_iShCur) {
-  fnSetTabProps(g_iShCur,false);
-  fnSetTabProps(iSh,true);
-  g_iShCur=iSh;
- }
-}
-
- window.g_iIEVer=fnGetIEVer();
- if (window.g_iIEVer>=4)
-  fnBuildFrameset();
-//-->
-</script>
-<![endif]><!--[if gte mso 9]><xml>
- <x:ExcelWorkbook>
-  <x:ExcelWorksheets>
-   <x:ExcelWorksheet>
-    <x:Name>Especificacion_Casos_Uso</x:Name>
-    <x:WorksheetSource HRef="Especificacion_Casos_Uso_archivos/sheet001.htm"/>
-   </x:ExcelWorksheet>
-  </x:ExcelWorksheets>
-  <x:Stylesheet HRef="Especificacion_Casos_Uso_archivos/stylesheet.css"/>
-  <x:WindowHeight>8676</x:WindowHeight>
-  <x:WindowWidth>23040</x:WindowWidth>
-  <x:WindowTopX>32767</x:WindowTopX>
-  <x:WindowTopY>32767</x:WindowTopY>
-  <x:ProtectStructure>False</x:ProtectStructure>
-  <x:ProtectWindows>False</x:ProtectWindows>
- </x:ExcelWorkbook>
-</xml><![endif]-->
+﻿<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8">
+<style>
+body{font-family:Calibri,Arial,sans-serif;font-size:11px;}
+table{border-collapse:collapse;width:100%;}
+th,td{border:1px solid #bbb;padding:6px 10px;vertical-align:top;}
+.titulo{background:#10069F;color:#fff;font-size:16px;font-weight:bold;text-align:center;height:48px;vertical-align:middle;}
+.subtitulo{background:#e8eaf6;color:#10069F;font-size:11px;font-weight:bold;text-align:center;padding:6px;}
+.cu-header{background:#1a237e;color:#fff;font-size:13px;font-weight:bold;padding:10px;vertical-align:middle;}
+.campo{background:#e8eaf6;color:#1a237e;font-weight:bold;width:20%;white-space:nowrap;}
+.valor{background:#ffffff;color:#212121;}
+.flujo-normal{background:#e8f5e9;color:#1b5e20;}
+.flujo-alt{background:#fff8e1;color:#e65100;}
+.flujo-principal{background:#e3f2fd;color:#0d47a1;}
+.post{background:#f3e5f5;color:#4a148c;}
+.pre{background:#fce4ec;color:#880e4f;}
+.separador{height:16px;border:none;background:#f5f5f5;}
+.ok{background:#e8f5e9;color:#1b5e20;font-weight:bold;}
+.warn{background:#fff8e1;color:#e65100;font-weight:bold;}
+.nuevo{background:#e3f2fd;color:#0d47a1;font-weight:bold;}
+</style>
 </head>
+<body>
+<table>
+<tr><td colspan="2" class="titulo">ESPECIFICACION DE CASOS DE USO — DigiTurno APE SENA</td></tr>
+<tr><td colspan="2" class="subtitulo">Sistema Digital de Turnos | Verificado y actualizado contra codigo fuente | 5 de Mayo de 2026</td></tr>
 
-<frameset rows="*,39" border=0 width=0 frameborder=no framespacing=0>
- <frame src="Especificacion_Casos_Uso_archivos/sheet001.htm" name="frSheet">
- <frame src="Especificacion_Casos_Uso_archivos/tabstrip.htm" name="frTabs" marginwidth=0 marginheight=0>
- <noframes>
-  <body>
-   <p>Esta página utiliza marcos que su explorador no admite.</p>
-  </body>
- </noframes>
-</frameset>
-</html>
+<tr><td colspan="2" class="separador"></td></tr>
 
+<!-- CU-01 -->
+<tr><td colspan="2" class="cu-header">CU-01 — Generar Turno de Atencion y Perfilamiento</td></tr>
+<tr><td class="campo">ID</td><td class="valor">CU-01</td></tr>
+<tr><td class="campo">Nombre</td><td class="valor">Generar Turno de Atencion y Perfilamiento</td></tr>
+<tr><td class="campo">Descripcion</td><td class="valor">Permite al ciudadano ingresar sus datos, ser perfilado segun su grupo poblacional y seleccionar el servicio requerido para ingresar a la cola de espera.</td></tr>
+<tr><td class="campo">Actor</td><td class="valor">Usuario General (Ciudadano / NIT de Empresa)</td></tr>
+<tr><td class="campo">Precondiciones</td><td class="pre">El kiosco debe mostrar la pantalla de bienvenida y terminos de uso de datos. Vigilante capacitado disponible para soporte opcional.</td></tr>
+<tr><td class="campo">Flujo Normal</td><td class="flujo-normal">1. El usuario acepta terminos y condiciones.<br>2. Seleccion de Perfil: General, Victima, Prioritario o Empresario.<br>3. Seleccion de Tipo de Atencion: Normal o Especial.<br>4. Seleccion de Documento: CC, TI o CE.<br>5. Ingreso de numero de identificacion.<br>6. Validacion de Registro: Si no tiene registro en la APE, el sistema permite continuar pero emite advertencia.<br>7. Ingreso de Telefono (Opcional).<br>8. Seleccion de Servicio: Orientacion Laboral, Formacion Academica o Emprendimiento.<br>9. El sistema genera el turno con codigo alfanumerico segun prioridad y lo guarda en la BD.</td></tr>
+<tr><td class="campo">Postcondiciones</td><td class="post">Se registra el turno en estado Espera y se libera la interfaz del kiosco.</td></tr>
+<tr><td class="campo">Flujos Alternativos</td><td class="flujo-alt">4.a: Si el numero ya tiene un turno activo, el sistema notifica error: Solo puedes solicitar un (1) turno por dia.<br>4.b: Si la longitud del documento no cumple la normativa colombiana (CC/TI: 8-10 digitos, CE: minimo 6), solicita corregir.<br>5.a: El usuario deja el campo de telefono vacio y presiona Continuar (flujo permitido).</td></tr>
+<tr><td class="campo">Flujo Principal</td><td class="flujo-principal">El sistema valida los datos de identificacion, asigna un codigo alfanumerico segun la prioridad (V/E/P/G) y lo ingresa a la base de datos de la APE con estado Espera.</td></tr>
+<tr><td class="campo">Estado en codigo</td><td class="ok">IMPLEMENTADO COMPLETAMENTE — TurnoController::store() con lockForUpdate()</td></tr>
+
+<tr><td colspan="2" class="separador"></td></tr>
+
+<!-- CU-02 ACTUALIZADO -->
+<tr><td colspan="2" class="cu-header">CU-02 — Gestion de Atencion al Ciudadano  [ACTUALIZADO]</td></tr>
+<tr><td class="campo">ID</td><td class="valor">CU-02</td></tr>
+<tr><td class="campo">Nombre</td><td class="valor">Gestion de Atencion al Ciudadano</td></tr>
+<tr><td class="campo">Descripcion</td><td class="valor">El asesor solicita un turno de la fila, lo atiende, registra la conclusion del tramite y actualiza la informacion en la pantalla publica.</td></tr>
+<tr><td class="campo">Actor</td><td class="valor">Usuario Asesor (OT / OV / AT)</td></tr>
+<tr><td class="campo">Precondiciones</td><td class="pre">El asesor debe estar logueado y en estado Disponible (sin atencion activa y sin pausa activa).</td></tr>
+<tr><td class="campo">Flujo Normal</td><td class="flujo-normal">1. El asesor presiona Llamar Siguiente Turno.<br>1.1 El sistema busca el turno prioritario mas antiguo segun el tipo de asesor:<br>&nbsp;&nbsp;&nbsp;- OT: Prioritario primero (relacion 3:1 con General)<br>&nbsp;&nbsp;&nbsp;- OV: Empresario primero, luego Victima<br>&nbsp;&nbsp;&nbsp;- AT: Victima, Empresario, Prioritario, General (todos los perfiles)<br>1.2 El sistema muestra los datos del ciudadano en el panel del asesor.<br>1.3 El sistema actualiza la pantalla publica con audio (chime + voz).<br>2. El asesor realiza el tramite con el ciudadano.<br>3. El asesor escribe la conclusion u observaciones del tramite en el campo de texto.<br>4. El asesor presiona Finalizar Atencion.<br>5. El sistema guarda las observaciones, registra la hora de fin y cambia el estado del turno a Finalizado.</td></tr>
+<tr><td class="campo">Postcondiciones</td><td class="post">El turno cambia a estado Finalizado. El asesor queda libre. Se registran los tiempos (atnc_hora_inicio / atnc_hora_fin) y las observaciones del tramite en la tabla atencion para reportes de la coordinadora.</td></tr>
+<tr><td class="campo">Flujos Alternativos</td><td class="flujo-alt">3.a: El ciudadano no se presenta: El asesor puede escribir una observacion y presiona Ciudadano Ausente. El sistema cambia el estado a Ausente, guarda las observaciones y registra la hora de fin.<br>3.b: El asesor intenta llamar un nuevo turno con atencion activa: El boton Llamar Siguiente no aparece hasta finalizar la atencion actual.<br>3.c: El campo de observaciones se deja vacio: El sistema permite continuar (campo opcional).</td></tr>
+<tr><td class="campo">Flujo Principal</td><td class="flujo-principal">El sistema vincula el turno con el modulo del asesor mediante lockForUpdate(), actualiza los tiempos de respuesta en tiempo real, guarda las observaciones del tramite y notifica a la sala de espera via polling cada 3 segundos.</td></tr>
+<tr><td class="campo">Campo Observaciones</td><td class="nuevo">NUEVO — Campo texto libre en el panel del asesor. Se muestra encima de los botones Finalizar / Ausente. Se guarda en columna observaciones (TEXT NULL) de la tabla atencion. Visible en reportes del coordinador.</td></tr>
+<tr><td class="campo">Estado en codigo</td><td class="ok">IMPLEMENTADO COMPLETAMENTE — AsesorController::finalizar() y ausente() guardan observaciones. Migracion 2026_05_05_000002 ejecutada. Panel muestra textarea antes de finalizar.</td></tr>
+
+<tr><td colspan="2" class="separador"></td></tr>
+
+<!-- CU-03 -->
+<tr><td colspan="2" class="cu-header">CU-03 — Registrar Receso Temporal</td></tr>
+<tr><td class="campo">ID</td><td class="valor">CU-03</td></tr>
+<tr><td class="campo">Nombre</td><td class="valor">Registrar Receso Temporal (Bano / Pausa)</td></tr>
+<tr><td class="campo">Descripcion</td><td class="valor">Permite al asesor ausentarse temporalmente sin que el sistema le asigne nuevos turnos, informando su estado a la coordinacion.</td></tr>
+<tr><td class="campo">Actor</td><td class="valor">Orientador Tecnico (OT) / Orientador de Victimas (OV) / Asesor Total (AT)</td></tr>
+<tr><td class="campo">Precondiciones</td><td class="pre">El asesor no debe tener un turno activo en ese momento. Maximo 3 recesos por jornada.</td></tr>
+<tr><td class="campo">Flujo Normal</td><td class="flujo-normal">1. El asesor selecciona Iniciar Receso en el sidebar.<br>2. El sistema verifica que no haya atencion activa.<br>3. El sistema registra la hora de inicio en tabla pausas_asesor.<br>4. El estado del modulo cambia a Pausa — no recibe nuevos turnos.<br>5. Al regresar, el asesor presiona Finalizar Receso.<br>6. El sistema calcula la duracion (diffInMinutes) y guarda en BD.<br>7. El estado vuelve a Activo — el modulo vuelve a recibir turnos.</td></tr>
+<tr><td class="campo">Postcondiciones</td><td class="post">Se guarda el registro de duracion de la pausa en tabla pausas_asesor para el reporte de productividad de la coordinadora.</td></tr>
+<tr><td class="campo">Flujos Alternativos</td><td class="flujo-alt">1.a: Si intenta pausar mientras atiende a alguien: No puedes iniciar un receso mientras tienes una atencion activa.<br>1.b: Si ya tiene 3 recesos en el dia: Has alcanzado el limite maximo de 3 recesos permitidos por dia.<br>1.c: Si ya tiene un receso activo: Ya tienes un receso activo en curso.</td></tr>
+<tr><td class="campo">Flujo Principal</td><td class="flujo-principal">El sistema bloquea la recepcion de turnos en el modulo mientras el asesor esta en receso, asegurando que la pantalla no llame a nadie a un modulo vacio.</td></tr>
+<tr><td class="campo">Estado en codigo</td><td class="ok">IMPLEMENTADO COMPLETAMENTE — TurnoRepository::iniciarReceso() / finalizarReceso()</td></tr>
+
+<tr><td colspan="2" class="separador"></td></tr>
+
+<!-- CU-04 ACTUALIZADO -->
+<tr><td colspan="2" class="cu-header">CU-04 — Visualizar Reportes y Gestion de Flujo (Coordinacion)  [ACTUALIZADO]</td></tr>
+<tr><td class="campo">ID</td><td class="valor">CU-04</td></tr>
+<tr><td class="campo">Nombre</td><td class="valor">Visualizar Reportes y Gestion de Flujo (Coordinacion)</td></tr>
+<tr><td class="campo">Descripcion</td><td class="valor">Herramienta para la coordinacion donde se supervisa la operatividad de los modulos y el cumplimiento de metas de atencion.</td></tr>
+<tr><td class="campo">Actor</td><td class="valor">Coordinador</td></tr>
+<tr><td class="campo">Precondiciones</td><td class="pre">El coordinador debe estar autenticado con credenciales de supervision y tener acceso al panel administrativo.</td></tr>
+<tr><td class="campo">Flujo Normal</td><td class="flujo-normal">1. El coordinador ingresa al Dashboard de Coordinacion.<br>2. El sistema carga KPIs: turnos hoy, en espera, en atencion, finalizados, ausentes, tiempo medio.<br>3. Supervisa que los modulos 15 y 19 cumplan la ruta de victimas (Meta: 6 emprendedores/semana).<br>4. Controla los tiempos de espera — Alerta si superan 1 minuto.<br>5. Verifica la rotacion bimestral del personal de apoyo (dias restantes menor o igual a 60).<br>6. Analiza graficas de flujo por hora (Chart.js).<br>7. Genera reporte diario exportable a Excel.</td></tr>
+<tr><td class="campo">Postcondiciones</td><td class="post">Generacion de metricas de productividad. Registro de incidencias por tiempos excedidos. Actualizacion del historial de rotacion de personal. Consolidacion de datos para informes gerenciales.</td></tr>
+<tr><td class="campo">Flujos Alternativos</td><td class="flujo-alt">2.a: Si un turno supera 1 minuto en espera: El sistema emite alerta visual critica en el Dashboard (color rojo) con el mensaje: N Turno(s) en espera mayor a 1 min.<br>2.b: Si el conteo de emprendedores es inferior al proyectado: El indicador se marca en color de advertencia.<br>2.c: Si el personal de vigilancia supera el periodo bimestral: El sistema genera recordatorio de gestion administrativa.</td></tr>
+<tr><td class="campo">Flujo Principal</td><td class="flujo-principal">El coordinador ingresa al modulo de reportes. El sistema valida permisos y despliega informacion actualizada. Se verifica cumplimiento de metas en modulos 15 y 19. Se auditan tiempos de respuesta y pertinencia del servicio segun perfil del usuario.</td></tr>
+<tr><td class="campo">Alerta de Tiempo</td><td class="nuevo">ACTUALIZADO — La alerta critica se dispara cuando un turno lleva mas de 1 minuto en estado Espera. Implementado con subMinutes(1) en CoordinadorController::dashboard(). Mensaje: N Turno(s) en espera mayor a 1 min.</td></tr>
+<tr><td class="campo">Estado en codigo</td><td class="ok">CORREGIDO — Alerta dispara a los 1 min (subMinutes(1)) segun especificacion. CoordinadorController::dashboard() actualizado.</td></tr>
+
+<tr><td colspan="2" class="separador"></td></tr>
+
+<!-- CU-05 -->
+<tr><td colspan="2" class="cu-header">CU-05 — Consulta de Estado de Turno</td></tr>
+<tr><td class="campo">ID</td><td class="valor">CU-05</td></tr>
+<tr><td class="campo">Nombre</td><td class="valor">Consulta de Estado de Turno</td></tr>
+<tr><td class="campo">Descripcion</td><td class="valor">Permite a un ciudadano verificar la informacion y el estado actual de su turno en tiempo real mediante su documento de identidad, sin necesidad de iniciar un nuevo proceso de registro.</td></tr>
+<tr><td class="campo">Actor</td><td class="valor">Solicitante / Usuario del Kiosco</td></tr>
+<tr><td class="campo">Precondiciones</td><td class="pre">El ciudadano debe haber solicitado un turno previamente en la fecha actual dentro del sistema DigiTurno.</td></tr>
+<tr><td class="campo">Flujo Normal</td><td class="flujo-normal">1. El ciudadano selecciona CONSULTAR TURNO en el footer del kiosco.<br>2. El sistema abre un modal y solicita el numero de documento de identidad.<br>3. El ciudadano ingresa su identificacion y presiona Buscar.<br>4. El sistema valida que el documento tenga un turno activo para el dia de hoy.<br>5. El sistema consulta la BD y extrae: Codigo, Estado, Servicio, Perfil y Hora.<br>6. El sistema presenta los datos en una tarjeta informativa dentro del modal.<br>7. El ciudadano cierra la ventana tras visualizar su estado.</td></tr>
+<tr><td class="campo">Postcondiciones</td><td class="post">El ciudadano queda informado sobre su turno sin generar un registro duplicado.</td></tr>
+<tr><td class="campo">Flujos Alternativos</td><td class="flujo-alt">A1: No existe turno: El sistema informa que no hay turnos registrados hoy para ese documento.<br>A2: Error de Red: El sistema notifica fallo de comunicacion con el servidor.</td></tr>
+<tr><td class="campo">Flujo Principal</td><td class="flujo-principal">1. Inicio de consulta. 2. Validacion de identidad. 3. Recuperacion de datos del turno via GET /api/turno/consultar/{documento}. 4. Presentacion de informacion al ciudadano en modal.</td></tr>
+<tr><td class="campo">Estado en codigo</td><td class="ok">IMPLEMENTADO COMPLETAMENTE — ApiController::consultarTurno() + modal en kiosco</td></tr>
+
+<tr><td colspan="2" class="separador"></td></tr>
+
+<!-- CU-06 -->
+<tr><td colspan="2" class="cu-header">CU-06 — Gestion y Registro de Usuarios del Sistema</td></tr>
+<tr><td class="campo">ID</td><td class="valor">CU-06</td></tr>
+<tr><td class="campo">Nombre</td><td class="valor">Gestion y Registro de Usuarios del Sistema</td></tr>
+<tr><td class="campo">Descripcion</td><td class="valor">Permite al Coordinador registrar nuevos usuarios (Asesores) en el sistema, definiendo su rol, credenciales de acceso y validando la integridad de los datos.</td></tr>
+<tr><td class="campo">Actor</td><td class="valor">Coordinador</td></tr>
+<tr><td class="campo">Precondiciones</td><td class="pre">El sistema debe estar activo y el Coordinador debe tener acceso al panel de control o a la URL de registro.</td></tr>
+<tr><td class="campo">Flujo Normal</td><td class="flujo-normal">1. El Coordinador accede a Gestion de Modulos y presiona Nuevo Asesor.<br>2. El sistema despliega el formulario con campos: Tipo Doc, Documento, Nombres, Apellidos, Telefono, Correo, Contrasena, Tipo de Asesor.<br>3. El Coordinador selecciona el Tipo de Asesor: OT, OV o AT.<br>4. El sistema valida formato de correo, longitud de contrasena (minimo 6 caracteres) y unicidad del documento y correo.<br>5. El sistema crea la Persona y el Asesor en la BD con contrasena hasheada (bcrypt).<br>6. El sistema muestra mensaje de confirmacion: Asesor registrado exitosamente.</td></tr>
+<tr><td class="campo">Postcondiciones</td><td class="post">El asesor queda creado en la BD con el tipo asignado (OT/OV/AT). El sistema queda disponible para que el nuevo asesor inicie sesion con sus credenciales.</td></tr>
+<tr><td class="campo">Flujos Alternativos</td><td class="flujo-alt">1.a: Correo ya registrado: Este correo electronico ya esta en uso por otro asesor.<br>1.b: Documento ya registrado: Este numero de documento ya esta registrado como asesor.<br>1.c: Tipo de asesor no seleccionado: Debe seleccionar el tipo de asesor.<br>1.d: Contrasena menor a 6 caracteres: Validacion de Laravel bloquea el envio.<br>1.e: Auto-registro desde /asesor/register: El asesor puede registrarse directamente, inicia sesion automaticamente y redirige al panel.</td></tr>
+<tr><td class="campo">Flujo Principal</td><td class="flujo-principal">El Coordinador accede al modulo de registro. El sistema valida privilegios. Se capturan los datos del nuevo asesor. El sistema ejecuta la persistencia en BD (Persona + Asesor) con transaccion DB::beginTransaction(). El sistema confirma el registro exitoso.</td></tr>
+<tr><td class="campo">Tipos de Asesor</td><td class="valor">OT — Orientador Tecnico: Atiende General y Prioritario (relacion 3:1). OV — Orientador de Victimas: Atiende Victima y Empresario. AT — Asesor Total: Atiende los 4 perfiles con prioridad completa (Victima, Empresario, Prioritario, General).</td></tr>
+<tr><td class="campo">Estado en codigo</td><td class="ok">IMPLEMENTADO COMPLETAMENTE — CoordinadorController::storeAsesor() + AsesorController::register()</td></tr>
+
+<tr><td colspan="2" class="separador"></td></tr>
+<tr><td colspan="2" style="background:#1a237e;color:#fff;font-weight:bold;text-align:center;padding:8px;font-size:12px;">RESUMEN | CU-01 OK | CU-02 ACTUALIZADO (observaciones) | CU-03 OK | CU-04 ACTUALIZADO (alerta 1 min) | CU-05 OK | CU-06 OK</td></tr>
+</table>
+</body></html>
