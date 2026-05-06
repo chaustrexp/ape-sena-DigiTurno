@@ -448,9 +448,9 @@ class CoordinadorController extends Controller
             \App\Models\Asesor::create([
                 'PERSONA_pers_doc' => $request->pers_doc,
                 'ase_correo'       => $request->ase_correo,
-                'ase_password'     => bcrypt($request->ase_password),
+                'ase_password'     => \Illuminate\Support\Facades\Hash::make($request->ase_password),
                 'ase_nrocontrato'  => $request->ase_nrocontrato ?? 'CONT-' . now()->format('Ymd'),
-                'ase_tipo_asesor'  => $request->ase_tipo_asesor, // OT o OV
+                'ase_tipo_asesor'  => $request->ase_tipo_asesor,
                 'ase_vigencia'     => now()->addYear()->toDateString(),
                 'ase_foto'         => 'images/foto de perfil.jpg',
             ]);

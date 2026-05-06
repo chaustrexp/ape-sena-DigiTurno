@@ -41,14 +41,10 @@ class AsesorController extends Controller
 
         $isValid = false;
         if ($asesor) {
-            if ($pass === $asesor->ase_password) {
-                $isValid = true;
-            } else {
-                try {
-                    $isValid = \Illuminate\Support\Facades\Hash::check($pass, $asesor->ase_password);
-                } catch (\Exception $e) {
-                    $isValid = false;
-                }
+            try {
+                $isValid = \Illuminate\Support\Facades\Hash::check($pass, $asesor->ase_password);
+            } catch (\Exception $e) {
+                $isValid = false;
             }
         }
 
