@@ -1,0 +1,89 @@
+﻿<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8">
+<style>
+body{font-family:Calibri,Arial,sans-serif;font-size:11px;}
+table{border-collapse:collapse;width:100%;}
+th,td{border:1px solid #bbb;padding:5px 8px;vertical-align:middle;}
+.titulo{background:#10069F;color:#fff;font-size:14px;font-weight:bold;text-align:center;height:40px;}
+.subtitulo{background:#e8eaf6;color:#10069F;font-size:11px;font-weight:bold;text-align:center;}
+.cabecera{background:#1a237e;color:#fff;font-weight:bold;text-align:center;font-size:10px;}
+.modulo-header{background:#283593;color:#fff;font-weight:bold;font-size:12px;text-align:left;padding:8px;}
+.id-cell{background:#e8eaf6;font-weight:bold;color:#10069F;}
+.pasa{background:#e8f5e9;color:#1b5e20;font-weight:bold;text-align:center;}
+.falla{background:#ffebee;color:#b71c1c;font-weight:bold;text-align:center;}
+.alta{background:#fff3e0;color:#e65100;font-weight:bold;text-align:center;}
+.critica{background:#fce4ec;color:#880e4f;font-weight:bold;text-align:center;}
+.media{background:#e3f2fd;color:#0d47a1;font-weight:bold;text-align:center;}
+.baja{background:#f3e5f5;color:#4a148c;font-weight:bold;text-align:center;}
+.fila-par{background:#f5f5f5;}
+.fila-impar{background:#ffffff;}
+</style>
+</head>
+<body>
+<table>
+<tr><td colspan="6" class="titulo">CASOS DE PRUEBA — DigiTurno APE SENA &nbsp;|&nbsp; Documento 1</td></tr>
+<tr><td colspan="6" class="subtitulo">Sistema Digital de Turnos &nbsp;|&nbsp; Fecha: 5 de Mayo de 2026</td></tr>
+<tr><td colspan="6" style="height:8px;border:none;background:#fff;"></td></tr>
+
+<tr><td colspan="6" class="modulo-header">&#128187; MÓDULO: KIOSCO DIGITAL</td></tr>
+<tr class="cabecera"><th>ID</th><th>Descripción</th><th>Prioridad</th><th>Datos de Entrada</th><th>Resultado Esperado</th><th>Estado</th></tr>
+<tr class="fila-impar"><td class="id-cell">CP-001</td><td>Registro exitoso ciudadano general</td><td class="alta">Alta</td><td>Doc: 10203040, Perfil: General</td><td>Sistema crea un turno G-001</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-002</td><td>Registro de Ciudadano Víctima (Prioridad Máxima)</td><td class="alta">Alta</td><td>Doc: 445566, Perfil: Víctima</td><td>Genera turno V-001</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-003</td><td>Registro de Persona Prioritaria (Adulto Mayor)</td><td class="alta">Alta</td><td>Doc: 778899, Perfil: Prioritario</td><td>Genera turno P-001</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-004</td><td>Validación de Cédula (Límite Inferior 8)</td><td class="media">Media</td><td>Doc: 12345678</td><td>Permite avanzar al Paso 2</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-005</td><td>Validación de Teléfono (Longitud menor a 10)</td><td class="media">Media</td><td>Tel: 300123</td><td>Alerta de error de dígitos</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-006</td><td>Validación de Cédula (Límite Superior 10)</td><td class="media">Media</td><td>Doc: 1020304050</td><td>Permite avanzar al Paso 2</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-007</td><td>Consulta de Turno Activo por Documento</td><td class="media">Media</td><td>Doc: 10203040</td><td>Muestra estado "En Espera"</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-008</td><td>Bloqueo de Turno Duplicado (Mismo Documento)</td><td class="alta">Alta</td><td>Doc repetido (CC)</td><td>Muestra mensaje: "Ya tienes un turno"</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-009</td><td>Validación de Caracteres no numéricos en Doc</td><td class="media">Media</td><td>Doc: 1020A30</td><td>El campo solo acepta números</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-010</td><td>Generación de Ticket Impreso (Lógica)</td><td class="alta">Alta</td><td>Clic "Finalizar"</td><td>Inserción en DB exitosa</td><td class="pasa">✅ PASA</td></tr>
+
+<tr><td colspan="6" style="height:8px;border:none;background:#fff;"></td></tr>
+<tr><td colspan="6" class="modulo-header">&#128250; MÓDULO: PANTALLA PÚBLICA</td></tr>
+<tr class="cabecera"><th>ID</th><th>Descripción</th><th>Prioridad</th><th>Datos de Entrada</th><th>Resultado Esperado</th><th>Estado</th></tr>
+<tr class="fila-impar"><td class="id-cell">CP-011</td><td>Activación de Audio Automático al Llamar</td><td class="critica">Crítica</td><td>Asesor llama turno</td><td>Suena el Chime y la voz</td><td class="falla">⚠️ PARCIAL</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-012</td><td>Visualización de Modal de Llamado</td><td class="alta">Alta</td><td>Polling detecta turno</td><td>Aparece modal con el turno</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-013</td><td>Historial de Turnos Recientes (Lateral)</td><td class="media">Media</td><td>Llamados múltiples</td><td>Muestra lista de previos</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-014</td><td>Ocultamiento Automático de Modal (12 seg)</td><td class="media">Media</td><td>Transcurso de tiempo</td><td>Modal desaparece solo</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-015</td><td>Identificación de Módulo de Atención</td><td class="alta">Alta</td><td>Turno para Módulo 15</td><td>Muestra "Módulo 15"</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-016</td><td>Refresco de Contenido vía AJAX/Polling</td><td class="alta">Alta</td><td>Cambio en DB</td><td>Pantalla actualiza sola</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-017</td><td>Aviso Visual de Turno Prioritario</td><td class="media">Media</td><td>Turno P-005</td><td>Color de badge es diferente</td><td class="pasa">✅ PASA</td></tr>
+
+<tr><td colspan="6" style="height:8px;border:none;background:#fff;"></td></tr>
+<tr><td colspan="6" class="modulo-header">&#128100; MÓDULO: ASESOR</td></tr>
+<tr class="cabecera"><th>ID</th><th>Descripción</th><th>Prioridad</th><th>Datos de Entrada</th><th>Resultado Esperado</th><th>Estado</th></tr>
+<tr class="fila-impar"><td class="id-cell">CP-018</td><td>Inicio de Sesión con Rol Asesor</td><td class="alta">Alta</td><td>Email/Pass</td><td>Redirect a dashboard asesor</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-019</td><td>Llamado de Turno (Algoritmo FIFO)</td><td class="alta">Alta</td><td>Clic "Llamar Siguiente"</td><td>Recibe el turno más antiguo</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-020</td><td>Priorización 3 a 1 (Lógica de Negocio)</td><td class="critica">Crítica</td><td>4 Llamados Seguidos</td><td>El 4to turno es General</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-021</td><td>Gestión de Pausas Activas (Límite 3)</td><td class="media">Media</td><td>Clic "Iniciar Pausa"</td><td>Mensaje de límite alcanzado</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-022</td><td>Finalización de Atención con Datos</td><td class="alta">Alta</td><td>Clic "Finalizar"</td><td>Turno pasa a "Finalizado"</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-023</td><td>Marcación de Ciudadano Ausente</td><td class="media">Media</td><td>Clic "No se presentó"</td><td>Turno pasa a "Ausente"</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-024</td><td>Re-llamado de Turno Actual (Sonido)</td><td class="media">Media</td><td>Clic "Re-llamar"</td><td>Pantalla TV vuelve a sonar</td><td class="falla">❌ FALLA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-025</td><td>Bloqueo de Nuevo Llamado sin Finalizar Anterior</td><td class="alta">Alta</td><td>Clic "Llamar Siguiente"</td><td>Botón deshabilitado o alerta</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-026</td><td>Cambio de Estado a "Disponible" tras Pausa</td><td class="media">Media</td><td>Clic "Finalizar Pausa"</td><td>Vuelve a estar habilitado</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-027</td><td>Validación de Tiempo de Atención (Máximo)</td><td class="media">Media</td><td>Finalizar tras 120 min</td><td>Cálculo de duración correcto</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-028</td><td>Alertas de Sesión Expirada</td><td class="media">Media</td><td>30 min sin mover mouse</td><td>Pide login nuevamente</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-029</td><td>Concurrencia de Usuarios (Mismo Módulo)</td><td class="critica">Crítica</td><td>Llamar al mismo tiempo</td><td>El sistema solo asigna a uno</td><td class="pasa">✅ PASA</td></tr>
+
+<tr><td colspan="6" style="height:8px;border:none;background:#fff;"></td></tr>
+<tr><td colspan="6" class="modulo-header">&#128737; MÓDULO: COORDINADOR</td></tr>
+<tr class="cabecera"><th>ID</th><th>Descripción</th><th>Prioridad</th><th>Datos de Entrada</th><th>Resultado Esperado</th><th>Estado</th></tr>
+<tr class="fila-impar"><td class="id-cell">CP-030</td><td>Login Coordinador / Administrador</td><td class="alta">Alta</td><td>Admin Login</td><td>Redirect a Control Tower</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-031</td><td>Visualización de KPIs de Productividad</td><td class="alta">Alta</td><td>Ver Dashboard</td><td>Muestra tiempos promedio</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-032</td><td>Alerta Crítica: Tiempo de Espera mayor a 15m</td><td class="critica">Crítica</td><td>Espera alcanza 15:01</td><td>Aparece notificación roja</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-033</td><td>Gestión de Asesores: Crear Nuevo Usuario</td><td class="alta">Alta</td><td>Datos asesor nuevo</td><td>Asesor aparece en la lista</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-034</td><td>Gestión de Asesores: Editar Rol/Módulo</td><td class="media">Media</td><td>Mover Asesor al Módulo 20</td><td>Cambio se refleja al instante</td><td class="falla">⚠️ PARCIAL</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-035</td><td>Gestión de Asesores: Eliminar/Inactivar</td><td class="media">Media</td><td>Clic "Eliminar"</td><td>Desaparece de lista activa</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-036</td><td>Exportación de Reporte Consolidado (Excel)</td><td class="media">Media</td><td>Clic "Reporte Semanal"</td><td>Descarga de archivo válida</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-037</td><td>Monitoreo de Módulos en Tiempo Real</td><td class="alta">Alta</td><td>Asesor inicia pausa</td><td>Mapa cambia color a naranja</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-038</td><td>Diseño Responsivo Dashboard (Tablets)</td><td class="media">Media</td><td>Abrir en Laptop pequeña</td><td>Gráficos escalan correctamente</td><td class="falla">❌ FALLA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-039</td><td>Filtro de Histórico por Rango de Fechas</td><td class="media">Media</td><td>Enero 2026 - Marzo 2026</td><td>Muestra solo esos registros</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-040</td><td>Configuración de Parámetros Globales (SLA)</td><td class="baja">Baja</td><td>Input SLA: 20</td><td>Alertas se disparan a los 20</td><td class="falla">⚠️ PARCIAL</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-041</td><td>Backup de Base de Datos (Botón Admin)</td><td class="alta">Alta</td><td>Clic "Respaldar Ahora"</td><td>Genera archivo .sql</td><td class="falla">⚠️ PARCIAL</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-042</td><td>Registro de Asesor - Creación de Cuenta</td><td class="alta">Alta</td><td>Nombre, Email, Contraseña</td><td>Usuario creado, sesión iniciada</td><td class="pasa">✅ PASA</td></tr>
+<tr class="fila-par"><td class="id-cell">CP-043</td><td>Registro de Coordinador - Creación de Cuenta</td><td class="alta">Alta</td><td>Nombre, Email institucional, Contraseña</td><td>Usuario creado, sesión iniciada</td><td class="pasa">✅ PASA</td></tr>
+
+<tr><td colspan="6" style="height:8px;border:none;background:#fff;"></td></tr>
+<tr><td colspan="6" style="background:#e8eaf6;font-weight:bold;text-align:center;color:#10069F;padding:6px;">RESUMEN: 38 PASAN ✅ &nbsp;|&nbsp; 2 FALLAN ❌ &nbsp;|&nbsp; 3 PARCIALES ⚠️ &nbsp;|&nbsp; COBERTURA: 88%</td></tr>
+</table>
+</body></html>
