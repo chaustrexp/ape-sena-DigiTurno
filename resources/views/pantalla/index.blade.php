@@ -155,7 +155,17 @@
                             <div class="col-span-3 flex items-center justify-between pl-3 border-l border-gray-100">
                                 <div>
                                     <p class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Módulo / Profesional</p>
-                                    <p class="text-xs font-black text-gray-600 mt-0.5">— En cola</p>
+                                    @if($turno->asesor_sugerido && $turno->asesor_sugerido->persona)
+                                        <p class="text-[9px] font-black text-gray-500 mt-0.5">
+                                            Módulo {{ sprintf('%02d', $turno->asesor_sugerido->ase_id) }}
+                                        </p>
+                                        <p class="text-xs font-black text-gray-700 leading-tight">
+                                            {{ $turno->asesor_sugerido->persona->pers_nombres }}
+                                            {{ $turno->asesor_sugerido->persona->pers_apellidos }}
+                                        </p>
+                                    @else
+                                        <p class="text-xs font-black text-gray-400 mt-0.5">— En cola</p>
+                                    @endif
                                 </div>
                                 <span class="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest {{ $badgeClass }} shrink-0">
                                     {{ $badgeLabel }}
@@ -278,7 +288,7 @@
 
             <div class="space-y-1 lg:space-y-4 w-full">
                 <p class="text-xs lg:text-xl 2xl:text-2xl font-black text-sena-yellow uppercase tracking-[0.4em] drop-shadow-sm">Llamando al turno</p>
-                <h3 id="modal-turno-numero" class="text-7xl lg:text-[10rem] 2xl:text-[14rem] font-poppins font-black text-white tracking-tighter leading-none drop-shadow-2xl italic">
+                <h3 id="modal-turno-numero" class="text-5xl lg:text-7xl 2xl:text-9xl font-poppins font-black text-white tracking-tighter leading-none drop-shadow-2xl italic">
                     ---
                 </h3>
                 <!-- Citizen Name Section (Fluido) -->
@@ -523,7 +533,10 @@
                         <div class="col-span-3 flex items-center justify-between pl-3 border-l border-gray-100">
                             <div>
                                 <p class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Módulo / Profesional</p>
-                                <p class="text-xs font-black text-gray-600 mt-0.5">— En cola</p>
+                                ${t.modulo_sugerido
+                                    ? `<p class="text-[9px] font-black text-gray-500 mt-0.5">Módulo ${String(t.modulo_sugerido).padStart(2,'0')}</p><p class="text-xs font-black text-gray-700 leading-tight">${t.asesor_nombre_sugerido || ''}</p>`
+                                    : `<p class="text-xs font-black text-gray-400 mt-0.5">— En cola</p>`
+                                }
                             </div>
                             <span class="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest ${badgeClass} shrink-0">
                                 ${badgeLabel}

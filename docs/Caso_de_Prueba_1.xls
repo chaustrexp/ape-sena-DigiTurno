@@ -100,12 +100,12 @@ th,td{border:1px solid #bbb;padding:5px 8px;vertical-align:middle;}
 <tr class="fila-par"><td class="id-cell">CP-037</td><td>Monitoreo de Módulos en Tiempo Real</td><td class="alta">Alta</td><td class="te">Transición de Estados</td><td>Asesor inicia pausa</td><td>Mapa cambia color a naranja</td><td class="pasa">✅ PASA</td></tr>
 <tr class="fila-impar"><td class="id-cell">CP-038</td><td>Diseño Responsivo Dashboard (Tablets)</td><td class="media">Media</td><td class="vl">Valor Límite</td><td>Abrir en Laptop pequeña</td><td>Gráficos escalan correctamente</td><td class="falla">❌ FALLA</td></tr>
 <tr class="fila-par"><td class="id-cell">CP-039</td><td>Filtro de Histórico por Rango de Fechas</td><td class="media">Media</td><td class="pe">P. Equivalencia</td><td>Enero 2026 - Marzo 2026</td><td>Muestra solo esos registros</td><td class="pasa">✅ PASA</td></tr>
-<tr class="fila-impar"><td class="id-cell">CP-040</td><td>Configuración de Parámetros Globales (SLA)</td><td class="baja">Baja</td><td class="pe">P. Equivalencia</td><td>Input SLA: 20</td><td>Alertas se disparan a los 20</td><td class="parcial">⚠️ PARCIAL</td></tr>
+<tr class="fila-impar"><td class="id-cell">CP-040</td><td>Configuración de Parámetros Globales (SLA) — Alerta a 1 min</td><td class="baja">Baja</td><td class="vl">Valor Límite</td><td>Tiempo establecido: 1 min (subMinutes(1))</td><td>Alertas se disparan al superar 1 min en espera</td><td class="pasa">✅ PASA</td></tr>
 <tr class="fila-par"><td class="id-cell">CP-041</td><td>Backup de Base de Datos (Botón Admin)</td><td class="alta">Alta</td><td class="te">Transición de Estados</td><td>Clic "Respaldar Ahora"</td><td>Genera archivo .sql</td><td class="parcial">⚠️ PARCIAL</td></tr>
 <tr class="fila-impar"><td class="id-cell">CP-042</td><td>Registro de Asesor - Creación de Cuenta</td><td class="alta">Alta</td><td class="pe">P. Equivalencia</td><td>Nombre, Email, Contraseña</td><td>Usuario creado, sesión iniciada</td><td class="pasa">✅ PASA</td></tr>
 <tr class="fila-par"><td class="id-cell">CP-043</td><td>Registro de Coordinador - Creación de Cuenta</td><td class="alta">Alta</td><td class="pe">P. Equivalencia</td><td>Nombre, Email institucional, Contraseña</td><td>Usuario creado, sesión iniciada</td><td class="pasa">✅ PASA</td></tr>
 
 <tr><td colspan="7" style="height:8px;border:none;background:#fff;"></td></tr>
-<tr><td colspan="7" style="background:#e8eaf6;font-weight:bold;text-align:center;color:#10069F;padding:6px;">RESUMEN: 38 PASAN ✅ &nbsp;|&nbsp; 2 FALLAN ❌ &nbsp;|&nbsp; 3 PARCIALES ⚠️ &nbsp;|&nbsp; COBERTURA: 88%</td></tr>
+<tr><td colspan="7" style="background:#e8eaf6;font-weight:bold;text-align:center;color:#10069F;padding:6px;">RESUMEN: 39 PASAN ✅ &nbsp;|&nbsp; 2 FALLAN ❌ &nbsp;|&nbsp; 2 PARCIALES ⚠️ &nbsp;|&nbsp; COBERTURA: 91%</td></tr>
 </table>
 </body></html>

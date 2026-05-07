@@ -77,10 +77,20 @@
     </div>
     @endif
     @if(session('error'))
-    <div class="bg-rose-500 text-white p-6 rounded-[2rem] shadow-2xl flex items-center space-x-4 border-4 border-white">
-        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-2xl shrink-0"><i class="fa-solid fa-xmark"></i></div>
+    <div id="kiosco-error-alert" class="bg-rose-500 text-white p-4 rounded-2xl shadow-2xl flex items-center space-x-3 border-2 border-white">
+        <div class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-xmark"></i></div>
         <div><p class="font-black uppercase tracking-widest text-xs">Atención</p><p class="text-sm font-bold">{{ session('error') }}</p></div>
     </div>
+    <script>
+        setTimeout(function() {
+            var el = document.getElementById('kiosco-error-alert');
+            if (el) {
+                el.style.transition = 'opacity 0.5s ease-out';
+                el.style.opacity = '0';
+                setTimeout(function() { el.remove(); }, 500);
+            }
+        }, 2000);
+    </script>
     @endif
 </div>
 
@@ -399,44 +409,62 @@
 <!-- MODAL DE ÉXITO -->
 @if(session('success'))
 @php $turnoNumero = str_replace('Turno solicitado con éxito: ', '', session('success')); @endphp
-<div id="successModal" class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-    <div class="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row border border-white/20">
-        <div class="lg:w-2/5 bg-sena-500 p-10 flex flex-col items-center justify-center text-center space-y-6 relative overflow-hidden">
-            <div class="absolute -top-20 -left-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-sena-orange/20 rounded-full blur-3xl"></div>
-            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl relative z-10"><i class="fa-solid fa-check text-4xl text-sena-500"></i></div>
-            <div class="space-y-2 relative z-10">
-                <h3 class="text-4xl font-poppins font-black text-white tracking-tight italic">¡Completado!</h3>
-                <p class="text-sm font-bold text-white/60 uppercase tracking-widest">Transacción Exitosa</p>
+<div id="successModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden flex flex-col sm:flex-row border border-white/20">
+
+        {{-- Panel izquierdo azul --}}
+        <div class="sm:w-2/5 bg-sena-500 p-6 flex flex-col items-center justify-center text-center space-y-3 relative overflow-hidden">
+            <div class="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-sena-orange/20 rounded-full blur-3xl"></div>
+            <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-xl relative z-10">
+                <i class="fa-solid fa-check text-2xl text-sena-500"></i>
+            </div>
+            <div class="relative z-10">
+                <h3 class="text-2xl font-poppins font-black text-white tracking-tight italic">¡Completado!</h3>
+                <p class="text-[10px] font-bold text-white/60 uppercase tracking-widest mt-1">Transacción Exitosa</p>
             </div>
         </div>
-        <div class="lg:w-3/5 p-8 flex flex-col items-center justify-center space-y-5">
-            <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Su turno asignado es</p>
-            <div class="bg-slate-50 border-4 border-slate-100 rounded-2xl px-8 py-6 w-full text-center shadow-inner">
-                <div class="text-[4.5rem] font-poppins font-black text-sena-500 tracking-tight leading-none whitespace-nowrap">{{ $turnoNumero }}</div>
+
+        {{-- Panel derecho --}}
+        <div class="sm:w-3/5 p-5 flex flex-col items-center space-y-3">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Su turno asignado es</p>
+
+            {{-- Número de turno --}}
+            <div class="bg-slate-50 border-2 border-slate-100 rounded-xl px-6 py-3 w-full text-center shadow-inner">
+                <div class="text-[2.8rem] font-poppins font-black text-sena-500 tracking-tight leading-none whitespace-nowrap">{{ $turnoNumero }}</div>
             </div>
 
+            {{-- Advertencia APE --}}
             @if(session('warning'))
-            <div class="w-full bg-blue-50 border-2 border-blue-100 rounded-2xl p-4 flex items-start space-x-3 mt-2 animate-in fade-in duration-700">
-                <i class="fa-solid fa-circle-info text-blue-500 text-lg mt-0.5"></i>
+            <div class="w-full bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-start space-x-2">
+                <i class="fa-solid fa-circle-info text-blue-500 text-sm mt-0.5 shrink-0"></i>
                 <div class="text-left">
-                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest leading-none mb-1">Información de Usuario</p>
-                    <p class="text-[11px] font-bold text-blue-800 leading-tight">{{ session('warning') }}</p>
+                    <p class="text-[9px] font-black text-blue-600 uppercase tracking-widest leading-none mb-0.5">Información de Usuario</p>
+                    <p class="text-[10px] font-bold text-blue-800 leading-tight">{{ session('warning') }}</p>
                 </div>
             </div>
             @endif
-            <div class="flex flex-col items-center space-y-2">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Escanee para guardar su turno</p>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data={{ urlencode('SENA APE - Turno: '.$turnoNumero) }}" alt="QR Turno {{ $turnoNumero }}" class="w-36 h-36 rounded-2xl border-4 border-slate-100 shadow-sm">
+
+            {{-- QR --}}
+            <div class="flex flex-col items-center space-y-1">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Escanee para guardar su turno</p>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ urlencode('SENA APE - Turno: '.$turnoNumero) }}"
+                     alt="QR {{ $turnoNumero }}"
+                     class="w-24 h-24 rounded-xl border-2 border-slate-100 shadow-sm">
             </div>
-            <div class="text-center space-y-1">
-                <p class="text-xs font-bold text-slate-500 uppercase">Retire su tiquete e ingrese a la sala de espera.</p>
-                <div class="flex items-center justify-center gap-2 text-sena-500">
-                    <i class="fa-solid fa-clock-rotate-left text-xs"></i>
-                    <span class="text-[10px] font-black uppercase tracking-widest">Será llamado pronto · Cierre en 8s</span>
+
+            {{-- Instrucción --}}
+            <div class="text-center">
+                <p class="text-[10px] font-bold text-slate-500 uppercase">Retire su tiquete e ingrese a la sala de espera.</p>
+                <div class="flex items-center justify-center gap-1.5 text-sena-500 mt-0.5">
+                    <i class="fa-solid fa-clock-rotate-left text-[10px]"></i>
+                    <span class="text-[9px] font-black uppercase tracking-widest">Será llamado pronto · Cierre en 8s</span>
                 </div>
             </div>
-            <button onclick="closeModal()" class="w-full py-4 rounded-2xl bg-sena-orange text-white font-black text-sm uppercase tracking-widest shadow-lg active:scale-95 transition-all">FINALIZAR <i class="fa-solid fa-chevron-right ml-2"></i></button>
+
+            <button onclick="closeModal()" class="w-full py-3 rounded-xl bg-sena-orange text-white font-black text-xs uppercase tracking-widest shadow-lg active:scale-95 transition-all">
+                FINALIZAR <i class="fa-solid fa-chevron-right ml-1"></i>
+            </button>
         </div>
     </div>
 </div>
@@ -460,25 +488,32 @@ setTimeout(()=>{ playSuccessNotification(); setTimeout(closeModal,10000); },300)
 
 <!-- MODAL DE ERROR -->
 @if($errors->any() || session('error'))
-<div id="errorModal" class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-    <div class="bg-white w-full max-w-2xl rounded-[4rem] p-12 shadow-2xl flex flex-col items-center text-center space-y-8 border border-gray-100 relative">
-        <button type="button" onclick="document.getElementById('errorModal').style.display='none'" class="absolute top-8 right-8 text-gray-400 hover:text-gray-900 text-3xl transition"><i class="fa-solid fa-xmark"></i></button>
-        <div class="w-28 h-28 bg-rose-50 rounded-full flex items-center justify-center relative">
-            <div class="absolute inset-0 bg-rose-500/20 rounded-full animate-ping"></div>
-            <i class="fa-solid fa-triangle-exclamation text-5xl text-rose-500 relative z-10"></i>
+<div id="errorModal" class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-lg rounded-2xl p-7 shadow-2xl flex flex-col items-center text-center space-y-4 border border-gray-100 relative">
+        <button type="button" onclick="cerrarErrorModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 text-xl transition"><i class="fa-solid fa-xmark"></i></button>
+        <div class="w-14 h-14 bg-rose-50 rounded-full flex items-center justify-center relative">
+            <i class="fa-solid fa-triangle-exclamation text-2xl text-rose-500 relative z-10"></i>
         </div>
-        <div class="space-y-3">
-            <h3 class="text-4xl font-poppins font-black text-gray-900 tracking-tight leading-none italic">¡Algo salió mal!</h3>
-            <p class="text-base font-bold text-gray-500 uppercase tracking-widest">@if(session('error')){{ session('error') }}@else Por favor verifica los datos ingresados:@endif</p>
+        <div class="space-y-1">
+            <h3 class="text-xl font-poppins font-black text-gray-900 tracking-tight leading-none">¡Atención!</h3>
+            <p class="text-sm font-bold text-gray-500">@if(session('error')){{ session('error') }}@else Por favor verifica los datos ingresados:@endif</p>
         </div>
         @if($errors->any())
-        <div class="bg-rose-50/50 border border-rose-100 rounded-3xl p-6 w-full text-left overflow-y-auto max-h-40">
-            <ul class="list-disc list-inside text-rose-600 font-medium space-y-2 text-sm">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+        <div class="bg-rose-50/50 border border-rose-100 rounded-xl p-4 w-full text-left overflow-y-auto max-h-32">
+            <ul class="list-disc list-inside text-rose-600 font-medium space-y-1 text-xs">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
         </div>
         @endif
-        <button type="button" onclick="document.getElementById('errorModal').style.display='none'" class="w-full py-6 rounded-[2rem] bg-gray-900 text-white font-black text-lg uppercase tracking-widest hover:bg-black transition-all shadow-xl active:scale-95">INTENTAR DE NUEVO</button>
+        <button type="button" onclick="cerrarErrorModal()" class="w-full py-3 rounded-xl bg-gray-900 text-white font-black text-sm uppercase tracking-widest hover:bg-black transition-all shadow-lg active:scale-95">INTENTAR DE NUEVO</button>
     </div>
 </div>
+<script>
+    function cerrarErrorModal() {
+        const m = document.getElementById('errorModal');
+        if (m) { m.style.transition='opacity 0.4s'; m.style.opacity='0'; setTimeout(()=>m.remove(),400); }
+    }
+    // Auto-cierre en 2 segundos
+    setTimeout(cerrarErrorModal, 2000);
+</script>
 @endif
 
 <!-- MODAL CONSULTAR TURNO -->

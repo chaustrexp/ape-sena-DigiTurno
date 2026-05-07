@@ -26,15 +26,53 @@ class PantallaController extends Controller
             'ase_foto' => $atencionActual->asesor->ase_foto ?? 'images/foto de perfil.jpg'
         ] : null;
 
-        // Turnos en espera (Ordenados por prioridad SENA: Víctima > Prioritario > General)
+        // Turnos en espera con asesor disponible sugerido por perfil
+        $asesoresDisponibles = \App\Models\Asesor::with('persona')
+            ->whereDoesntHave('atenciones', function($q) {
+                $q->whereNull('atnc_hora_fin');
+            })
+            ->get()
+            ->keyBy('ase_tipo_asesor');
+
+        // Mapa: perfil del turno → tipo de asesor que lo atiende
+        $perfilAsesorMap = [
+            'General'    => ['OT', 'AT'],
+            'Prioritario'=> ['OT', 'AT'],
+            'Victima'    => ['OV', 'AT'],
+            'Victimas'   => ['OV', 'AT'],
+            'Empresario' => ['OV', 'AT'],
+        ];
+
+        // Obtener primer asesor disponible por tipo
+        $asesoresPorTipo = \App\Models\Asesor::with('persona')
+            ->whereDoesntHave('atenciones', function($q) {
+                $q->whereNull('atnc_hora_fin');
+            })
+            ->get()
+            ->groupBy('ase_tipo_asesor');
+
         $turnosEnEspera = Turno::whereDate('tur_hora_fecha', now()->today())
-                                ->whereDoesntHave('atencion')
-                                ->orderByRaw("CASE 
-                                    WHEN tur_tipo = 'Victimas' THEN 1 
-                                    WHEN tur_tipo = 'Prioritario' THEN 2 
-                                    ELSE 3 END ASC")
+                                ->where('tur_estado', 'Espera')
+                                ->orderByRaw("CASE
+                                    WHEN tur_perfil = 'Victima'     THEN 1
+                                    WHEN tur_perfil = 'Empresario'  THEN 2
+                                    WHEN tur_perfil = 'Prioritario' THEN 3
+                                    ELSE 4 END ASC")
                                 ->orderBy('tur_id', 'asc')
-                                ->get();
+                                ->get()
+                                ->map(function($turno) use ($perfilAsesorMap, $asesoresPorTipo) {
+                                    $perfil = $turno->tur_perfil ?? $turno->tur_tipo ?? 'General';
+                                    $tiposAsesor = $perfilAsesorMap[$perfil] ?? ['OT', 'AT'];
+                                    $asesorSugerido = null;
+                                    foreach ($tiposAsesor as $tipo) {
+                                        if (isset($asesoresPorTipo[$tipo]) && $asesoresPorTipo[$tipo]->isNotEmpty()) {
+                                            $asesorSugerido = $asesoresPorTipo[$tipo]->first();
+                                            break;
+                                        }
+                                    }
+                                    $turno->asesor_sugerido = $asesorSugerido;
+                                    return $turno;
+                                });
 
         return view('pantalla.index', compact('turnoActual', 'turnosEnEspera'));
     }

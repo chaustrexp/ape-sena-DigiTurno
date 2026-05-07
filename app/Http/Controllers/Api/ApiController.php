@@ -70,6 +70,22 @@ class ApiController extends Controller
             ];
         }
 
+        $perfilAsesorMap = [
+            'General'    => ['OT', 'AT'],
+            'Prioritario'=> ['OT', 'AT'],
+            'Victima'    => ['OV', 'AT'],
+            'Victimas'   => ['OV', 'AT'],
+            'Empresario' => ['OV', 'AT'],
+        ];
+
+        // Asesores disponibles (sin atención activa) agrupados por tipo
+        $asesoresPorTipo = \App\Models\Asesor::with('persona')
+            ->whereDoesntHave('atenciones', function($q) {
+                $q->whereNull('atnc_hora_fin');
+            })
+            ->get()
+            ->groupBy('ase_tipo_asesor');
+
         $turnosEnEspera = Turno::whereDate('tur_hora_fecha', now()->toDateString())
                                 ->where('tur_estado', 'Espera')
                                 ->orderByRaw("CASE
@@ -79,12 +95,25 @@ class ApiController extends Controller
                                     ELSE 4 END ASC")
                                 ->orderBy('tur_id', 'asc')
                                 ->get()
-                                ->map(function($t) {
+                                ->map(function($t) use ($perfilAsesorMap, $asesoresPorTipo) {
+                                    $perfil = $t->tur_perfil ?? $t->tur_tipo ?? 'General';
+                                    $tiposAsesor = $perfilAsesorMap[$perfil] ?? ['OT', 'AT'];
+                                    $asesorSugerido = null;
+                                    foreach ($tiposAsesor as $tipo) {
+                                        if (isset($asesoresPorTipo[$tipo]) && $asesoresPorTipo[$tipo]->isNotEmpty()) {
+                                            $asesorSugerido = $asesoresPorTipo[$tipo]->first();
+                                            break;
+                                        }
+                                    }
                                     return [
-                                        'tur_id'     => $t->tur_id,
-                                        'tur_numero' => $t->tur_numero,
-                                        'tur_tipo'   => $t->tur_tipo,
-                                        'tur_perfil' => $t->tur_perfil ?? $t->tur_tipo,
+                                        'tur_id'               => $t->tur_id,
+                                        'tur_numero'           => $t->tur_numero,
+                                        'tur_tipo'             => $t->tur_tipo,
+                                        'tur_perfil'           => $t->tur_perfil ?? $t->tur_tipo,
+                                        'modulo_sugerido'      => $asesorSugerido?->ase_id,
+                                        'asesor_nombre_sugerido' => $asesorSugerido?->persona
+                                            ? ($asesorSugerido->persona->pers_nombres . ' ' . $asesorSugerido->persona->pers_apellidos)
+                                            : null,
                                     ];
                                 });
 

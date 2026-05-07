@@ -1,0 +1,792 @@
+﻿<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=ProgId content=Excel.Sheet>
+<meta name=Generator content="Microsoft Excel 15">
+<link id=Main-File rel=Main-File href="../Especificacion_Casos_Uso.xls">
+<link rel=File-List href=filelist.xml>
+<link rel=Stylesheet href=stylesheet.css>
+<style>
+<!--td
+	{padding-bottom:6px;
+	padding-top:6px;}
+table
+	{mso-displayed-decimal-separator:"\,";
+	mso-displayed-thousand-separator:"\.";}
+@page
+	{margin:1.0in .75in 1.0in .75in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;}
+-->
+</style>
+<![if !supportTabStrip]><script language="JavaScript">
+<!--
+function fnUpdateTabs()
+ {
+  if (parent.window.g_iIEVer>=4) {
+   if (parent.document.readyState=="complete"
+    && parent.frames['frTabs'].document.readyState=="complete")
+   parent.fnSetActiveSheet(0);
+  else
+   window.setTimeout("fnUpdateTabs();",150);
+ }
+}
+
+if (window.name!="frSheet")
+ window.location.replace("../Especificacion_Casos_Uso.xls");
+else
+ fnUpdateTabs();
+//-->
+</script>
+<![endif]>
+</head>
+
+<body link="#467886" vlink="#96607D" class=xl65>
+
+<table border=0 cellpadding=0 cellspacing=0 width=1458 style='border-collapse:
+ collapse;table-layout:fixed;width:1094pt'>
+ <col class=xl65 width=401 style='mso-width-source:userset;mso-width-alt:14250;
+ width:301pt'>
+ <col class=xl65 width=1057 style='mso-width-source:userset;mso-width-alt:37575;
+ width:793pt'>
+ <tr height=38 style='mso-height-source:userset;height:28.8pt'>
+  <td colspan=2 height=38 class=xl82 width=1458 style='border-right:1.0pt solid #BBBBBB;
+  height:28.8pt;width:1094pt'>ESPECIFICACIÓN DE CASOS DE USO — DigiTurno APE
+  SENA</td>
+ </tr>
+ <tr height=14 style='height:10.2pt'>
+  <td colspan=2 height=14 class=xl84 width=1458 style='border-right:1.0pt solid #BBBBBB;
+  height:10.2pt;width:1094pt'>Sistema Digital de Turnos &nbsp;|&nbsp;
+  Verificado contra código fuente &nbsp;|&nbsp; 5 de Mayo de 2026</td>
+ </tr>
+<!-- ESPACIO -->
+ <tr height=13 style='mso-height-source:userset;height:9.6pt'>
+  <td colspan=2 height=13 class=xl86 width=1458 style='height:9.6pt;width:1094pt'>&nbsp;</td>
+ </tr>
+<!-- ══════════════════════════════════════════════════════ CU-01 -->
+ <tr height=14 style='height:10.8pt'>
+  <td colspan=2 height=14 class=xl87 width=1458 style='border-right:1.0pt solid #BBBBBB;
+  height:10.8pt;width:1094pt'>&#128187; CU-01 — Generar Turno de Atención y
+  Perfilamiento</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>ID</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>CU-01</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Nombre</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Generar Turno de Atención y Perfilamiento</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Descripción</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Permite al ciudadano ingresar sus datos, ser perfilado según su
+  grupo poblacional y seleccionar el servicio requerido para ingresar a la cola
+  de espera.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Actor</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Usuario General (Ciudadano / NIT de Empresa)</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Precondiciones</td>
+  <td class=xl68 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El kiosco debe mostrar la pantalla de bienvenida y términos de
+  uso de datos. Vigilante capacitado disponible para soporte opcional.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td rowspan=9 height=172 class=xl89 align=left style='border-bottom:1.0pt solid #BBBBBB;
+  height:130.2pt;border-top:none'>Flujo Normal</td>
+  <td class=xl69 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>1. El usuario acepta términos y condiciones.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>2. Selección de Perfil: General, Víctima,
+  Prioritario o Empresario.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>3. Selección de Tipo de Atención:
+  &quot;Normal&quot; o &quot;Especial&quot;.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>4. Selección de Documento: CC, TI o CE.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>5. Ingreso de número de identificación.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>6. Validación de Registro: Si no tiene registro
+  en la APE, el sistema permite continuar pero emite advertencia.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>7. Ingreso de Teléfono (Opcional).</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>8. Selección de Servicio: Orientación Laboral,
+  Formación Académica o Emprendimiento.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl71 align=left width=1057 style='height:15.0pt;
+  border-left:none;width:793pt'>9. El sistema genera el turno con código
+  alfanumérico según prioridad y lo guarda en la BD.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Postcondiciones</td>
+  <td class=xl72 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Se registra el turno en estado &quot;Espera&quot; y se libera la
+  interfaz del kiosco.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td rowspan=3 height=58 class=xl89 align=left style='border-bottom:1.0pt solid #BBBBBB;
+  height:43.8pt;border-top:none'>Flujos Alternativos</td>
+  <td class=xl73 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>4.a: Si el número ya tiene un turno activo, el sistema notifica
+  error: &quot;Solo puedes solicitar un (1) turno por día&quot;.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl74 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>4.b: Si la longitud del documento no cumple la
+  normativa colombiana (CC/TI: 8-10 dígitos, CE: mínimo 6), solicita corregir.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl75 align=left width=1057 style='height:15.0pt;
+  border-left:none;width:793pt'>5.a: El usuario deja el campo de teléfono vacío
+  y presiona &quot;Continuar&quot; (flujo permitido).</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Flujo
+  Principal</td>
+  <td class=xl76 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El sistema valida los datos de identificación, asigna un código
+  alfanumérico según la prioridad (V/E/P/G) y lo ingresa a la base de datos de
+  la APE con estado &quot;Espera&quot;.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Estado
+  en código</td>
+  <td class=xl77 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>✅ IMPLEMENTADO COMPLETAMENTE — TurnoController::store() con
+  lockForUpdate()</td>
+ </tr>
+ <tr height=13 style='mso-height-source:userset;height:9.6pt'>
+  <td colspan=2 height=13 class=xl86 width=1458 style='height:9.6pt;width:1094pt'>&nbsp;</td>
+ </tr>
+<!-- ══════════════════════════════════════════════════════ CU-02 -->
+ <tr height=14 style='height:10.8pt'>
+  <td colspan=2 height=14 class=xl87 width=1458 style='border-right:1.0pt solid #BBBBBB;
+  height:10.8pt;width:1094pt'>&#128100; CU-02 — Gestión de Atención al
+  Ciudadano</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>ID</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>CU-02</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Nombre</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Gestión de Atención al Ciudadano</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Descripción</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El asesor solicita un turno de la fila, lo atiende y actualiza
+  la información en la pantalla pública.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Actor</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Usuario Asesor (OT / OV / AT)</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Precondiciones</td>
+  <td class=xl68 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El asesor debe estar logueado y en estado &quot;Disponible&quot;
+  (sin atención activa y sin pausa activa).</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td rowspan=7 height=134 class=xl89 align=left style='border-bottom:1.0pt solid #BBBBBB;
+  height:101.4pt;border-top:none'>Flujo Normal</td>
+  <td class=xl69 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>1. El asesor presiona &quot;Llamar Siguiente Turno&quot;.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>1.1 El sistema busca el turno prioritario más
+  antiguo según el tipo de asesor (OT: Prioritario→General 3:1 / OV:
+  Empresario→Víctima / AT: todos).</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>1.2 El sistema muestra los datos del ciudadano
+  en el panel del asesor.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>1.3 El sistema actualiza la pantalla pública
+  con audio (chime + voz).</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>2. El asesor realiza el trámite con el
+  ciudadano.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>3. El asesor presiona &quot;Finalizar
+  Atención&quot;.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl71 align=left width=1057 style='height:15.0pt;
+  border-left:none;width:793pt'>4. El sistema registra hora de fin y cambia el
+  estado del turno a &quot;Finalizado&quot;.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Postcondiciones</td>
+  <td class=xl72 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El turno cambia a estado &quot;Finalizado&quot;, el asesor queda
+  libre y se registran los tiempos (atnc_hora_inicio / atnc_hora_fin) para
+  reportes de la coordinadora.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td rowspan=2 height=39 class=xl89 align=left style='border-bottom:1.0pt solid #BBBBBB;
+  height:29.4pt;border-top:none'>Flujos Alternativos</td>
+  <td class=xl73 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>3.a: El ciudadano no se presenta → El asesor presiona
+  &quot;Ciudadano Ausente&quot; → El sistema cambia el estado a
+  &quot;Ausente&quot; y registra la hora de fin.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl75 align=left width=1057 style='height:15.0pt;
+  border-left:none;width:793pt'>3.b: El asesor intenta llamar un nuevo turno
+  con atención activa → El botón &quot;Llamar Siguiente&quot; no aparece hasta
+  finalizar la atención actual.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Flujo
+  Principal</td>
+  <td class=xl76 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El sistema vincula el turno con el módulo del asesor mediante
+  lockForUpdate(), actualiza los tiempos de respuesta en tiempo real y notifica
+  a la sala de espera vía polling.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Estado
+  en código</td>
+  <td class=xl78 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>⚠️ IMPLEMENTADO — Falta campo de &quot;conclusión/observaciones
+  del trámite&quot; (pendiente)</td>
+ </tr>
+ <tr height=13 style='mso-height-source:userset;height:9.6pt'>
+  <td colspan=2 height=13 class=xl86 width=1458 style='height:9.6pt;width:1094pt'>&nbsp;</td>
+ </tr>
+<!-- ══════════════════════════════════════════════════════ CU-03 -->
+ <tr height=14 style='height:10.8pt'>
+  <td colspan=2 height=14 class=xl87 width=1458 style='border-right:1.0pt solid #BBBBBB;
+  height:10.8pt;width:1094pt'>☕ CU-03 — Registrar Receso Temporal</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>ID</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>CU-03</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Nombre</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Registrar Receso Temporal (Pausa)</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Descripción</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Permite al asesor ausentarse temporalmente sin que el sistema le
+  asigne nuevos turnos, informando su estado a la coordinación.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Actor</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Orientador Técnico (OT) / Orientador de Víctimas (OV) / Asesor
+  Total (AT)</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Precondiciones</td>
+  <td class=xl68 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El asesor no debe tener un turno activo en ese momento. Máximo 3
+  recesos por jornada.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td rowspan=7 height=134 class=xl89 align=left style='border-bottom:1.0pt solid #BBBBBB;
+  height:101.4pt;border-top:none'>Flujo Normal</td>
+  <td class=xl69 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>1. El asesor selecciona &quot;Iniciar Receso&quot; en el
+  sidebar.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>2. El sistema verifica que no haya atención
+  activa.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>3. El sistema registra la hora de inicio en
+  tabla pausas_asesor.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>4. El estado del módulo cambia a
+  &quot;Pausa&quot; — no recibe nuevos turnos.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>5. Al regresar, el asesor presiona
+  &quot;Finalizar Receso&quot;.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>6. El sistema calcula la duración
+  (diffInMinutes) y guarda en BD.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl71 align=left width=1057 style='height:15.0pt;
+  border-left:none;width:793pt'>7. El estado vuelve a &quot;Activo&quot; — el
+  módulo vuelve a recibir turnos.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Postcondiciones</td>
+  <td class=xl72 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Se guarda el registro de duración de la pausa en tabla
+  pausas_asesor para el reporte de productividad de la coordinadora.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td rowspan=3 height=58 class=xl89 align=left style='border-bottom:1.0pt solid #BBBBBB;
+  height:43.8pt;border-top:none'>Flujos Alternativos</td>
+  <td class=xl73 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>1.a: Si intenta pausar mientras atiende a alguien → Sistema
+  muestra: &quot;No puedes iniciar un receso mientras tienes una atención
+  activa&quot;.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl74 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>1.b: Si ya tiene 3 recesos en el día → Sistema
+  muestra: &quot;Has alcanzado el límite máximo de 3 recesos permitidos por
+  día&quot;.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl75 align=left width=1057 style='height:15.0pt;
+  border-left:none;width:793pt'>1.c: Si ya tiene un receso activo → Sistema
+  muestra: &quot;Ya tienes un receso activo en curso&quot;.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Flujo
+  Principal</td>
+  <td class=xl76 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El sistema bloquea la recepción de turnos en el módulo mientras
+  el asesor está en receso, asegurando que la pantalla no llame a nadie a un
+  módulo vacío.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Estado
+  en código</td>
+  <td class=xl77 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>✅ IMPLEMENTADO COMPLETAMENTE — TurnoRepository::iniciarReceso()
+  / finalizarReceso()</td>
+ </tr>
+ <tr height=13 style='mso-height-source:userset;height:9.6pt'>
+  <td colspan=2 height=13 class=xl86 width=1458 style='height:9.6pt;width:1094pt'>&nbsp;</td>
+ </tr>
+<!-- ══════════════════════════════════════════════════════ CU-04 -->
+ <tr height=14 style='height:10.8pt'>
+  <td colspan=2 height=14 class=xl87 width=1458 style='border-right:1.0pt solid #BBBBBB;
+  height:10.8pt;width:1094pt'>&#128737; CU-04 — Visualizar Reportes y Gestión
+  de Flujo (Coordinación)</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>ID</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>CU-04</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Nombre</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Visualizar Reportes y Gestión de Flujo (Coordinación)</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Descripción</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Herramienta para la coordinación donde se supervisa la
+  operatividad de los módulos y el cumplimiento de metas de atención.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Actor</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Coordinador</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Precondiciones</td>
+  <td class=xl68 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El coordinador debe estar autenticado con credenciales de
+  supervisión y tener acceso al panel administrativo.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td rowspan=7 height=134 class=xl89 align=left style='border-bottom:1.0pt solid #BBBBBB;
+  height:101.4pt;border-top:none'>Flujo Normal</td>
+  <td class=xl69 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>1. El coordinador ingresa al Dashboard de Coordinación.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>2. El sistema carga KPIs: turnos hoy, en
+  espera, en atención, finalizados, ausentes, tiempo medio.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>3. Supervisa que los módulos 15 y 19 cumplan la
+  ruta de víctimas (Meta: ~6 emprendedores/semana).</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>4. Controla los tiempos de espera — Alerta si
+  superan los 20 minutos.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>5. Verifica la rotación bimestral del personal
+  de apoyo (días restantes ≤ 60).</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>6. Analiza gráficas de flujo por hora
+  (Chart.js).</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl71 align=left width=1057 style='height:15.0pt;
+  border-left:none;width:793pt'>7. Genera reporte diario exportable a Excel.</td>
+ </tr>
+ <tr height=39 style='height:29.4pt'>
+  <td height=39 class=xl66 align=left style='height:29.4pt;border-top:none'>Postcondiciones</td>
+  <td class=xl72 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Generación de métricas de productividad. Registro de incidencias
+  por tiempos excedidos. Actualización del historial de rotación de personal.
+  Consolidación de datos para informes gerenciales.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td rowspan=3 height=58 class=xl89 align=left style='border-bottom:1.0pt solid #BBBBBB;
+  height:43.8pt;border-top:none'>Flujos Alternativos</td>
+  <td class=xl73 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>2.a: Si un turno supera los<span style='mso-spacerun:yes'> 
+  </span>15 minutos en espera → El sistema emite alerta visual crítica en el
+  Dashboard (color rojo).</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl74 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>2.b: Si el conteo de emprendedores es inferior
+  al proyectado → El indicador se marca en color de advertencia.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl75 align=left width=1057 style='height:15.0pt;
+  border-left:none;width:793pt'>2.c: Si el personal de vigilancia supera el
+  periodo bimestral → El sistema genera recordatorio de gestión administrativa.</td>
+ </tr>
+ <tr height=39 style='height:29.4pt'>
+  <td height=39 class=xl66 align=left style='height:29.4pt;border-top:none'>Flujo
+  Principal</td>
+  <td class=xl76 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El coordinador ingresa al módulo de reportes. El sistema valida
+  permisos y despliega información actualizada. Se verifica cumplimiento de
+  metas en módulos 15 y 19. Se auditan tiempos de respuesta y pertinencia del
+  servicio según perfil del usuario.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Estado
+  en código</td>
+  <td class=xl77 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>✅ CORREGIDO — Alerta ahora dispara a los 1 min (subMinutes(1))
+  según especificación</td>
+ </tr>
+ <tr height=13 style='mso-height-source:userset;height:9.6pt'>
+  <td colspan=2 height=13 class=xl86 width=1458 style='height:9.6pt;width:1094pt'>&nbsp;</td>
+ </tr>
+<!-- ══════════════════════════════════════════════════════ CU-05 -->
+ <tr height=14 style='height:10.8pt'>
+  <td colspan=2 height=14 class=xl87 width=1458 style='border-right:1.0pt solid #BBBBBB;
+  height:10.8pt;width:1094pt'>&#128269; CU-05 — Consulta de Estado de Turno</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>ID</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>CU-05</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Nombre</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Consulta de Estado de Turno</td>
+ </tr>
+ <tr height=39 style='height:29.4pt'>
+  <td height=39 class=xl66 align=left style='height:29.4pt;border-top:none'>Descripción</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Permite a un ciudadano verificar la información y el estado
+  actual de su turno (Espera, Atendiendo, etc.) en tiempo real mediante su
+  documento de identidad, sin necesidad de iniciar un nuevo proceso de
+  registro.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Actor</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Solicitante / Usuario del Kiosco</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Precondiciones</td>
+  <td class=xl68 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El ciudadano debe haber solicitado un turno previamente en la
+  fecha actual dentro del sistema DigiTurno.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td rowspan=7 height=134 class=xl89 align=left style='border-bottom:1.0pt solid #BBBBBB;
+  height:101.4pt;border-top:none'>Flujo Normal</td>
+  <td class=xl69 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>1. El ciudadano selecciona &quot;CONSULTAR TURNO&quot; en el
+  footer del kiosco.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>2. El sistema abre un modal y solicita el
+  número de documento de identidad.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>3. El ciudadano ingresa su identificación y
+  presiona &quot;Buscar&quot;.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>4. El sistema valida que el documento tenga un
+  turno activo para el día de hoy.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>5. El sistema consulta la BD y extrae: Código,
+  Estado, Servicio, Perfil y Hora.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>6. El sistema presenta los datos en una tarjeta
+  informativa dentro del modal.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl71 align=left width=1057 style='height:15.0pt;
+  border-left:none;width:793pt'>7. El ciudadano cierra la ventana tras
+  visualizar su estado.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Postcondiciones</td>
+  <td class=xl72 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El ciudadano queda informado sobre su turno sin generar un
+  registro duplicado.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td rowspan=2 height=39 class=xl89 align=left style='border-bottom:1.0pt solid #BBBBBB;
+  height:29.4pt;border-top:none'>Flujos Alternativos</td>
+  <td class=xl73 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>A1: No existe turno → El sistema informa: &quot;No se
+  encontraron turnos activos para este documento hoy&quot;.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl75 align=left width=1057 style='height:15.0pt;
+  border-left:none;width:793pt'>A2: Error de Red → El sistema notifica fallo de
+  comunicación con el servidor.</td>
+ </tr>
+ <tr height=39 style='height:29.4pt'>
+  <td height=39 class=xl66 align=left style='height:29.4pt;border-top:none'>Flujo
+  Principal</td>
+  <td class=xl76 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>1. Inicio de consulta. 2. Validación de identidad. 3.
+  Recuperación de datos del turno vía GET /api/turno/consultar/{documento}. 4.
+  Presentación de información al ciudadano en modal.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Estado
+  en código</td>
+  <td class=xl77 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>✅ IMPLEMENTADO COMPLETAMENTE — ApiController::consultarTurno() +
+  modal en kiosco</td>
+ </tr>
+ <tr height=13 style='mso-height-source:userset;height:9.6pt'>
+  <td colspan=2 height=13 class=xl86 width=1458 style='height:9.6pt;width:1094pt'>&nbsp;</td>
+ </tr>
+<!-- ══════════════════════════════════════════════════════ CU-06 -->
+ <tr height=14 style='height:10.8pt'>
+  <td colspan=2 height=14 class=xl87 width=1458 style='border-right:1.0pt solid #BBBBBB;
+  height:10.8pt;width:1094pt'>&#128272; CU-06 — Gestión y Registro de Usuarios
+  del Sistema</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>ID</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>CU-06</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Nombre</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Gestión y Registro de Usuarios del Sistema</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Descripción</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Permite al Coordinador registrar nuevos usuarios (Asesores) en
+  el sistema, definiendo su rol, credenciales de acceso y validando la
+  integridad de los datos.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Actor</td>
+  <td class=xl67 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>Coordinador</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Precondiciones</td>
+  <td class=xl68 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El sistema debe estar activo y el Coordinador debe tener acceso
+  al panel de control o a la URL de registro.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td rowspan=6 height=115 class=xl89 align=left style='border-bottom:1.0pt solid #BBBBBB;
+  height:87.0pt;border-top:none'>Flujo Normal</td>
+  <td class=xl69 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>1. El Coordinador accede a &quot;Gestión de Módulos&quot; →
+  &quot;Nuevo Asesor&quot;.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>2. El sistema despliega el formulario con
+  campos: Tipo Doc, Documento, Nombres, Apellidos, Teléfono, Correo,
+  Contraseña, Tipo de Asesor.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>3. El Coordinador selecciona el Tipo de Asesor:
+  OT (Orientador Técnico), OV (Orientador de Víctimas) o AT (Asesor Total).</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>4. El sistema valida formato de correo,
+  longitud de contraseña (mínimo 6 caracteres) y unicidad del documento y
+  correo.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl70 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>5. El sistema crea la Persona y el Asesor en la
+  BD con contraseña hasheada (bcrypt).</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl71 align=left width=1057 style='height:15.0pt;
+  border-left:none;width:793pt'>6. El sistema muestra mensaje de confirmación:
+  &quot;Asesor registrado exitosamente&quot;.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Postcondiciones</td>
+  <td class=xl72 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El asesor queda creado en la BD con el tipo asignado (OT/OV/AT).
+  El sistema queda disponible para que el nuevo asesor inicie sesión con sus
+  credenciales.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td rowspan=5 height=96 class=xl89 align=left style='border-bottom:1.0pt solid #BBBBBB;
+  height:72.6pt;border-top:none'>Flujos Alternativos</td>
+  <td class=xl73 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>1.a: Correo ya registrado → &quot;Este correo electrónico ya
+  está en uso por otro asesor&quot;.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl74 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>1.b: Documento ya registrado → &quot;Este
+  número de documento ya está registrado como asesor&quot;.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl74 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>1.c: Tipo de asesor no seleccionado →
+  &quot;Debe seleccionar el tipo de asesor&quot;.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl74 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>1.d: Contraseña menor a 6 caracteres →
+  Validación de Laravel bloquea el envío.</td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl75 align=left width=1057 style='height:15.0pt;
+  border-left:none;width:793pt'>1.e: Auto-registro desde /asesor/register → El
+  asesor puede registrarse directamente, inicia sesión automáticamente y
+  redirige al panel.</td>
+ </tr>
+ <tr height=39 style='height:29.4pt'>
+  <td height=39 class=xl66 align=left style='height:29.4pt;border-top:none'>Flujo
+  Principal</td>
+  <td class=xl76 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>El Coordinador accede al módulo de registro. El sistema valida
+  privilegios. Se capturan los datos del nuevo asesor. El sistema ejecuta la
+  persistencia en BD (Persona + Asesor) con transacción DB::beginTransaction().
+  El sistema confirma el registro exitoso.</td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td rowspan=3 height=58 class=xl89 align=left style='border-bottom:1.0pt solid #BBBBBB;
+  height:43.8pt;border-top:none'>Tipos de Asesor</td>
+  <td class=xl79 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>OT — Orientador Técnico:<font class="font11"> Atiende General y
+  Prioritario (relación 3:1)</font></td>
+ </tr>
+ <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl80 align=left width=1057 style='height:14.4pt;
+  border-left:none;width:793pt'>OV — Orientador de Víctimas:<font class="font11">
+  Atiende Víctima y Empresario</font></td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl81 align=left width=1057 style='height:15.0pt;
+  border-left:none;width:793pt'>AT — Asesor Total:<font class="font11"> Atiende
+  los 4 perfiles con prioridad completa (Víctima → Empresario → Prioritario →
+  General)</font></td>
+ </tr>
+ <tr height=20 style='height:15.0pt'>
+  <td height=20 class=xl66 align=left style='height:15.0pt;border-top:none'>Estado
+  en código</td>
+  <td class=xl77 align=left width=1057 style='border-top:none;border-left:none;
+  width:793pt'>✅ IMPLEMENTADO COMPLETAMENTE —
+  CoordinadorController::storeAsesor() + AsesorController::register()</td>
+ </tr>
+ <tr height=13 style='mso-height-source:userset;height:9.6pt'>
+  <td colspan=2 height=13 class=xl86 width=1458 style='height:9.6pt;width:1094pt'>&nbsp;</td>
+ </tr>
+<!-- RESUMEN -->
+ <tr height=14 style='height:10.2pt'>
+  <td colspan=2 height=14 class=xl92 width=1458 style='border-right:1.0pt solid #BBBBBB;
+  height:10.2pt;width:1094pt'>RESUMEN DE IMPLEMENTACIÓN &nbsp;|&nbsp; CU-01 ✅
+  &nbsp;|&nbsp; CU-02 ⚠️ &nbsp;|&nbsp; CU-03 ✅ &nbsp;|&nbsp; CU-04 ✅
+  (corregido) &nbsp;|&nbsp; CU-05 ✅ &nbsp;|&nbsp; CU-06 ✅</td>
+ </tr>
+ <tr height=14 style='height:10.2pt'>
+  <td colspan=2 height=14 class=xl94 align=left width=1458 style='border-right:
+  1.0pt solid #BBBBBB;height:10.2pt;width:1094pt'>Nota: CU-02 pendiente —
+  agregar campo de observaciones/conclusión del trámite. CU-04 corregido:
+  alerta ahora dispara a los 20 minutos según especificación.</td>
+ </tr>
+ <![if supportMisalignedColumns]>
+ <tr height=0 style='display:none'>
+  <td width=401 style='width:301pt'></td>
+  <td width=1057 style='width:793pt'></td>
+ </tr>
+ <![endif]>
+</table>
+
+</body>
+
+</html>
